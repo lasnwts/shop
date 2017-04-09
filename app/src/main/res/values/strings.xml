@@ -1,0 +1,72 @@
+<resources>
+    <string name="app_name">autoshop</string>
+
+    <string name="action_settings">Settings</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="don_t_show_splash">Don\'t show splash</string>
+    <string name="hello_blank_fragment">Splash Fragment</string>
+    <string name="no_data_available">No data</string>
+
+
+    <string name="exit">Выйти</string>
+
+    <string-array name="menu_items">
+        <item>Главная</item>
+        <item>Товары</item>
+        <item>Корзина</item>
+        <item>Заказы</item>
+        <item>Профиль</item>
+        <item>Информация</item>
+        <item>О приложении</item>
+        <item>Контакты</item>
+    </string-array>
+
+    <string name="menu_product">Товары</string>
+    <string name="menu_cart">Корзина</string>
+    <string name="menu_checkout">Заказы</string>
+    <string name="menu_profile">Информация</string>
+    <string name="alert">Отсуствует связь с интернетом!</string>
+
+    <string name="pref_app_title">О приложении</string>
+    <string name="pref_app_summary">Отображение местоположения друзей на карте</string>
+    <string name="pref_version_title">Версия сборки</string>
+    <string name="pref_developer_title">Разработчик</string>
+    <string name="pref_developer_summary">A.Lyapustin</string>
+    <string name="pref_share_title">Поделитесь приложением</string>
+    <string name="pref_share_summary">Расскажите друзьям об этом приложении</string>
+    <string name="pref_rate_review_title">Поставьте оценку</string>
+    <string name="pref_rate_review_summary">Оцените приложение и оставьте отзыв в GooglePlay</string>
+    <string name="pref_share_key">prefShareKey</string>
+    <string name="pref_rate_review_key">prefRateReviewKey</string>
+    <string name="build">Сборка:</string>
+    <string name="share_to">Поделиться</string>
+    <string name="subject">WhereWe</string>
+    <string name="message">Вы можете скачать приложение "Видеоуроки Start Android" для Android в </string>
+    <string name="googleplay_url">https://play.google.com/store/apps/details?id=ru.nwts.appsyoutube</string>
+
+    <string name="information_tab1">
+		Добро пожаловать в “Student Shop”. Интернет-магазин “Student Shop” первый и единственный специализированный магазин для студентов. В нашем онлайн магазине Вы можете купить товары дешевле, чем во многих магазинах, кроме того доставка заказа свыше 350 рублей осуществляется БЕСПЛАТНО. Прежде чем делать покупки, в разделе «Как заказать» ознакомьтесь с правилами заказа и оплаты товаров. Моментально, после заказа с Вами свяжется менеджер для дальнейших действий.
+	</string>
+    <string name="information_tab2">
+	    Для того чтобы заказать товар: 1) Перейдите в нужную категорию и выберите товар. 2) После того, как выбрали товар, нажмите на кнопку купить. 3) Как только ваш товар будет добавлен в корзину, перейдите в неё, нажмите на кнопку «галочка» и оформите заказ. Все поля оформления обязательны к заполнению. Выберите форму оплаты. 4) После оформления нажмите на кнопку «отправить» и мы свяжемся с Вами для доставки товаров в удобное для Вас время.
+	</string>
+    <string name="information_tab3">
+	    При оформлении заказа выберите удобный для Вас способ оплаты. По умолчанию выбор оплаты: Оплата наличными курьеру. Оплачиваете прямо при приёме товаров курьеру. При выборе других методов оплаты, Вам следует до приезда курьера оплатить заказ по квитанции, который получили от нашего менеджера.
+	</string>
+
+    <string name="txt_screen_3">3-й экран</string>
+    <string name="txt_screen_2">2-й экран</string>
+    <string name="txt_screen_1">1-й экран</string>
+
+    <!--Product Detail Informatiun-->
+    <string name="product_detail_name">Информация о товаре</string>
+
+    <!--Наименования окон-->
+    <string name="information_name">Информация</string>
+    <string name="toolbar_main_menu">Основное меню</string>
+    <string name="toolbar_main_category">Категории товаров</string>
+    <string name="toolbar_main_subcategory">Список подкатегорий</string>
+    <string name="toolbar_main_product_catalog">Список товаров</string>
+    <string name="price_name">Цена</string>
+    <string name="quantity_name">Количество</string>
+</resources>
