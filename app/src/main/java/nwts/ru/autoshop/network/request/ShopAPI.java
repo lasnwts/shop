@@ -1,12 +1,11 @@
-package nwts.ru.autoshop.api.request;
+package nwts.ru.autoshop.network.request;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import nwts.ru.autoshop.api.Api;
+import nwts.ru.autoshop.network.api.Api;
 import nwts.ru.autoshop.models.CategoryItem;
 import nwts.ru.autoshop.models.ProductCategory;
-import nwts.ru.autoshop.models.ProductDetail;
 import nwts.ru.autoshop.models.ProductDetailImage;
 import nwts.ru.autoshop.models.SubCategoryItem;
 import okhttp3.OkHttpClient;

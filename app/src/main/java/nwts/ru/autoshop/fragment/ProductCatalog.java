@@ -23,9 +23,8 @@ import java.util.List;
 
 import nwts.ru.autoshop.R;
 import nwts.ru.autoshop.TODOApplication;
-import nwts.ru.autoshop.adapter.AdapterCategoryList;
 import nwts.ru.autoshop.adapter.AdapterProductCatalog;
-import nwts.ru.autoshop.models.CategoryItem;
+import nwts.ru.autoshop.adapter.interfaces.AdapterClickListener;
 import nwts.ru.autoshop.models.ProductCategoris;
 import nwts.ru.autoshop.models.ProductCategory;
 import nwts.ru.autoshop.services.ServiceHelper;
@@ -33,6 +32,7 @@ import nwts.ru.autoshop.setting.BaseConstant;
 import nwts.ru.autoshop.setting.ToolBarTitle;
 
 /**
+ *  Фрагмент показа списка товаров (3-ий уровень)
  * Created by пользователь on 22.03.2017.
  */
 
@@ -55,6 +55,7 @@ public class ProductCatalog extends Fragment {
     protected LayoutManagerType mCurrentLayoutManagerType;
     private Activity activity_context;
     private ToolBarTitle toolBarTitle;
+    private iProductCatalog mIProductCatalog;
 
 
     public ProductCatalog() {
@@ -102,7 +103,13 @@ public class ProductCatalog extends Fragment {
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerViewCategoryProdCatalog);
         layoutManager = new GridLayoutManager(getActivity(), SPAN_COUNT);
         recyclerView.setLayoutManager(layoutManager);
-        AdapterProductCatalog adapter = new AdapterProductCatalog(productCategoryList,activity_context);
+        AdapterProductCatalog adapter = new AdapterProductCatalog(productCategoryList, activity_context, new AdapterClickListener() {
+            @Override
+            public void adapterOnClickListener(int item) {
+                mIProductCatalog = (iProductCatalog) activity_context;
+                mIProductCatalog.startProductDetailView(item);
+            }
+        });
         prgLoading = (ProgressBar) view.findViewById(R.id.prgLoadingProdCatalog);
         txtAlert = (TextView) view.findViewById(R.id.txtAlertProdCatalog);
         recyclerView.setAdapter(adapter);
@@ -126,5 +133,9 @@ public class ProductCatalog extends Fragment {
     public void onStop() {
         super.onStop();
         EventBus.getDefault().unregister(this);
+    }
+
+    public interface iProductCatalog{
+        void startProductDetailView(int item);
     }
 }

@@ -12,9 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridView;
 import android.widget.ProgressBar;
-import android.widget.RadioButton;
 import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -26,18 +24,26 @@ import java.util.List;
 
 import nwts.ru.autoshop.R;
 import nwts.ru.autoshop.adapter.AdapterCategoryList;
+import nwts.ru.autoshop.adapter.interfaces.AdapterClickListener;
 import nwts.ru.autoshop.models.CategoryItem;
 import nwts.ru.autoshop.models.CategoryItems;
 import nwts.ru.autoshop.services.ServiceHelper;
 import nwts.ru.autoshop.setting.BaseConstant;
 import nwts.ru.autoshop.setting.ToolBarTitle;
 
+/**
+ *  Фрагмент показа всех категорий магазина (1-ый уровень)
+ *  Сущесвует еше второй подуровень категорий  (2-ой уровень)
+ *   и потом уже список товаров (3-ий уровень)
+ *
+ */
 public class Category extends Fragment {
 
     private static final String TAG = BaseConstant.TAG_CATEGORY_FRAGMENT;
     private static final String KEY_LAYOUT_MANAGER = "layoutManager";
     private static final int SPAN_COUNT = 2;
     private static final int DATASET_COUNT = 60;
+    private iCategoty mICategoty;
 
     private enum LayoutManagerType {
         GRID_LAYOUT_MANAGER,
@@ -70,7 +76,7 @@ public class Category extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        toolBarTitle = (ToolBarTitle)getActivity();
+        toolBarTitle = (ToolBarTitle) getActivity();
         toolBarTitle.BaseActivitySteToolBarTitle(getResources().getString(R.string.toolbar_main_category));
     }
 
@@ -85,7 +91,13 @@ public class Category extends Fragment {
         mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
 
         recyclerView.setLayoutManager(layoutManager);
-        AdapterCategoryList adapter = new AdapterCategoryList(categoryItems, activity_context);
+        AdapterCategoryList adapter = new AdapterCategoryList(categoryItems, activity_context, new AdapterClickListener() {
+            @Override
+            public void adapterOnClickListener(int item) {
+                mICategoty = (iCategoty) activity_context;
+                mICategoty.startSubCategory(item);
+            }
+        });
         recyclerView.setAdapter(adapter);
 
         prgLoading = (ProgressBar) view.findViewById(R.id.prgLoading);
@@ -135,5 +147,10 @@ public class Category extends Fragment {
     public void onStop() {
         super.onStop();
         EventBus.getDefault().unregister(this);
+    }
+
+
+    public interface iCategoty {
+        void startSubCategory(int item);
     }
 }

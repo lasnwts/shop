@@ -3,6 +3,7 @@ package nwts.ru.autoshop;
 import android.app.Application;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 
@@ -25,7 +26,7 @@ import android.view.View;
 import org.greenrobot.eventbus.EventBus;
 
 import nwts.ru.autoshop.databases.DBHelper;
-import nwts.ru.autoshop.fragment.About;
+import nwts.ru.autoshop.ui.About;
 import nwts.ru.autoshop.fragment.HomeMenu;
 import nwts.ru.autoshop.fragment.ProductCatalog;
 import nwts.ru.autoshop.fragment.SubCatalog;
@@ -36,9 +37,11 @@ import nwts.ru.autoshop.fragment.SplashScreen;
 import nwts.ru.autoshop.services.ServiceHelper;
 import nwts.ru.autoshop.setting.BaseConstant;
 import nwts.ru.autoshop.setting.PreferenceHelper;
+import nwts.ru.autoshop.ui.ProductDetailView;
 
 
-public class BaseActivity extends AppCompatActivity implements HomeMenu.OnLinkItemSelectedListener, ToolBarTitle {
+public class BaseActivity extends AppCompatActivity implements HomeMenu.OnLinkItemSelectedListener,
+        ToolBarTitle, Category.iCategoty, SubCatalog.iSubCatalog, ProductCatalog.iProductCatalog {
 
     /*
     Variables
@@ -69,6 +72,7 @@ public class BaseActivity extends AppCompatActivity implements HomeMenu.OnLinkIt
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
+
         PreferenceHelper.getInstance().init(getApplicationContext());
         preferenceHelper = PreferenceHelper.getInstance();
         fragmentManager = getFragmentManager();
@@ -236,21 +240,24 @@ public class BaseActivity extends AppCompatActivity implements HomeMenu.OnLinkIt
         super.onPostResume();
         Fragment fragment = getFragmentManager().findFragmentById(R.id.content_frame);
         String tag = (String) fragment.getTag();
-        if (tag.equalsIgnoreCase(BaseConstant.TAG_MAIN_MENU_FRAGMENT)) {
-            BaseActivitySteToolBarTitle(getResources().getString(R.string.toolbar_main_menu));
-        } else {
-            if (tag.equalsIgnoreCase(BaseConstant.TAG_CATEGORY_FRAGMENT)) {
-                BaseActivitySteToolBarTitle(getResources().getString(R.string.toolbar_main_category));
+        if (tag != null) {
+            if (tag.equalsIgnoreCase(BaseConstant.TAG_MAIN_MENU_FRAGMENT)) {
+                BaseActivitySteToolBarTitle(getResources().getString(R.string.toolbar_main_menu));
             } else {
-                if (tag.equalsIgnoreCase(BaseConstant.TAG_SUBCATEGORY_FRAGMENT)) {
-                    BaseActivitySteToolBarTitle(getResources().getString(R.string.toolbar_main_subcategory));
+                if (tag.equalsIgnoreCase(BaseConstant.TAG_CATEGORY_FRAGMENT)) {
+                    BaseActivitySteToolBarTitle(getResources().getString(R.string.toolbar_main_category));
                 } else {
-                    if (tag.equalsIgnoreCase(BaseConstant.TAG_PRODUCT_CATALOG_FRAGMENT)) {
-                        BaseActivitySteToolBarTitle(getResources().getString(R.string.toolbar_main_product_catalog));
+                    if (tag.equalsIgnoreCase(BaseConstant.TAG_SUBCATEGORY_FRAGMENT)) {
+                        BaseActivitySteToolBarTitle(getResources().getString(R.string.toolbar_main_subcategory));
+                    } else {
+                        if (tag.equalsIgnoreCase(BaseConstant.TAG_PRODUCT_CATALOG_FRAGMENT)) {
+                            BaseActivitySteToolBarTitle(getResources().getString(R.string.toolbar_main_product_catalog));
+                        }
                     }
                 }
             }
         }
+
     }
 
     @Override
@@ -290,7 +297,8 @@ public class BaseActivity extends AppCompatActivity implements HomeMenu.OnLinkIt
         if (fragmentManager.getBackStackEntryCount() != 0) {
             fragmentManager.popBackStack();
         }
-        fragmentManager.beginTransaction().replace(R.id.content_frame, home, BaseConstant.TAG_MAIN_MENU_FRAGMENT).commit();
+        fragmentManager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
+                .replace(R.id.content_frame, home, BaseConstant.TAG_MAIN_MENU_FRAGMENT).commit();
     }
 
 
@@ -317,7 +325,8 @@ public class BaseActivity extends AppCompatActivity implements HomeMenu.OnLinkIt
             case 1:
                 clearFRagmentBackStack();
                 Category category = new Category();
-                fragmentManager.beginTransaction().replace(R.id.content_frame, category, BaseConstant.TAG_CATEGORY_FRAGMENT).commit();
+                fragmentManager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
+                        .replace(R.id.content_frame, category, BaseConstant.TAG_CATEGORY_FRAGMENT).commit();
                 break;
             case 7: //information
                 Intent intentInformation = new Intent(this, Information.class);
@@ -329,13 +338,14 @@ public class BaseActivity extends AppCompatActivity implements HomeMenu.OnLinkIt
                 overridePendingTransition(R.anim.open_main, R.anim.close_next);
                 startActivity(intent);
                 break;
-            case 20: //about
+            case 20: //SubCategory подкаталог
                 Intent intentServiceSubCategory = new Intent(this, ServiceHelper.class);
                 intentServiceSubCategory.setAction(BaseConstant.ACTION_SERVICE_GET_SUBCATEGORY_LIST);
                 intentServiceSubCategory.putExtra(BaseConstant.API_GET_KEY, TODOApplication.getSubCategory_Id());
                 startService(intentServiceSubCategory);
                 SubCatalog subCatalog = new SubCatalog();
-                getFragmentManager().beginTransaction().replace(R.id.content_frame, subCatalog, BaseConstant.TAG_SUBCATEGORY_FRAGMENT).commit();
+                getFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
+                        .replace(R.id.content_frame, subCatalog, BaseConstant.TAG_SUBCATEGORY_FRAGMENT).commit();
                 break;
             default:
                 break;
@@ -406,5 +416,56 @@ public class BaseActivity extends AppCompatActivity implements HomeMenu.OnLinkIt
     @Override
     public void BaseActivitySteToolBarTitle(String setTitles) {
         toolbar.setTitle(setTitles);
+    }
+
+    /**
+     * Запускает получение информации о под-категориях магазина и зхагружает нужный фрагмент фрагмент
+     * (2-ой уровент)
+     *
+     * @param item
+     */
+    @Override
+    public void startSubCategory(int item) {
+        //Передаем в ServiceHelper апрос на данные
+        Intent intentService = new Intent(this, ServiceHelper.class);
+        intentService.setAction(BaseConstant.ACTION_SERVICE_GET_SUBCATEGORY_LIST);
+        intentService.putExtra(BaseConstant.API_GET_KEY, item);
+        startService(intentService);
+        SubCatalog subCatalog = new SubCatalog();
+        getFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
+                .replace(R.id.content_frame, subCatalog, BaseConstant.TAG_SUBCATEGORY_FRAGMENT)
+                .commit();
+    }
+
+    /**
+     * Запускаем каталог продуктов подкатегория (3-ий уровень)
+     *
+     * @param item
+     */
+    @Override
+    public void startProductCatalog(int item) {
+        Intent intentService = new Intent(this, ServiceHelper.class);
+        intentService.setAction(BaseConstant.ACTION_SERVICE_GET_PRODUCT_LIST);
+        intentService.putExtra(BaseConstant.API_GET_KEY, item);
+        this.startService(intentService);
+        ProductCatalog productCatalog = new ProductCatalog();
+        getFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
+                .replace(R.id.content_frame, productCatalog,
+                        BaseConstant.TAG_PRODUCT_CATALOG_FRAGMENT).commit();
+    }
+
+    /**
+     * Запускаем деталировку пролукта
+     *
+     * @param item
+     */
+    @Override
+    public void startProductDetailView(int item) {
+        Intent intentService = new Intent(this, ServiceHelper.class);
+        intentService.setAction(BaseConstant.ACTION_SERVICE_GET_PRODUCT_DETAIL);
+        intentService.putExtra(BaseConstant.API_GET_KEY, item);
+        this.startService(intentService);
+        Intent intentProductDetail = new Intent(this, ProductDetailView.class);
+        this.startActivity(intentProductDetail);
     }
 }

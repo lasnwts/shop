@@ -35,7 +35,17 @@ public class PreferenceHelper {
         editor.apply();
     }
 
+    public String getAuthToken(){
+        return preferences.getString("AuthToken",null);
+    }
+
+    public String getUserId(){
+        return preferences.getString("UserId",null);
+    }
+
     public boolean getBoolean (String key){
         return preferences.getBoolean(key,false);
     }
+
+
 }

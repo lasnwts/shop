@@ -1,4 +1,4 @@
-package nwts.ru.autoshop.api;
+package nwts.ru.autoshop.network.api;
 
 /**
  * Created by пользователь on 13.03.2017.

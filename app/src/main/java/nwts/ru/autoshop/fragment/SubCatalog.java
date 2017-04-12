@@ -22,15 +22,15 @@ import java.util.List;
 
 import nwts.ru.autoshop.R;
 import nwts.ru.autoshop.TODOApplication;
-import nwts.ru.autoshop.adapter.AdapterProductCatalog;
 import nwts.ru.autoshop.adapter.AdapterSubCategory;
+import nwts.ru.autoshop.adapter.interfaces.AdapterClickListener;
 import nwts.ru.autoshop.models.SubCategoryItem;
 import nwts.ru.autoshop.models.SubCategoryItems;
 import nwts.ru.autoshop.services.ServiceHelper;
 import nwts.ru.autoshop.setting.BaseConstant;
 import nwts.ru.autoshop.setting.ToolBarTitle;
 
-/**
+/** Фрагмент полказа подкатегорий (2-ой урорвень)
  * Created by пользователь on 30.03.2017.
  */
 
@@ -45,6 +45,7 @@ public class SubCatalog extends Fragment {
     private static final int SPAN_COUNT = 1;
     protected RecyclerView.LayoutManager layoutManager;
     private ToolBarTitle toolBarTitle;
+    private iSubCatalog mISubCatalog;
 
 
     public SubCatalog() {
@@ -85,7 +86,13 @@ public class SubCatalog extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
         prgLoading = (ProgressBar) view.findViewById(R.id.prgLoadingProdCatalog);
         txtAlert = (TextView) view.findViewById(R.id.txtAlertProdCatalog);
-        AdapterSubCategory adapterSubCategory = new AdapterSubCategory(subCategoryItems, activity_context);
+        AdapterSubCategory adapterSubCategory = new AdapterSubCategory(subCategoryItems, activity_context, new AdapterClickListener() {
+            @Override
+            public void adapterOnClickListener(int item) {
+                mISubCatalog = (iSubCatalog) activity_context;
+                mISubCatalog.startProductCatalog(item);
+            }
+        });
         recyclerView.setAdapter(adapterSubCategory);
         return view;
     }
@@ -116,5 +123,9 @@ public class SubCatalog extends Fragment {
         subCategoryItems.addAll(event.getSubCategoryItems());
         prgLoading.setVisibility(View.INVISIBLE);
         recyclerView.getAdapter().notifyDataSetChanged();
+    }
+
+    public interface iSubCatalog{
+        void startProductCatalog(int item);
     }
 }

@@ -30,6 +30,7 @@ import static android.R.attr.data;
 import static android.R.attr.id;
 
 /**
+ * Фрагмент для показа основного меню магазина
  * Created by пользователь on 15.03.2017.
  */
 

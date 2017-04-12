@@ -1,9 +1,7 @@
 package nwts.ru.autoshop.adapter;
 
 import android.app.Activity;
-import android.app.FragmentManager;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
@@ -20,15 +18,14 @@ import java.util.List;
 
 import nwts.ru.autoshop.R;
 import nwts.ru.autoshop.TODOApplication;
-import nwts.ru.autoshop.fragment.ProductCatalog;
-import nwts.ru.autoshop.fragment.SubCatalog;
+import nwts.ru.autoshop.adapter.interfaces.AdapterClickListener;
 import nwts.ru.autoshop.models.CategoryItem;
-import nwts.ru.autoshop.services.ServiceHelper;
 import nwts.ru.autoshop.setting.BaseConstant;
 
-import static nwts.ru.autoshop.api.Api.AdminPageURL;
+import static nwts.ru.autoshop.network.api.Api.AdminPageURL;
 
 /**
+ * Адаптер показа всех категорий (корневой каталог категорий)
  * Created by пользователь on 17.03.2017.
  */
 
@@ -38,36 +35,31 @@ public class AdapterCategoryList extends RecyclerView.Adapter<AdapterCategoryLis
     private List<CategoryItem> categoryItems;
     private Context context;
     private Activity activity;
+    private AdapterClickListener mAdapterClickListener;
     private Drawable background;
-    FragmentManager fragmentManager;
-    private static final String TAG = BaseConstant.TAG_SUBCATEGORY_FRAGMENT;
 
-
-    public AdapterCategoryList(List<CategoryItem> categoryItems, Activity activity) {
+    public AdapterCategoryList(List<CategoryItem> categoryItems, Activity activity, AdapterClickListener mAdapterClickListener) {
         this.categoryItems = categoryItems;
         this.activity = activity;
-//        background = ResourcesCompat.getDrawable(context.getResources(),
-//                R.drawable.button_top_style_1, null);
+        this.mAdapterClickListener = mAdapterClickListener;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         context = parent.getContext();
-        final View view = LayoutInflater.from(parent.getContext())
-          //      .inflate(R.layout.list_item, parent, false);
+        final View v = LayoutInflater.from(parent.getContext())
         .inflate(R.layout.category_list_item, parent, false);
-        //
-        return new ViewHolder(view);
+        ViewHolder view = new ViewHolder(v, mAdapterClickListener);
+        return view;
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
         final CategoryItem categoryItem = categoryItems.get(position);
         holder.nameTextView.setText(categoryItem.getCategory_name());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             holder.itemView.setBackground(background);
         }
-        // holder.flowerImageView.setImageDrawable(context.getResources().getDrawable(R.drawable.cart));
         Log.d(BaseConstant.TAG,"onBindViewHolder:");
         Log.d(BaseConstant.TAG,"onBindViewHolder:categoryItem:name:"+categoryItem.getCategory_name());
         Log.d(BaseConstant.TAG,"onBindViewHolder:BASE_URL_SHOP_FULL + categoryItem.getCategory_image:"+AdminPageURL + categoryItem.getCategory_image());
@@ -83,19 +75,8 @@ public class AdapterCategoryList extends RecyclerView.Adapter<AdapterCategoryLis
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(BaseConstant.TAG,"onBindViewHolder:"+categoryItem.getCategory_name());
-                Log.d(BaseConstant.TAG,"onBindViewHolder:getCategory_ID:"+categoryItem.getCategory_ID());
-                //Передаем в ServiceHelper апрос на данные
-                Intent intentService = new Intent(context, ServiceHelper.class);
-         //       intentService.setAction(BaseConstant.ACTION_SERVICE_GET_PRODUCT_LIST);
-                intentService.setAction(BaseConstant.ACTION_SERVICE_GET_SUBCATEGORY_LIST);
-                intentService.putExtra(BaseConstant.API_GET_KEY,categoryItem.getCategory_ID());
-                context.startService(intentService);
                 TODOApplication.setSubCategory_Id(categoryItem.getCategory_ID()); //установка занчения
-         //       ProductCatalog productCatalog = new ProductCatalog();
-                SubCatalog subCatalog = new SubCatalog();
-                activity.getFragmentManager().beginTransaction().replace(R.id.content_frame,subCatalog,TAG)
-                        .commit();
+                holder.mAdapterClickListener.adapterOnClickListener(categoryItem.getCategory_ID());
             }
         });
     }
@@ -111,12 +92,12 @@ public class AdapterCategoryList extends RecyclerView.Adapter<AdapterCategoryLis
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView nameTextView;
         ImageView flowerImageView;
+        AdapterClickListener mAdapterClickListener;
 
-        public ViewHolder(View itemView) {
+        public ViewHolder(View itemView, AdapterClickListener adapterClickListener) {
             super(itemView);
             nameTextView = (TextView) itemView.findViewById(R.id.txtText);
             flowerImageView = (ImageView) itemView.findViewById(R.id.imgThumb);
-//            nameTextView = (TextView) itemView.findViewById(R.id.nameTextView);
-//            flowerImageView = (ImageView) itemView.findViewById(itemImageView);
+            mAdapterClickListener = adapterClickListener;
         }
     }}

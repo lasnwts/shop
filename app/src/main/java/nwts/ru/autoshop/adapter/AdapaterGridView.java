@@ -13,6 +13,10 @@ import android.widget.TextView;
 import nwts.ru.autoshop.R;
 import nwts.ru.autoshop.models.GridViewItem;
 
+/**
+ *  Алдптер показа основного меню магазина
+ */
+
 public class AdapaterGridView extends ArrayAdapter<GridViewItem> {
     Context mContext;
     int resourceId;

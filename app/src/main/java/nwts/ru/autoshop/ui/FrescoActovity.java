@@ -15,7 +15,7 @@ import nwts.ru.autoshop.setting.BaseConstant;
 import nwts.ru.autoshop.setting.PreferenceHelper;
 import uk.co.senab.photoview.PhotoView;
 
-import static nwts.ru.autoshop.api.Api.AdminPageURL;
+import static nwts.ru.autoshop.network.api.Api.AdminPageURL;
 
 public class FrescoActovity extends AppCompatActivity {
 

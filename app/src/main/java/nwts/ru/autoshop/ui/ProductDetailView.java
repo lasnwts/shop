@@ -1,13 +1,9 @@
 package nwts.ru.autoshop.ui;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.util.Log;
@@ -25,28 +21,24 @@ import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.TextSliderView;
 import com.daimajia.slider.library.Tricks.ViewPagerEx;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import nwts.ru.autoshop.R;
 import nwts.ru.autoshop.TODOApplication;
-import nwts.ru.autoshop.models.ProductDetail;
 import nwts.ru.autoshop.models.ProductDetailImage;
 import nwts.ru.autoshop.models.ProductDetailImages;
-import nwts.ru.autoshop.models.ProductDetails;
 import nwts.ru.autoshop.services.ServiceHelper;
 import nwts.ru.autoshop.setting.BaseConstant;
 import nwts.ru.autoshop.setting.PreferenceHelper;
 
-import static nwts.ru.autoshop.api.Api.AdminPageURL;
+import static nwts.ru.autoshop.network.api.Api.AdminPageURL;
 
 public class ProductDetailView extends AppCompatActivity
         implements BaseSliderView.OnSliderClickListener, ViewPagerEx.OnPageChangeListener {

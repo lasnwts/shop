@@ -2,7 +2,11 @@ package nwts.ru.autoshop;
 
 import android.app.Application;
 
+import org.greenrobot.greendao.database.Database;
+
 import nwts.ru.autoshop.databases.DBHelper;
+import nwts.ru.autoshop.models.DaoMaster;
+import nwts.ru.autoshop.models.DaoSession;
 
 /**
  * Created by пользователь on 13.03.2017.
@@ -13,6 +17,7 @@ public class TODOApplication extends Application {
     public boolean Flag_run_Splash = false;
     public DBHelper dbHelper;
     private static TODOApplication instance;
+    private static DaoSession sDaoSession;
     private static int category_Id;
     private static int subCategory_Id;
     private static int menu_Id;
@@ -26,6 +31,9 @@ public class TODOApplication extends Application {
     private static String detail_description;
     private static String detail_productName;
     private static int detail_product_Id;
+//    private static DaoSession sDaoSession;
+//    public DaoSession mDaoSession;
+
 
     public static double getDetail_price() {
         return TODOApplication.detail_price;
@@ -104,6 +112,10 @@ public class TODOApplication extends Application {
         super.onCreate();
         instance = this;
         dbHelper = new DBHelper(this);
+
+        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(this, "shop-db");
+        Database db = helper.getWritableDb();
+        sDaoSession = new DaoMaster(db).newSession();
     }
 
     public static TODOApplication getInstance(){
@@ -141,4 +153,9 @@ public class TODOApplication extends Application {
     public static int getSubCategory_Id() {
         return TODOApplication.subCategory_Id;
     }
+
+    public static DaoSession getDaoSession() {
+        return sDaoSession;
+    }
+
 }

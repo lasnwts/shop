@@ -1,14 +1,18 @@
-package nwts.ru.autoshop.fragment;
+package nwts.ru.autoshop.ui;
 
+import android.app.Activity;
+import android.app.TaskStackBuilder;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.lb.material_preferences_library.PreferenceActivity;
 import com.lb.material_preferences_library.custom_preferences.Preference;
 
 import nwts.ru.autoshop.R;
+import nwts.ru.autoshop.setting.BaseConstant;
 
 /**
  * Created by пользователь on 20.03.2017.
@@ -72,4 +76,5 @@ public class About extends PreferenceActivity
         }
         return true;
     }
+
 }
