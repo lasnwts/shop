@@ -24,6 +24,8 @@ public class DaoMaster extends AbstractDaoMaster {
         CategoryItemDao.createTable(db, ifNotExists);
         GetCacheDao.createTable(db, ifNotExists);
         ProductCategoryDao.createTable(db, ifNotExists);
+        ProductDetailImageDao.createTable(db, ifNotExists);
+        SubCategoryItemDao.createTable(db, ifNotExists);
     }
 
     /** Drops underlying database table using DAOs. */
@@ -31,6 +33,8 @@ public class DaoMaster extends AbstractDaoMaster {
         CategoryItemDao.dropTable(db, ifExists);
         GetCacheDao.dropTable(db, ifExists);
         ProductCategoryDao.dropTable(db, ifExists);
+        ProductDetailImageDao.dropTable(db, ifExists);
+        SubCategoryItemDao.dropTable(db, ifExists);
     }
 
     /**
@@ -52,6 +56,8 @@ public class DaoMaster extends AbstractDaoMaster {
         registerDaoClass(CategoryItemDao.class);
         registerDaoClass(GetCacheDao.class);
         registerDaoClass(ProductCategoryDao.class);
+        registerDaoClass(ProductDetailImageDao.class);
+        registerDaoClass(SubCategoryItemDao.class);
     }
 
     public DaoSession newSession() {

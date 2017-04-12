@@ -77,7 +77,6 @@ public class ProductDetailView extends AppCompatActivity
         setSupportActionBar(toolbar);
         if (null != toolbar) {
             toolbar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.primary_color)));
-//            toolbar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.header)));
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeButtonEnabled(true);
             getSupportActionBar().setTitle(getResources().getString(R.string.product_detail_name));
@@ -119,16 +118,6 @@ public class ProductDetailView extends AppCompatActivity
             mDemoSlider.setCustomAnimation(new DescriptionAnimation());
             mDemoSlider.setDuration(4000);
             mDemoSlider.addOnPageChangeListener(this);
-//            ListView l = (ListView) findViewById(R.id.transformers);
-//            l.setAdapter(new TransformerAdapter(this));
-//            l.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//                @Override
-//                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                    mDemoSlider.setPresetTransformer(((TextView) view).getText().toString());
-//                    Toast.makeText(getApplicationContext(), ((TextView) view).getText().toString(), Toast.LENGTH_SHORT).show();
-//                    Log.d("myLogs", "onItemClick:"+((TextView) view).getText().toString());
-//                }
-//            });
         }
     }
 
@@ -136,7 +125,7 @@ public class ProductDetailView extends AppCompatActivity
         Log.d(BaseConstant.TAG, "ProductDetailView:request:product_id:" + TODOApplication.getMenu_Id());
         Intent intentService = new Intent(this, ServiceHelper.class);
         intentService.setAction(BaseConstant.ACTION_SERVICE_GET_PRODUCT_DETAIL);
-        intentService.putExtra(BaseConstant.API_GET_KEY,TODOApplication.getMenu_Id());
+        intentService.putExtra(BaseConstant.API_GET_KEY,TODOApplication.getProductDetail_Id());
         startService(intentService);
     }
 
@@ -183,7 +172,9 @@ public class ProductDetailView extends AppCompatActivity
     public void onStart() {
         super.onStart();
         EventBus.getDefault().register(this);
+        request();
         mDemoSlider.startAutoCycle();
+
     }
 
     @Override
@@ -198,12 +189,6 @@ public class ProductDetailView extends AppCompatActivity
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventProductDetails(ProductDetailImages event) {
         prgLoading.setVisibility(View.INVISIBLE);
-        /*
-        (List<ProductDetail> productDetails, int errors,
-                          String menu_name, double price, String description, int category_ID, int subCategory_ID, int quantity, int product_Id
-         */
-//        productDetails = new ProductDetails(event.getProductDetails(),event.getErrors(),event.getMenu_name(),event.getPrice(),
-//                event.getDescription(),event.getCategory_ID(),event.getSubCategory_ID(),event.getQuantity(),event.getProduct_Id());
 
         productName.setText(TODOApplication.getDetail_productName());
         productDesc.setText(Html.fromHtml(TODOApplication.getDetail_description()));

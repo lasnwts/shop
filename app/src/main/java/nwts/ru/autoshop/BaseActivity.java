@@ -461,10 +461,11 @@ public class BaseActivity extends AppCompatActivity implements HomeMenu.OnLinkIt
      */
     @Override
     public void startProductDetailView(int item) {
-        Intent intentService = new Intent(this, ServiceHelper.class);
-        intentService.setAction(BaseConstant.ACTION_SERVICE_GET_PRODUCT_DETAIL);
-        intentService.putExtra(BaseConstant.API_GET_KEY, item);
-        this.startService(intentService);
+        TODOApplication.setProductDetail_Id(item);
+//        Intent intentService = new Intent(this, ServiceHelper.class);
+//        intentService.setAction(BaseConstant.ACTION_SERVICE_GET_PRODUCT_DETAIL);
+//        intentService.putExtra(BaseConstant.API_GET_KEY, item);
+//        this.startService(intentService);
         Intent intentProductDetail = new Intent(this, ProductDetailView.class);
         this.startActivity(intentProductDetail);
     }

@@ -23,6 +23,7 @@ public class TODOApplication extends Application {
     private static int menu_Id;
     private static String url_Image;
     private static int product_Id;
+    private static int productDetail_Id;
 
     private static double detail_price;
     private static int detail_quantity;
@@ -158,4 +159,11 @@ public class TODOApplication extends Application {
         return sDaoSession;
     }
 
+    public static int getProductDetail_Id() {
+        return TODOApplication.productDetail_Id;
+    }
+
+    public static void setProductDetail_Id(int productDetail_Id) {
+        TODOApplication.productDetail_Id = productDetail_Id;
+    }
 }
