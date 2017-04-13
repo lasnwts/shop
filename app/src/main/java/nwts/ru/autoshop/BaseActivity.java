@@ -329,10 +329,10 @@ public class BaseActivity extends AppCompatActivity implements HomeMenu.OnLinkIt
                 startActivity(intent);
                 break;
             case 20: //SubCategory подкаталог
-                Intent intentServiceSubCategory = new Intent(this, ServiceHelper.class);
-                intentServiceSubCategory.setAction(BaseConstant.ACTION_SERVICE_GET_SUBCATEGORY_LIST);
-                intentServiceSubCategory.putExtra(BaseConstant.API_GET_KEY, TODOApplication.getSubCategory_Id());
-                startService(intentServiceSubCategory);
+//                Intent intentServiceSubCategory = new Intent(this, ServiceHelper.class);
+//                intentServiceSubCategory.setAction(BaseConstant.ACTION_SERVICE_GET_SUBCATEGORY_LIST);
+//                intentServiceSubCategory.putExtra(BaseConstant.API_GET_KEY, TODOApplication.getSubCategory_Id());
+//                startService(intentServiceSubCategory);
                 SubCatalog subCatalog = new SubCatalog();
                 getFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
                         .replace(R.id.content_frame, subCatalog, BaseConstant.TAG_SUBCATEGORY_FRAGMENT).commit();
