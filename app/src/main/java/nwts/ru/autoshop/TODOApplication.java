@@ -24,6 +24,16 @@ public class TODOApplication extends Application {
     private static String url_Image;
     private static int product_Id;
     private static int productDetail_Id;
+    private static int productCatalog_Id;
+
+
+    public static int getProductCatalog_Id() {
+        return TODOApplication.productCatalog_Id;
+    }
+
+    public static void setProductCatalog_Id(int productCatalog_Id) {
+        TODOApplication.productCatalog_Id = productCatalog_Id;
+    }
 
     private static double detail_price;
     private static int detail_quantity;

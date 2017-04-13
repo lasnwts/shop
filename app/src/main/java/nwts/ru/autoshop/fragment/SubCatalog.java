@@ -55,11 +55,12 @@ public class SubCatalog extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activity_context = getActivity();
-        if (savedInstanceState != null) {
-            if (savedInstanceState.getBoolean(TAG)) {
-                getRequest();;
-            }
-        }
+        getRequest();;
+//        if (savedInstanceState != null) {
+//            if (savedInstanceState.getBoolean(TAG)) {
+//                getRequest();;
+//            }
+//        }
     }
 
     @Override

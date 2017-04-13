@@ -66,11 +66,12 @@ public class ProductCatalog extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activity_context = getActivity();
-        if (savedInstanceState != null) {
-            if (savedInstanceState.getBoolean(TAG)) {
-                request();;
-            }
-        }
+        request();;
+//        if (savedInstanceState != null) {
+//            if (savedInstanceState.getBoolean(TAG)) {
+//                request();;
+//            }
+//        }
     }
 
 

@@ -51,6 +51,7 @@ public class ServiceIntentGetData extends IntentService {
 
     public DBHelper dbHelper;
     List<CategoryItem> categoryItems;
+    private CategoryItems mCategoryItemsList;
     List<ProductCategory> productCategory;
     List<SubCategoryItem> subCategoryItems;
     private SubCategoryItem mSubCategoryItem;
@@ -67,14 +68,10 @@ public class ServiceIntentGetData extends IntentService {
 
     private long timeLoadedFromServer = 60000 * 3; //1 min
 
-    private final int FLOWERS_GET_NETWORK_SUCCES_0 = 0;
-    private final int FLOWERS_GET_NETWORK_SUCCES = 1;
-    private final int FLOWERS_GET_RESPONSE_ERROR = 2;
-    private final int FLOWERS_GET_FAILURE = 3;
-    private int results;
+//    private int results;
 
     private DaoSession mDaoSession;
-    protected DataManager mDataManager;
+//    protected DataManager mDataManager;
 
     public ServiceIntentGetData() {
         super("name");
@@ -107,6 +104,7 @@ public class ServiceIntentGetData extends IntentService {
             mCategoryItemDao = mDaoSession.getCategoryItemDao();
             mSubCategoryItemDao = mDaoSession.getSubCategoryItemDao();
             mProductDetailImageDao = mDaoSession.getProductDetailImageDao();
+
         }
     }
 
@@ -118,11 +116,12 @@ public class ServiceIntentGetData extends IntentService {
                 if (categoryItems != null) {
                     categoryItems.clear();
                 }
-                if (System.currentTimeMillis() - dbHelper.dbGetCategoryTimeRefresh() > timeLoadedFromServer && isOnline()) {
-                    getCategory();
-                } else {
-                    getCategoryFromDBHelper(100);
-                }
+                getCategory();
+//                if (System.currentTimeMillis() - dbHelper.dbGetCategoryTimeRefresh() > timeLoadedFromServer && isOnline()) {
+//                    getCategory();
+//                } else {
+//                    getCategoryFromDBHelper(100);
+//                }
             }
             if (intent.getStringExtra(BaseConstant.API_PAGE).equals(BaseConstant.ACTION_SERVICE_GET_SUBCATEGORY_LIST)) {
                 int key_id = intent.getIntExtra(BaseConstant.API_GET_KEY, 0);
@@ -177,24 +176,26 @@ public class ServiceIntentGetData extends IntentService {
                         categoryItems.addAll(response.body());
                         Log.d(BaseConstant.TAG, "ServiceIntentGetData:onResponse:Succesfull:categoryItems:size:" + categoryItems.size());
                         EventBus.getDefault().post(new CategoryItems(categoryItems, 200));
-                        try {
-                            dbHelper.dbDeleteCategory();
-                        } catch (SQLiteException ex) {
-                            Log.d(BaseConstant.TAG, "Error:Ощибка удаления категорий: dbHelper.dbDeleteCategory():" + ex.toString());
-                        }
-                        for (int i = 0; i < categoryItems.size(); i++) {
-                            try {
-                                dbHelper.putCategory(categoryItems.get(i).getCategory_ID(), categoryItems.get(i).getCategory_name(),
-                                        categoryItems.get(i).getCategory_image(), System.currentTimeMillis());
-                            } catch (SQLiteException ex) {
-                                Log.d(BaseConstant.TAG, "Error:Ощибка вставки информации в табл.категорий: dbHelper.putCategory():" + ex.toString());
-                            }
-                        }
-                        try {
-                            dbHelper.dbReadInLog();
-                        } catch (SQLiteException ex) {
-                            Log.d(BaseConstant.TAG, "Error:Ошибка чтения инф. из табл. категорий: dbHelper.dbReadInLog():" + ex.toString());
-                        }
+                        putCategory(categoryItems);
+                        putGetCache(call.request().toString());
+//                        try {
+//                            dbHelper.dbDeleteCategory();
+//                        } catch (SQLiteException ex) {
+//                            Log.d(BaseConstant.TAG, "Error:Ощибка удаления категорий: dbHelper.dbDeleteCategory():" + ex.toString());
+//                        }
+//                        for (int i = 0; i < categoryItems.size(); i++) {
+//                            try {
+//                                dbHelper.putCategory(categoryItems.get(i).getCategory_ID(), categoryItems.get(i).getCategory_name(),
+//                                        categoryItems.get(i).getCategory_image(), System.currentTimeMillis());
+//                            } catch (SQLiteException ex) {
+//                                Log.d(BaseConstant.TAG, "Error:Ощибка вставки информации в табл.категорий: dbHelper.putCategory():" + ex.toString());
+//                            }
+//                        }
+//                        try {
+//                            dbHelper.dbReadInLog();
+//                        } catch (SQLiteException ex) {
+//                            Log.d(BaseConstant.TAG, "Error:Ошибка чтения инф. из табл. категорий: dbHelper.dbReadInLog():" + ex.toString());
+//                        }
                         Log.d(BaseConstant.TAG, "Start:ServiceHelper:ServiceIntentGetData:response:size=" + categoryItems.size());
                         Log.d(BaseConstant.TAG, "Start:ServiceHelper:ServiceIntentGetData:response:tostinrg" + categoryItems.toString());
                         Log.d(BaseConstant.TAG, "Start:ServiceHelper:ServiceIntentGetData:response:tostinrg" + categoryItems.get(0).getCategory_name());
@@ -209,14 +210,16 @@ public class ServiceIntentGetData extends IntentService {
                             Log.d(BaseConstant.TAG, "ServiceIntentGetData:getCategory:response.errorBody()" + e.toString());
                         }
                         //Возвращаем данные из SQLite
-                        getCategoryFromDBHelper(400);
+//                        getCategoryFromDBHelper(400);
+                        getCategoryDao(response.code());
                     }
                 }
 
                 @Override
                 public void onFailure(Call<List<CategoryItem>> call, Throwable throwable) {
                     Log.d(BaseConstant.TAG, "ServiceIntentGetData:getCategory:onFailure:throwable:" + throwable.toString());
-                    getCategoryFromDBHelper(500);
+//                    getCategoryFromDBHelper(500);
+                    getCategoryDao(500);
                 }
             });
         } else {
@@ -228,6 +231,7 @@ public class ServiceIntentGetData extends IntentService {
 //            Log.d("MyLogs", "QueryBuilder<NewPerson> pers:" + mProducts.toString());
 //            productCategory = mProducts.list();
 //            EventBus.getDefault().post(new ProductCategoris(productCategory, 700));
+            getCategoryDao(700);
         }
     }
 
@@ -494,26 +498,6 @@ public class ServiceIntentGetData extends IntentService {
         EventBus.getDefault().post(new ProductCategoris(productCategory, errorsId));
     }
 
-    /**
-     * Вставка и удаление из кэша старых Категорий 1-го уровня
-     *
-     * @param mCategoryItem
-     */
-    private void putCategory(List<CategoryItem> mCategoryItem) {
-        if (mCategoryItem == null || mCategoryItem.size() < 1) {
-            return;
-        } else {
-            for (int i = 0; i < mCategoryItem.size(); i++) {
-                Query<CategoryItem> mCategoryQuery = mDaoSession.queryBuilder(CategoryItem.class)
-                        .where(CategoryItemDao.Properties.Category_ID.eq(mCategoryItem.get(i).getCategory_ID())).build();
-                List<CategoryItem> categoryItemList = mCategoryQuery.list();
-                if (categoryItemList != null && categoryItemList.size() != 0 && !categoryItemList.isEmpty()) {
-                    mCategoryItemDao.deleteInTx(categoryItemList);
-                }
-            }
-            mCategoryItemDao.insertOrReplaceInTx(mCategoryItem);
-        }
-    }
 
     /**
      * Вставка и удаление из кэша старых записей подкатегорий
@@ -553,9 +537,10 @@ public class ServiceIntentGetData extends IntentService {
 
     /**
      * Помещаем в таблицу рисунки и дополнительно описание продукта
+     *
      * @param productDetailImages
      */
-    private void putProductDetailImages( List<ProductDetailImage> productDetailImages){
+    private void putProductDetailImages(List<ProductDetailImage> productDetailImages) {
         if (productDetailImages == null && productDetailImages.size() < 1) {
             return;
         } else {
@@ -573,7 +558,8 @@ public class ServiceIntentGetData extends IntentService {
 
     /**
      * Чтание из кэша данных по деталировке продукта
-     * @param pId = Product_Id
+     *
+     * @param pId    = Product_Id
      * @param errors
      */
     private void getProductDetailImagesDao(int pId, int errors) {
@@ -581,6 +567,35 @@ public class ServiceIntentGetData extends IntentService {
                 .where(ProductDetailImageDao.Properties.Product_ID.eq(pId)).build();
         productDetailImages = mProductDetailImages.list();
         EventBus.getDefault().post(new ProductDetailImages(productDetailImages, errors));
+    }
+
+    /**
+     * Получем список основных категорий
+     *
+     * @param errors
+     */
+    private void getCategoryDao(int errors) {
+        Query<CategoryItem> mCategoryItem = mDaoSession.queryBuilder(CategoryItem.class).build();
+        categoryItems = mCategoryItem.list();
+        EventBus.getDefault().post(new CategoryItems(categoryItems, errors));
+    }
+
+    /**
+     * Вставка и удаление из кэша старых Категорий 1-го уровня
+     *
+     * @param mCategoryItem
+     */
+    private void putCategory(List<CategoryItem> mCategoryItem) {
+        if (mCategoryItem == null || mCategoryItem.size() < 1) {
+            return;
+        } else {
+            Query<CategoryItem> mCategoryQuery = mDaoSession.queryBuilder(CategoryItem.class).build();
+            List<CategoryItem> categoryItemList = mCategoryQuery.list();
+            if (categoryItemList != null && categoryItemList.size() != 0 && !categoryItemList.isEmpty()) {
+                mCategoryItemDao.deleteInTx(categoryItemList);
+            }
+            mCategoryItemDao.insertOrReplaceInTx(mCategoryItem);
+        }
     }
 
 }

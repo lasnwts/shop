@@ -427,10 +427,11 @@ public class BaseActivity extends AppCompatActivity implements HomeMenu.OnLinkIt
     @Override
     public void startSubCategory(int item) {
         //Передаем в ServiceHelper апрос на данные
-        Intent intentService = new Intent(this, ServiceHelper.class);
-        intentService.setAction(BaseConstant.ACTION_SERVICE_GET_SUBCATEGORY_LIST);
-        intentService.putExtra(BaseConstant.API_GET_KEY, item);
-        startService(intentService);
+        TODOApplication.setSubCategory_Id(item);;
+//        Intent intentService = new Intent(this, ServiceHelper.class);
+//        intentService.setAction(BaseConstant.ACTION_SERVICE_GET_SUBCATEGORY_LIST);
+//        intentService.putExtra(BaseConstant.API_GET_KEY, item);
+//        startService(intentService);
         SubCatalog subCatalog = new SubCatalog();
         getFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
                 .replace(R.id.content_frame, subCatalog, BaseConstant.TAG_SUBCATEGORY_FRAGMENT)
@@ -444,10 +445,11 @@ public class BaseActivity extends AppCompatActivity implements HomeMenu.OnLinkIt
      */
     @Override
     public void startProductCatalog(int item) {
-        Intent intentService = new Intent(this, ServiceHelper.class);
-        intentService.setAction(BaseConstant.ACTION_SERVICE_GET_PRODUCT_LIST);
-        intentService.putExtra(BaseConstant.API_GET_KEY, item);
-        this.startService(intentService);
+        TODOApplication.setProductCatalog_Id(item);
+//        Intent intentService = new Intent(this, ServiceHelper.class);
+//        intentService.setAction(BaseConstant.ACTION_SERVICE_GET_PRODUCT_LIST);
+//        intentService.putExtra(BaseConstant.API_GET_KEY, item);
+//        this.startService(intentService);
         ProductCatalog productCatalog = new ProductCatalog();
         getFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
                 .replace(R.id.content_frame, productCatalog,
