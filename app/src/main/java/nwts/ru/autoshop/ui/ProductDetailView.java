@@ -38,7 +38,7 @@ import nwts.ru.autoshop.services.ServiceHelper;
 import nwts.ru.autoshop.setting.BaseConstant;
 import nwts.ru.autoshop.setting.PreferenceHelper;
 
-import static nwts.ru.autoshop.network.api.Api.AdminPageURL;
+import static nwts.ru.autoshop.network.api.Api.GET_IMAGES;
 
 public class ProductDetailView extends AppCompatActivity
         implements BaseSliderView.OnSliderClickListener, ViewPagerEx.OnPageChangeListener {
@@ -67,7 +67,7 @@ public class ProductDetailView extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 Intent intentFresco = new Intent(getApplicationContext(), FrescoActovity.class);
-                intentFresco.putExtra(BaseConstant.URL_IMAGE_DOWNLOADED,TODOApplication.getUrl_Image());
+                intentFresco.putExtra(BaseConstant.URL_IMAGE_DOWNLOADED, TODOApplication.getUrl_Image());
                 startActivity(intentFresco);
             }
         });
@@ -91,6 +91,7 @@ public class ProductDetailView extends AppCompatActivity
         //Slider
         mDemoSlider = (SliderLayout) findViewById(R.id.slider);
 
+/*
         HashMap<String, String> url_maps = new HashMap<String, String>();
         HashMap<String, Integer> file_maps = new HashMap<String, Integer>();
         file_maps.put("Hannibal", R.drawable.hannibal);
@@ -119,13 +120,20 @@ public class ProductDetailView extends AppCompatActivity
             mDemoSlider.setDuration(4000);
             mDemoSlider.addOnPageChangeListener(this);
         }
+*/
+
+        mDemoSlider.setPresetTransformer(SliderLayout.Transformer.Accordion);
+        mDemoSlider.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
+        mDemoSlider.setCustomAnimation(new DescriptionAnimation());
+        mDemoSlider.setDuration(4000);
+        mDemoSlider.addOnPageChangeListener(this);
     }
 
     private void request() {
         Log.d(BaseConstant.TAG, "ProductDetailView:request:product_id:" + TODOApplication.getMenu_Id());
         Intent intentService = new Intent(this, ServiceHelper.class);
         intentService.setAction(BaseConstant.ACTION_SERVICE_GET_PRODUCT_DETAIL);
-        intentService.putExtra(BaseConstant.API_GET_KEY,TODOApplication.getProductDetail_Id());
+        intentService.putExtra(BaseConstant.API_GET_KEY, TODOApplication.getProductDetail_Id());
         startService(intentService);
     }
 
@@ -138,7 +146,7 @@ public class ProductDetailView extends AppCompatActivity
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        overridePendingTransition (R.anim.open_main, R.anim.close_next);
+        overridePendingTransition(R.anim.open_main, R.anim.close_next);
     }
 
     @Override
@@ -164,7 +172,7 @@ public class ProductDetailView extends AppCompatActivity
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putBoolean(TAG, true);
-        outState.putString(URL_KEY_STATE,TODOApplication.getUrl_Image());
+        outState.putString(URL_KEY_STATE, TODOApplication.getUrl_Image());
         super.onSaveInstanceState(outState);
     }
 
@@ -192,20 +200,20 @@ public class ProductDetailView extends AppCompatActivity
 
         productName.setText(TODOApplication.getDetail_productName());
         productDesc.setText(Html.fromHtml(TODOApplication.getDetail_description()));
-        if ( TODOApplication.getUrl_Image() != null){
-            getImageRequest( TODOApplication.getUrl_Image());
+        if (TODOApplication.getUrl_Image() != null) {
+            getImageRequest(TODOApplication.getUrl_Image());
         }
         productDetailImageList.addAll(event.getProductDetailImages());
-        Log.d(BaseConstant.TAG,"ProductDetailView:onEventProductDetails:run");
-        Log.d(BaseConstant.TAG,"ProductDetailView:onEventProductDetails:productDetailImageList.size():"+productDetailImageList.size());
-        if (productDetailImageList.size()>0){
-            Log.d(BaseConstant.TAG,"ProductDetailView:onEventProductDetails:productDetailImageList.size()>0");
-            for (int i=0;i<productDetailImageList.size();i++){
-                Log.d(BaseConstant.TAG,"ProductDetailView:onEventProductDetails:productDetailImageList.size(i)="+i);
-                if ( TODOApplication.getUrl_Image() == null){
+        Log.d(BaseConstant.TAG, "ProductDetailView:onEventProductDetails:run");
+        Log.d(BaseConstant.TAG, "ProductDetailView:onEventProductDetails:productDetailImageList.size():" + productDetailImageList.size());
+        if (productDetailImageList.size() > 0) {
+            Log.d(BaseConstant.TAG, "ProductDetailView:onEventProductDetails:productDetailImageList.size()>0");
+            for (int i = 0; i < productDetailImageList.size(); i++) {
+                Log.d(BaseConstant.TAG, "ProductDetailView:onEventProductDetails:productDetailImageList.size(i)=" + i);
+                if (TODOApplication.getUrl_Image() == null) {
                     getImageRequest(productDetailImageList.get(i).getMenu_image());
                 }
-                Log.d(BaseConstant.TAG,"ProductDetailView:onEventProductDetails:"+productDetailImageList.get(i).getMenu_image());
+                Log.d(BaseConstant.TAG, "ProductDetailView:onEventProductDetails:" + productDetailImageList.get(i).getMenu_image());
                 /*
                 1
                  */
@@ -213,8 +221,9 @@ public class ProductDetailView extends AppCompatActivity
                 // initialize a SliderLayout
                 textSliderView
                         .description("My Image View")
-                        .image(AdminPageURL + productDetailImageList.get(i).getMenu_image())
-                        .setScaleType(BaseSliderView.ScaleType.Fit)
+                        .image(GET_IMAGES + productDetailImageList.get(i).getMenu_image())
+                        .setScaleType(BaseSliderView.ScaleType.CenterInside)
+//                        .setScaleType(BaseSliderView.ScaleType.Fit)
                         .error(R.drawable.error_loading)
                         .setOnSliderClickListener(this);
 
@@ -231,13 +240,14 @@ public class ProductDetailView extends AppCompatActivity
         }
     }
 
-    private void getImageRequest(String url_image){
+    private void getImageRequest(String url_image) {
         Picasso mPicasso = Picasso.with(this);
         mPicasso.setIndicatorsEnabled(true);
         mPicasso.setLoggingEnabled(true);
-        mPicasso.load(AdminPageURL + url_image)
-                .resize(200, 150)
-                .centerCrop()
+        mPicasso.load(GET_IMAGES + url_image)
+                .resize(300, 300)
+              //  .centerCrop()
+                .centerInside()
                 .error(R.drawable.error_load_image)
                 .into(productImage);
     }
@@ -245,9 +255,9 @@ public class ProductDetailView extends AppCompatActivity
     @Override
     public void onSliderClick(BaseSliderView slider) {
         Toast.makeText(this, slider.getBundle().get("extra") + "", Toast.LENGTH_SHORT).show();
-        Log.d("myLogs", "onSliderClick:"+slider.getBundle().get("extra"));
-        Log.d("myLogs", "onSliderClick:url:"+slider.getUrl()); //.image().getUrl());
-        Log.d("myLogs", "onSliderClick:url2:"+slider.getDescription());
+        Log.d("myLogs", "onSliderClick:" + slider.getBundle().get("extra"));
+        Log.d("myLogs", "onSliderClick:url:" + slider.getUrl()); //.image().getUrl());
+        Log.d("myLogs", "onSliderClick:url2:" + slider.getDescription());
         mDemoSlider.setDuration(4000);
         if (slider.getUrl() != null) {
             startFreescoActivityGallery(slider.getUrl());
@@ -255,8 +265,8 @@ public class ProductDetailView extends AppCompatActivity
 //        if (slider.getUrl() != null) {
 
 
-            //       loadImage(getApplicationContext(),slider.getUrl());
-            //       Log.d("myLogs","TODOApplication:Uri:"+TODOApplication.getBmpUri().toString());
+        //       loadImage(getApplicationContext(),slider.getUrl());
+        //       Log.d("myLogs","TODOApplication:Uri:"+TODOApplication.getBmpUri().toString());
 //            Intent intent = new Intent(this, .class);
 //            intent.putExtra("url_images",slider.getUrl());
 //            startActivity(intent);
@@ -277,15 +287,15 @@ public class ProductDetailView extends AppCompatActivity
 
     }
 
-    private void startFreescoActivity(){
+    private void startFreescoActivity() {
         Intent intentFresco = new Intent(getApplicationContext(), FrescoActovity.class);
-        intentFresco.putExtra(BaseConstant.URL_IMAGE_DOWNLOADED,TODOApplication.getUrl_Image());
+        intentFresco.putExtra(BaseConstant.URL_IMAGE_DOWNLOADED, TODOApplication.getUrl_Image());
         startActivity(intentFresco);
     }
 
-    private void startFreescoActivityGallery(String url){
+    private void startFreescoActivityGallery(String url) {
         Intent intentFresco = new Intent(getApplicationContext(), FrescoActovity.class);
-        intentFresco.putExtra(BaseConstant.URL_IMAGE_DOWNLOADED,url);
+        intentFresco.putExtra(BaseConstant.URL_IMAGE_DOWNLOADED, url);
         startActivity(intentFresco);
     }
 

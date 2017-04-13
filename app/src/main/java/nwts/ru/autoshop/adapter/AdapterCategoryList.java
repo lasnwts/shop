@@ -22,7 +22,7 @@ import nwts.ru.autoshop.adapter.interfaces.AdapterClickListener;
 import nwts.ru.autoshop.models.CategoryItem;
 import nwts.ru.autoshop.setting.BaseConstant;
 
-import static nwts.ru.autoshop.network.api.Api.AdminPageURL;
+import static nwts.ru.autoshop.network.api.Api.GET_IMAGES;
 
 /**
  * Адаптер показа всех категорий (корневой каталог категорий)
@@ -31,7 +31,7 @@ import static nwts.ru.autoshop.network.api.Api.AdminPageURL;
 
 public class AdapterCategoryList extends RecyclerView.Adapter<AdapterCategoryList.ViewHolder>{
 
-    private final static String PHOTO_URL = AdminPageURL;
+    private final static String PHOTO_URL = GET_IMAGES;
     private List<CategoryItem> categoryItems;
     private Context context;
     private Activity activity;
@@ -62,11 +62,11 @@ public class AdapterCategoryList extends RecyclerView.Adapter<AdapterCategoryLis
         }
         Log.d(BaseConstant.TAG,"onBindViewHolder:");
         Log.d(BaseConstant.TAG,"onBindViewHolder:categoryItem:name:"+categoryItem.getCategory_name());
-        Log.d(BaseConstant.TAG,"onBindViewHolder:BASE_URL_SHOP_FULL + categoryItem.getCategory_image:"+AdminPageURL + categoryItem.getCategory_image());
+        Log.d(BaseConstant.TAG,"onBindViewHolder:BASE_URL_SHOP_FULL + categoryItem.getCategory_image:"+ GET_IMAGES + categoryItem.getCategory_image());
         Picasso mPicasso = Picasso.with(context);
         mPicasso.setIndicatorsEnabled(true);
         mPicasso.setLoggingEnabled(true);
-        mPicasso.load(AdminPageURL + categoryItem.getCategory_image())
+        mPicasso.load(GET_IMAGES + categoryItem.getCategory_image())
                 .resize(200, 150)
                 .centerCrop()
                 .error(R.drawable.error_load_image)

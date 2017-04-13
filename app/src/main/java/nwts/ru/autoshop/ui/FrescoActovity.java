@@ -15,7 +15,7 @@ import nwts.ru.autoshop.setting.BaseConstant;
 import nwts.ru.autoshop.setting.PreferenceHelper;
 import uk.co.senab.photoview.PhotoView;
 
-import static nwts.ru.autoshop.network.api.Api.AdminPageURL;
+import static nwts.ru.autoshop.network.api.Api.GET_IMAGES;
 
 public class FrescoActovity extends AppCompatActivity {
 
@@ -49,7 +49,7 @@ public class FrescoActovity extends AppCompatActivity {
 
         String Url = getIntent().getStringExtra(BaseConstant.URL_IMAGE_DOWNLOADED);
         if (!Url.matches("http:(.*)")) {
-            Url = AdminPageURL + Url;
+            Url = GET_IMAGES + Url;
         }
 
         PhotoView photoView = (PhotoView) findViewById(R.id.iv_photo);

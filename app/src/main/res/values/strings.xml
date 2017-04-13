@@ -69,4 +69,5 @@
     <string name="toolbar_main_product_catalog">Список товаров</string>
     <string name="price_name">Цена</string>
     <string name="quantity_name">Количество</string>
+    <string name="preferences_title">Настройки</string>
 </resources>

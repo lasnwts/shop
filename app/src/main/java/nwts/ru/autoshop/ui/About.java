@@ -1,18 +1,15 @@
 package nwts.ru.autoshop.ui;
 
-import android.app.Activity;
-import android.app.TaskStackBuilder;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
-
+import android.view.MenuItem;
 import com.lb.material_preferences_library.PreferenceActivity;
 import com.lb.material_preferences_library.custom_preferences.Preference;
 
 import nwts.ru.autoshop.R;
-import nwts.ru.autoshop.setting.BaseConstant;
+
 
 /**
  * Created by пользователь on 20.03.2017.
@@ -24,7 +21,6 @@ public class About extends PreferenceActivity
     //    //builds
     private int versionBuild = 0;
     private String versionName = "";
-
 
     @Override
     protected int getPreferencesXmlId() {
@@ -49,6 +45,7 @@ public class About extends PreferenceActivity
 
         prefShareKey.setOnPreferenceClickListener(this);
         prefRateReviewKey.setOnPreferenceClickListener(this);
+
     }
 
     @Override
@@ -57,6 +54,16 @@ public class About extends PreferenceActivity
         overridePendingTransition (R.anim.open_main, R.anim.close_next);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
     @Override
     public boolean onPreferenceClick(android.preference.Preference preference) {
@@ -76,5 +83,6 @@ public class About extends PreferenceActivity
         }
         return true;
     }
+
 
 }

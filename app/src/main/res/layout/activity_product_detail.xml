@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".ui.ProductDetailView">
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:paddingBottom="@dimen/padding_small"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:paddingTop="@dimen/activity_vertical_margin"
+                tools:context=".ui.ProductDetailView">
 
     <include layout="@layout/toolbar" />
 
@@ -21,13 +22,17 @@
         android:id="@+id/cardViewProductDetail"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        app:cardCornerRadius="16dp"
         android:layout_below="@+id/toolbar">
 
         <RelativeLayout
             android:id="@+id/rellayout_product_activity"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="16dp">
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_vertical_margin"
+            >
 
             <LinearLayout
                 android:id="@+id/linlayout_product_detail"
@@ -74,7 +79,7 @@
                 android:id="@+id/linlayout_product_detail3"
                 android:layout_centerHorizontal="true"
                 android:layout_alignParentBottom="true"
-                android:paddingBottom="@dimen/activity_vertical_margin"
+                android:paddingBottom="@dimen/padding_medium"
                 android:layout_below="@id/linlayout_product_detail2"
                 android:layout_width="220dp"
                 android:layout_height="wrap_content"
@@ -88,9 +93,10 @@
 
                     <com.daimajia.slider.library.SliderLayout
                         android:id="@+id/slider"
-                        android:layout_width="match_parent"
-                        android:layout_height="100dp"
+                        android:layout_width="150dp"
+                        android:layout_height="120dp"
                         android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
                         custom:auto_cycle="true"
                         custom:indicator_visibility="visible"
                         custom:pager_animation="Accordion"
@@ -102,7 +108,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentBottom="true"
                         android:layout_centerHorizontal="true"
-                        android:layout_marginBottom="20dp"
+                        android:layout_marginBottom="@dimen/padding_medium"
                         android:gravity="center"
                         custom:selected_color="#0095BF"
                         custom:selected_drawable="@drawable/bird"
@@ -122,7 +128,7 @@
                         style="@style/AndroidImageSlider_Corner_Oval_Orange"
                         android:layout_alignParentBottom="true"
                         android:layout_centerHorizontal="true"
-                        android:layout_marginBottom="20dp" />
+                        android:layout_marginBottom="@dimen/padding_medium" />
 
                     <ListView
                         android:id="@+id/transformers"

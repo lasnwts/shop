@@ -4,7 +4,7 @@ import android.app.Application;
 
 import org.greenrobot.greendao.database.Database;
 
-import nwts.ru.autoshop.databases.DBHelper;
+
 import nwts.ru.autoshop.models.DaoMaster;
 import nwts.ru.autoshop.models.DaoSession;
 
@@ -15,7 +15,6 @@ import nwts.ru.autoshop.models.DaoSession;
 public class TODOApplication extends Application {
 
     public boolean Flag_run_Splash = false;
-    public DBHelper dbHelper;
     private static TODOApplication instance;
     private static DaoSession sDaoSession;
     private static int category_Id;
@@ -26,6 +25,13 @@ public class TODOApplication extends Application {
     private static int productDetail_Id;
     private static int productCatalog_Id;
 
+    private static double detail_price;
+    private static int detail_quantity;
+    private static int detail_subcategory_Id;
+    private static int detail_category_Id;
+    private static String detail_description;
+    private static String detail_productName;
+    private static int detail_product_Id;
 
     public static int getProductCatalog_Id() {
         return TODOApplication.productCatalog_Id;
@@ -35,15 +41,7 @@ public class TODOApplication extends Application {
         TODOApplication.productCatalog_Id = productCatalog_Id;
     }
 
-    private static double detail_price;
-    private static int detail_quantity;
-    private static int detail_subcategory_Id;
-    private static int detail_category_Id;
-    private static String detail_description;
-    private static String detail_productName;
-    private static int detail_product_Id;
-//    private static DaoSession sDaoSession;
-//    public DaoSession mDaoSession;
+
 
 
     public static double getDetail_price() {
@@ -122,7 +120,6 @@ public class TODOApplication extends Application {
     public void onCreate() {
         super.onCreate();
         instance = this;
-        dbHelper = new DBHelper(this);
 
         DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(this, "shop-db");
         Database db = helper.getWritableDb();

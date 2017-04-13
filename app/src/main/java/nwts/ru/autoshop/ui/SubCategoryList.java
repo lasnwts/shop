@@ -7,7 +7,6 @@ import android.os.Bundle;
 
 import nwts.ru.autoshop.R;
 import nwts.ru.autoshop.TODOApplication;
-import nwts.ru.autoshop.databases.DBHelper;
 import nwts.ru.autoshop.fragment.Category;
 import nwts.ru.autoshop.fragment.SubCatalog;
 import nwts.ru.autoshop.setting.PreferenceHelper;
@@ -16,7 +15,6 @@ public class SubCategoryList extends AppCompatActivity {
 
     FragmentManager fragmentManager;
     PreferenceHelper preferenceHelper;
-    public DBHelper dbHelper;
     private Application application;
 
 
@@ -28,10 +26,7 @@ public class SubCategoryList extends AppCompatActivity {
         preferenceHelper = PreferenceHelper.getInstance();
         fragmentManager = getFragmentManager();
         application = getApplication();
-        dbHelper = TODOApplication.getInstance().dbHelper;
-        if (dbHelper != null) {
-            dbHelper.dbReadInLog();
-        }
+
         getFragmentSubCategory();
     }
 

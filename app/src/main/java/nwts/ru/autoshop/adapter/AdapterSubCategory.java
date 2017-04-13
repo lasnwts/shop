@@ -20,7 +20,7 @@ import nwts.ru.autoshop.TODOApplication;
 import nwts.ru.autoshop.adapter.interfaces.AdapterClickListener;
 import nwts.ru.autoshop.models.SubCategoryItem;
 
-import static nwts.ru.autoshop.network.api.Api.AdminPageURL;
+import static nwts.ru.autoshop.network.api.Api.GET_IMAGES;
 
 /**
  *  Адаптер показа подкатегорий товаров (второй уровень)
@@ -60,7 +60,7 @@ public class AdapterSubCategory extends RecyclerView.Adapter<AdapterSubCategory.
         Picasso mPicasso = Picasso.with(context);
         mPicasso.setIndicatorsEnabled(true);
         mPicasso.setLoggingEnabled(true);
-        mPicasso.load(AdminPageURL + subCategoryItem.getSubCategory_image())
+        mPicasso.load(GET_IMAGES + subCategoryItem.getSubCategory_image())
                 .resize(200, 150)
                 .centerCrop()
                 .error(R.drawable.error_load_image)

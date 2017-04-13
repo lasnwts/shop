@@ -25,7 +25,7 @@ import nwts.ru.autoshop.adapter.interfaces.AdapterClickListener;
 import nwts.ru.autoshop.models.ProductCategory;
 
 import static android.content.ContentValues.TAG;
-import static nwts.ru.autoshop.network.api.Api.AdminPageURL;
+import static nwts.ru.autoshop.network.api.Api.GET_IMAGES;
 
 /**
  *  Адаптер показа товраров в подкатегории (3-ий уровень)
@@ -69,7 +69,7 @@ public class AdapterProductCatalog extends RecyclerView.Adapter<AdapterProductCa
         }
 
         DataManager.getInstance().getPicasso()
-                .load(AdminPageURL + productCategory.getMenu_image())
+                .load(GET_IMAGES + productCategory.getMenu_image())
                 //.fit()
                 .centerCrop()
                 .resize(200, 150)
@@ -85,7 +85,7 @@ public class AdapterProductCatalog extends RecyclerView.Adapter<AdapterProductCa
                             @Override
                             public void onError() {
                                 DataManager.getInstance().getPicasso()
-                                        .load(AdminPageURL + productCategory.getMenu_image())
+                                        .load(GET_IMAGES + productCategory.getMenu_image())
                                       //  .fit()
                                         .centerCrop()
                                         .resize(200, 150)
@@ -111,7 +111,7 @@ public class AdapterProductCatalog extends RecyclerView.Adapter<AdapterProductCa
         Picasso mPicasso = Picasso.with(context);
         mPicasso.setIndicatorsEnabled(true);
         mPicasso.setLoggingEnabled(true);
-        mPicasso.load(AdminPageURL + productCategory.getMenu_image())
+        mPicasso.load(GET_IMAGES + productCategory.getMenu_image())
                 .resize(200, 150)
                 .centerCrop()
                 .error(R.drawable.error_load_image)

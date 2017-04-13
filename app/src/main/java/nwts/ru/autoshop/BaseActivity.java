@@ -25,7 +25,6 @@ import android.view.View;
 
 import org.greenrobot.eventbus.EventBus;
 
-import nwts.ru.autoshop.databases.DBHelper;
 import nwts.ru.autoshop.ui.About;
 import nwts.ru.autoshop.fragment.HomeMenu;
 import nwts.ru.autoshop.fragment.ProductCatalog;
@@ -50,8 +49,6 @@ public class BaseActivity extends AppCompatActivity implements HomeMenu.OnLinkIt
     FragmentManager fragmentManager;
     PreferenceHelper preferenceHelper;
     private Intent intentService;
-    public DBHelper dbHelper;
-    private EventBus bus = EventBus.getDefault();
     private Application application;
 
     private Drawer drawer = null;
@@ -77,13 +74,6 @@ public class BaseActivity extends AppCompatActivity implements HomeMenu.OnLinkIt
         preferenceHelper = PreferenceHelper.getInstance();
         fragmentManager = getFragmentManager();
         application = getApplication();
-
-        //Works Databases
-        // dbHelper = new DBHelper(this);
-        dbHelper = TODOApplication.getInstance().dbHelper;
-        if (dbHelper != null) {
-            dbHelper.dbReadInLog();
-        }
 
         //test***
         startServiceHelper();
