@@ -83,11 +83,11 @@ public class ProductDetailView extends AppCompatActivity
             toolbar.inflateMenu(R.menu.menu_base);
         }
 
-        if (savedInstanceState != null) {
-            if (savedInstanceState.getBoolean(TAG)) {
+/*        if (savedInstanceState == null) {
+//            if (savedInstanceState.getBoolean(TAG)) {
                 request();
-            }
-        }
+//            }
+        }*/
         //Slider
         mDemoSlider = (SliderLayout) findViewById(R.id.slider);
 
@@ -182,7 +182,6 @@ public class ProductDetailView extends AppCompatActivity
         EventBus.getDefault().register(this);
         request();
         mDemoSlider.startAutoCycle();
-
     }
 
     @Override
@@ -207,6 +206,8 @@ public class ProductDetailView extends AppCompatActivity
         Log.d(BaseConstant.TAG, "ProductDetailView:onEventProductDetails:run");
         Log.d(BaseConstant.TAG, "ProductDetailView:onEventProductDetails:productDetailImageList.size():" + productDetailImageList.size());
         if (productDetailImageList.size() > 0) {
+            mDemoSlider.removeAllSliders();
+//            mDemoSlider.removeAllViews();
             Log.d(BaseConstant.TAG, "ProductDetailView:onEventProductDetails:productDetailImageList.size()>0");
             for (int i = 0; i < productDetailImageList.size(); i++) {
                 Log.d(BaseConstant.TAG, "ProductDetailView:onEventProductDetails:productDetailImageList.size(i)=" + i);

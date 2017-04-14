@@ -12,43 +12,33 @@
     tools:context=".ui.ProductDetailView">
 
     <RelativeLayout
-        android:background="@android:color/black"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
+        android:layout_height="match_parent"
+        android:background="@android:color/black">
 
         <include layout="@layout/toolbar"/>
-
-        <ProgressBar
-            android:id="@+id/prgLoadProductDetail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            />
-
 
         <android.support.v7.widget.CardView
             android:id="@+id/cardViewProductDetail"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/toolbar"
+            android:background="@android:color/white"
+            app:cardBackgroundColor="@color/cardview_light_background"
             app:cardCornerRadius="16dp">
 
             <RelativeLayout
                 android:id="@+id/rellayout_product_activity"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin"
-                android:paddingTop="@dimen/activity_vertical_margin"
-                >
+                android:background="@android:color/white"
+                tools:layout_margin="@dimen/activity_horizontal_margin">
 
                 <LinearLayout
                     android:id="@+id/linlayout_product_detail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
-                    android:background="@android:color/white"
                     android:orientation="horizontal">
 
                     <ImageView
@@ -64,7 +54,7 @@
                         android:id="@+id/productDetailNaem"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/dark_primary_color"
+                        android:textColor="@android:color/black"
                         android:textStyle="bold"/>
 
                 </LinearLayout>
@@ -81,7 +71,7 @@
                         android:id="@+id/productDetailShortDesc"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/primary_text"/>
+                        android:textColor="@android:color/black"/>
 
                 </LinearLayout>
 
@@ -100,6 +90,14 @@
                                     android:layout_height="wrap_content"
                                     android:layout_below="@+id/rellayout_product_activity"
                                     android:layout_gravity="bottom">
+
+                        <ProgressBar
+                            android:id="@+id/prgLoadProductDetail"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            />
+
 
                         <com.daimajia.slider.library.SliderLayout
                             android:id="@+id/slider"
@@ -154,6 +152,7 @@
             </RelativeLayout>
 
         </android.support.v7.widget.CardView>
+
     </RelativeLayout>
 
 </android.support.design.widget.CoordinatorLayout>

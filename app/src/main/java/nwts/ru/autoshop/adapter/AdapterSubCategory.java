@@ -62,7 +62,8 @@ public class AdapterSubCategory extends RecyclerView.Adapter<AdapterSubCategory.
         mPicasso.setLoggingEnabled(true);
         mPicasso.load(GET_IMAGES + subCategoryItem.getSubCategory_image())
                 .resize(200, 150)
-                .centerCrop()
+//                .centerCrop()
+                .centerInside()
                 .error(R.drawable.error_load_image)
                 .into(holder.flowerImageView);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
