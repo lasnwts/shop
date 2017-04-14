@@ -60,7 +60,7 @@ public class FrescoActovity extends AppCompatActivity {
         mPicasso.load(Url)
 //                .resize(300, 250)
 //                .centerCrop()
-                .error(R.drawable.error_loading)
+                .error(R.drawable.error_fresco404)
                 .into(photoView);
         prgLoading.setVisibility(View.INVISIBLE);
     }

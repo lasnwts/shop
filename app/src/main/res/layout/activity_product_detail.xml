@@ -98,7 +98,6 @@
                             android:layout_centerInParent="true"
                             />
 
-
                         <com.daimajia.slider.library.SliderLayout
                             android:id="@+id/slider"
                             android:layout_width="150dp"

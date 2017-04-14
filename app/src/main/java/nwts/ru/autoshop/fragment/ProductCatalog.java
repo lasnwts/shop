@@ -121,7 +121,12 @@ public class ProductCatalog extends Fragment {
     public void onEventCategoryList(ProductCategoris event) {
         productCategoryList.addAll(event.getProductCategories());
         prgLoading.setVisibility(View.INVISIBLE);
-        recyclerView.getAdapter().notifyDataSetChanged();
+        if (event.getProductCategories().isEmpty() || event.getProductCategories().size() < 1) {
+            txtAlert.setVisibility(View.VISIBLE);
+        } else {
+            txtAlert.setVisibility(View.INVISIBLE);
+            recyclerView.getAdapter().notifyDataSetChanged();
+        }
     }
 
     @Override

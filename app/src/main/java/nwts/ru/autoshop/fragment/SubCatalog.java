@@ -122,8 +122,14 @@ public class SubCatalog extends Fragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventSubCategoryList(SubCategoryItems event) {
         subCategoryItems.addAll(event.getSubCategoryItems());
-        prgLoading.setVisibility(View.INVISIBLE);
-        recyclerView.getAdapter().notifyDataSetChanged();
+        if (event.getSubCategoryItems().isEmpty() || event.getSubCategoryItems().size() < 1){
+            txtAlert.setVisibility(View.VISIBLE);
+            prgLoading.setVisibility(View.INVISIBLE);
+        } else {
+            prgLoading.setVisibility(View.INVISIBLE);
+            txtAlert.setVisibility(View.INVISIBLE);
+            recyclerView.getAdapter().notifyDataSetChanged();
+        }
     }
 
     public interface iSubCatalog{

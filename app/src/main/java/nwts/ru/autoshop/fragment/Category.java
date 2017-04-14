@@ -117,7 +117,15 @@ public class Category extends Fragment {
     public void onEventCategoryList(CategoryItems event) {
         Log.d(BaseConstant.TAG, "EventBus get! Subscribe :getErrors:result=" + event.getErrors());
         categoryItems.addAll(event.getCategoryItems());
-        for (int i = 0; i < categoryItems.size(); i++) {
+        prgLoading.setVisibility(View.INVISIBLE);
+        if (event.getCategoryItems().isEmpty() || event.getCategoryItems().size() < 1) {
+            txtAlert.setVisibility(View.VISIBLE);
+        } else {
+            txtAlert.setVisibility(View.INVISIBLE);
+            recyclerView.getAdapter().notifyDataSetChanged();
+        }
+
+/*        for (int i = 0; i < categoryItems.size(); i++) {
             Log.d(BaseConstant.TAG, "Category:onEventCategoryList: "
                     + categoryItems.get(i).getCategory_ID() + " "
                     + categoryItems.get(i).getCategory_name() + " "
@@ -127,7 +135,7 @@ public class Category extends Fragment {
         Log.d(BaseConstant.TAG, "EventBus get! Subscribe  CategoryItems:" + categoryItems.toString());
         Log.d(BaseConstant.TAG, "EventBus get! Subscribe  CategoryItems:categoryItems.size():" + categoryItems.size());
         Log.d(BaseConstant.TAG, "EventBus get! Subscribe  CategoryItems:getAdapter().getItemCount():" + recyclerView.getAdapter().getItemCount());
-        viewCategory();
+        viewCategory();*/
     }
 
     private void viewCategory() {

@@ -72,7 +72,7 @@ public class AdapterProductCatalog extends RecyclerView.Adapter<AdapterProductCa
                 .load(GET_IMAGES + productCategory.getMenu_image())
                 //.fit()
                 .centerInside()
-               // .centerCrop()
+//                .centerCrop()
                 .resize(200, 150)
                 .networkPolicy(NetworkPolicy.OFFLINE)
                 .error(R.drawable.error_load_image)

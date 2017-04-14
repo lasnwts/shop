@@ -26,6 +26,7 @@
     <string name="menu_checkout">Заказы</string>
     <string name="menu_profile">Информация</string>
     <string name="alert">Отсуствует связь с интернетом!</string>
+    <string name="alert_category">Данные не получены</string>
 
     <string name="pref_app_title">О приложении</string>
     <string name="pref_app_summary">Отображение местоположения друзей на карте</string>
