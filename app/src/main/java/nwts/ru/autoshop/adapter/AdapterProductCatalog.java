@@ -28,8 +28,8 @@ import static android.content.ContentValues.TAG;
 import static nwts.ru.autoshop.network.api.Api.GET_IMAGES;
 
 /**
- *  Адаптер показа товраров в подкатегории (3-ий уровень)
- *  Это уже не категории а товары
+ * Адаптер показа товраров в подкатегории (3-ий уровень)
+ * Это уже не категории а товары
  * Created by пользователь on 22.03.2017.
  */
 
@@ -68,57 +68,7 @@ public class AdapterProductCatalog extends RecyclerView.Adapter<AdapterProductCa
             holder.itemView.setBackground(background);
         }
 
-        DataManager.getInstance().getPicasso()
-                .load(GET_IMAGES + productCategory.getMenu_image())
-                //.fit()
-                .centerInside()
-//                .centerCrop()
-                .resize(200, 150)
-                .networkPolicy(NetworkPolicy.OFFLINE)
-                .error(R.drawable.error_load_image)
-                .placeholder(R.drawable.error_load_image)
-                .into(holder.flowerImageView, new Callback() {
-                            @Override
-                            public void onSuccess() {
-                                Log.d(TAG, "load from cache");
-                            }
-
-                            @Override
-                            public void onError() {
-                                DataManager.getInstance().getPicasso()
-                                        .load(GET_IMAGES + productCategory.getMenu_image())
-                                      //  .fit()
-                                        .centerCrop()
-                                        .resize(200, 150)
-                                        .error(R.drawable.error_load_image)
-                                        .placeholder(R.drawable.error_load_image)
-                                        .into(holder.flowerImageView, new Callback() {
-                                            @Override
-                                            public void onSuccess() {
-                                                Log.d(TAG, "Save from network - fetch image");
-                                            }
-
-                                            @Override
-                                            public void onError() {
-                                                Log.d(TAG, "Could not fetch image");
-                                            }
-                                        });
-                            }
-                        });
-
-
-/*
-
-        Picasso mPicasso = Picasso.with(context);
-        mPicasso.setIndicatorsEnabled(true);
-        mPicasso.setLoggingEnabled(true);
-        mPicasso.load(GET_IMAGES + productCategory.getMenu_image())
-                .resize(200, 150)
-                .centerCrop()
-                .error(R.drawable.error_load_image)
-                .into(holder.flowerImageView);
-
- */
+        picassoGetImages(holder, productCategory);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -136,6 +86,53 @@ public class AdapterProductCatalog extends RecyclerView.Adapter<AdapterProductCa
                 holder.mAdapterClickListener.adapterOnClickListener(productCategory.getProduct_ID());
             }
         });
+    }
+
+
+    /**
+     * Get Images Picasso and save images in cahce dir
+     *
+     * @param holder          -   this is holder item
+     * @param productCategory -   this is product category
+     */
+    private void picassoGetImages(final ViewHolder holder, final ProductCategory productCategory) {
+        DataManager.getInstance().getPicasso()
+                .load(GET_IMAGES + productCategory.getMenu_image())
+                //.fit()
+                .centerInside()
+//                .centerCrop()
+                .resize(200, 150)
+                .networkPolicy(NetworkPolicy.OFFLINE)
+                .error(R.drawable.error_load_image)
+                .placeholder(R.drawable.error_load_image)
+                .into(holder.flowerImageView, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        Log.d(TAG, "load from cache");
+                    }
+
+                    @Override
+                    public void onError() {
+                        DataManager.getInstance().getPicasso()
+                                .load(GET_IMAGES + productCategory.getMenu_image())
+                                //  .fit()
+                                .centerCrop()
+                                .resize(200, 150)
+                                .error(R.drawable.error_load_image)
+                                .placeholder(R.drawable.error_load_image)
+                                .into(holder.flowerImageView, new Callback() {
+                                    @Override
+                                    public void onSuccess() {
+                                        Log.d(TAG, "Save from network - fetch image");
+                                    }
+
+                                    @Override
+                                    public void onError() {
+                                        Log.d(TAG, "Could not fetch image");
+                                    }
+                                });
+                    }
+                });
     }
 
     @Override

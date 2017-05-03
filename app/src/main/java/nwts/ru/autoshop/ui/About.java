@@ -4,7 +4,10 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.MenuItem;
+import android.widget.Toast;
+
 import com.lb.material_preferences_library.PreferenceActivity;
 import com.lb.material_preferences_library.custom_preferences.Preference;
 
@@ -45,20 +48,14 @@ public class About extends PreferenceActivity
 
         prefShareKey.setOnPreferenceClickListener(this);
         prefRateReviewKey.setOnPreferenceClickListener(this);
-
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        overridePendingTransition (R.anim.open_main, R.anim.close_next);
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                onBackPressed();
+//                onBackPressed();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -84,5 +81,11 @@ public class About extends PreferenceActivity
         return true;
     }
 
+
+    @Override
+    protected void onPause() {
+        overridePendingTransition (R.anim.open_main, R.anim.close_next);
+        super.onPause();
+    }
 
 }
