@@ -5,6 +5,8 @@ import android.app.Application;
 import org.greenrobot.greendao.database.Database;
 
 
+import java.util.ArrayList;
+
 import nwts.ru.autoshop.models.DaoMaster;
 import nwts.ru.autoshop.models.DaoSession;
 
@@ -32,6 +34,19 @@ public class TODOApplication extends Application {
     private static String detail_description;
     private static String detail_productName;
     private static int detail_product_Id;
+    private static ArrayList<String> urlProductDetailImages;
+
+    public static ArrayList<String> getUrlProductDetailImages() {
+        return urlProductDetailImages;
+    }
+
+    public static void setUrlProductDetailImages(ArrayList<String> urlProductDetailImages) {
+        TODOApplication.urlProductDetailImages = urlProductDetailImages;
+    }
+
+    public static void clearUrlProductDetailImages(){
+        TODOApplication.urlProductDetailImages.clear();
+    }
 
     public static int getProductCatalog_Id() {
         return TODOApplication.productCatalog_Id;
@@ -124,6 +139,7 @@ public class TODOApplication extends Application {
         DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(this, "shop-db");
         Database db = helper.getWritableDb();
         sDaoSession = new DaoMaster(db).newSession();
+        urlProductDetailImages = new ArrayList<>();
     }
 
     public static TODOApplication getInstance(){

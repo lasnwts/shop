@@ -9,7 +9,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="nwts.ru.autoshop.ui.FrescoActovity">
+    tools:context="nwts.ru.autoshop.ui.FrescoActivity">
 
     <include layout="@layout/toolbar"/>
 
@@ -32,11 +32,21 @@
             android:layout_height="match_parent"
             android:layout_below="@+id/toolbar">
 
-            <uk.co.senab.photoview.PhotoView
-                android:id="@+id/iv_photo"
+            <android.support.v4.view.ViewPager
+                android:id="@+id/pagerProductImageDetail"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_alignParentTop="true"/>
+                android:layout_below="@+id/toolbar">
+
+                <android.support.v4.view.PagerTabStrip
+                    android:id="@+id/pagerTabStripProductDetail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/primary_color"
+                    android:layout_gravity="top">
+                </android.support.v4.view.PagerTabStrip>
+
+            </android.support.v4.view.ViewPager>
 
         </RelativeLayout>
 

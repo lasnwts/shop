@@ -30,7 +30,7 @@
 
         <activity android:name=".ui.Information" />
         <activity android:name=".ui.ProductDetailView" />
-        <activity android:name=".ui.FrescoActovity" />
+        <activity android:name=".ui.FrescoActivity" />
         <activity android:name=".ui.SubCategoryList"></activity>
     </application>
 

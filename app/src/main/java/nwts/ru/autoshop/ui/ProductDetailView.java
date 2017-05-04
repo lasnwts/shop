@@ -27,7 +27,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import nwts.ru.autoshop.R;
@@ -52,6 +51,7 @@ public class ProductDetailView extends AppCompatActivity
     ImageView productImage;
     private String URL_KEY_STATE = "url_key_state";
     private SliderLayout mDemoSlider;
+    private ArrayList<String> mStringArrayList;
     //
 
     @Override
@@ -59,6 +59,7 @@ public class ProductDetailView extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_detail);
         productDetailImageList = new ArrayList<>();
+        mStringArrayList = new ArrayList<>();
         prgLoading = (ProgressBar) findViewById(R.id.prgLoadProductDetail);
         productName = (TextView) findViewById(R.id.productDetailNaem);
         productDesc = (TextView) findViewById(R.id.productDetailShortDesc);
@@ -66,7 +67,7 @@ public class ProductDetailView extends AppCompatActivity
         productImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intentFresco = new Intent(getApplicationContext(), FrescoActovity.class);
+                Intent intentFresco = new Intent(getApplicationContext(), FrescoActivity.class);
                 intentFresco.putExtra(BaseConstant.URL_IMAGE_DOWNLOADED, TODOApplication.getUrl_Image());
                 startActivity(intentFresco);
             }
@@ -196,12 +197,16 @@ public class ProductDetailView extends AppCompatActivity
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventProductDetails(ProductDetailImages event) {
         prgLoading.setVisibility(View.INVISIBLE);
+        //clear url
+        TODOApplication.clearUrlProductDetailImages();
+        mStringArrayList.clear();
 
         productName.setText(TODOApplication.getDetail_productName());
         productDesc.setText(Html.fromHtml(TODOApplication.getDetail_description()));
         if (TODOApplication.getUrl_Image() != null) {
             getImageRequest(TODOApplication.getUrl_Image());
         }
+        productDetailImageList.clear();
         productDetailImageList.addAll(event.getProductDetailImages());
         Log.d(BaseConstant.TAG, "ProductDetailView:onEventProductDetails:run");
         Log.d(BaseConstant.TAG, "ProductDetailView:onEventProductDetails:productDetailImageList.size():" + productDetailImageList.size());
@@ -228,6 +233,9 @@ public class ProductDetailView extends AppCompatActivity
                         .error(R.drawable.error_loading)
                         .setOnSliderClickListener(this);
 
+                //add new image_url
+                mStringArrayList.add(GET_IMAGES + productDetailImageList.get(i).getMenu_image());
+
                 //add your extra information
                 textSliderView.bundle(new Bundle());
                 textSliderView.getBundle()
@@ -238,6 +246,7 @@ public class ProductDetailView extends AppCompatActivity
                 2
                  */
             }
+            TODOApplication.setUrlProductDetailImages(mStringArrayList);
         }
     }
 
@@ -289,13 +298,13 @@ public class ProductDetailView extends AppCompatActivity
     }
 
     private void startFreescoActivity() {
-        Intent intentFresco = new Intent(getApplicationContext(), FrescoActovity.class);
+        Intent intentFresco = new Intent(getApplicationContext(), FrescoActivity.class);
         intentFresco.putExtra(BaseConstant.URL_IMAGE_DOWNLOADED, TODOApplication.getUrl_Image());
         startActivity(intentFresco);
     }
 
     private void startFreescoActivityGallery(String url) {
-        Intent intentFresco = new Intent(getApplicationContext(), FrescoActovity.class);
+        Intent intentFresco = new Intent(getApplicationContext(), FrescoActivity.class);
         intentFresco.putExtra(BaseConstant.URL_IMAGE_DOWNLOADED, url);
         startActivity(intentFresco);
     }
