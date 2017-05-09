@@ -30,6 +30,7 @@ public interface BaseConstant {
 
     //URL between activities
     public final String URL_IMAGE_DOWNLOADED = "url_downloaded";
+    public final String URL_IMAGE_COUNTS = "url_images_count";
 
     //TAGS FRAGMENT
     public final static String TAG_CATEGORY_FRAGMENT = "tag_category_fragment";

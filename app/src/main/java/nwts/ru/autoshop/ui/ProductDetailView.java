@@ -47,10 +47,11 @@ public class ProductDetailView extends AppCompatActivity
     private static final String TAG = BaseConstant.TAG_PRODUCT_DETAIL_FRAGMENT;
     private List<ProductDetailImage> productDetailImageList;
     ProgressBar prgLoading;
-    TextView productName, productDesc;
+    TextView productName, productDesc, productRating, productPrice, productCount;
     ImageView productImage;
     private String URL_KEY_STATE = "url_key_state";
     private SliderLayout mDemoSlider;
+    private int mDemoSliderCounts = 0; //кол-во images
     private ArrayList<String> mStringArrayList;
     //
 
@@ -61,17 +62,23 @@ public class ProductDetailView extends AppCompatActivity
         productDetailImageList = new ArrayList<>();
         mStringArrayList = new ArrayList<>();
         prgLoading = (ProgressBar) findViewById(R.id.prgLoadProductDetail);
-        productName = (TextView) findViewById(R.id.productDetailNaem);
+        productName = (TextView) findViewById(R.id.productDetailName);
         productDesc = (TextView) findViewById(R.id.productDetailShortDesc);
+        productRating = (TextView) findViewById(R.id.productDetailRating);
+        productPrice = (TextView) findViewById(R.id.productDetailPrice);
+        productCount = (TextView) findViewById(R.id.productDetailCount);
+
+        /*
+        test
+         */
+        productCount.setText("    20");
+        productPrice.setText("200.00");
+        productRating.setText("10");
+        /*
+        test
+         */
         productImage = (ImageView) findViewById(R.id.productDetailImage);
-        productImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intentFresco = new Intent(getApplicationContext(), FrescoActivity.class);
-                intentFresco.putExtra(BaseConstant.URL_IMAGE_DOWNLOADED, TODOApplication.getUrl_Image());
-                startActivity(intentFresco);
-            }
-        });
+
         PreferenceHelper.getInstance().init(getApplicationContext());
         preferenceHelper = PreferenceHelper.getInstance();
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -128,6 +135,18 @@ public class ProductDetailView extends AppCompatActivity
         mDemoSlider.setCustomAnimation(new DescriptionAnimation());
         mDemoSlider.setDuration(4000);
         mDemoSlider.addOnPageChangeListener(this);
+
+        productImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intentFresco = new Intent(getApplicationContext(), FrescoActivity.class);
+                intentFresco.putExtra(BaseConstant.URL_IMAGE_DOWNLOADED, TODOApplication.getUrl_Image());
+                if (mDemoSlider != null) {
+                    intentFresco.putExtra(BaseConstant.URL_IMAGE_COUNTS, mDemoSliderCounts);
+                }
+                startActivity(intentFresco);
+            }
+        });
     }
 
     private void request() {
@@ -246,6 +265,7 @@ public class ProductDetailView extends AppCompatActivity
                 2
                  */
             }
+            mDemoSliderCounts = productDetailImageList.size();
             TODOApplication.setUrlProductDetailImages(mStringArrayList);
         }
     }

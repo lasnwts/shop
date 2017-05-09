@@ -66,18 +66,13 @@ public class FrescoActivity extends AppCompatActivity {
             Url = GET_IMAGES + Url;
         }
 
-//        PhotoView photoView = (PhotoView) findViewById(R.id.iv_photo);
-//
-//        Picasso mPicasso = Picasso.with(getApplicationContext());
-//        mPicasso.setIndicatorsEnabled(true);
-//        mPicasso.setLoggingEnabled(true);
-//        mPicasso.load(Url)
-//                .error(R.drawable.error_fresco404)
-//                .into(photoView);
-
         prgLoading.setVisibility(View.INVISIBLE);
         pagerAdapter = new ProductFragmentPagerAdapter(getSupportFragmentManager());
         pager.setAdapter(pagerAdapter);
+
+        if (getIntent().getIntExtra(BaseConstant.URL_IMAGE_COUNTS,0) > 1){
+            pager.setCurrentItem(getIntent().getIntExtra(BaseConstant.URL_IMAGE_COUNTS,0));
+        }
     }
 
     @Override
