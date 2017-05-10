@@ -3,6 +3,8 @@ package nwts.ru.autoshop.ui;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -48,14 +50,15 @@ public class ProductDetailView extends AppCompatActivity
     private static final String TAG = BaseConstant.TAG_PRODUCT_DETAIL_FRAGMENT;
     private List<ProductDetailImage> productDetailImageList;
     ProgressBar prgLoading;
-    TextView productName, productDesc,productFullDesc, productRating, productPrice, productCount;
-    TextView divider1,divider2,divider3, divider4,divider5,divider6;
+    TextView productName, productDesc, productFullDesc, productRating, productPrice, productCount;
+    TextView divider1, divider2, divider3, divider4, divider5, divider6;
     ImageView productImage;
     private String URL_KEY_STATE = "url_key_state";
     private SliderLayout mDemoSlider;
     private int mDemoSliderCounts = 0; //кол-во images
     private ArrayList<String> mStringArrayList;
     private String fullTextDescription = "";
+    private FloatingActionButton fab;
     //
 
     @Override
@@ -71,6 +74,7 @@ public class ProductDetailView extends AppCompatActivity
         productRating = (TextView) findViewById(R.id.productDetailRating);
         productPrice = (TextView) findViewById(R.id.productDetailPrice);
         productCount = (TextView) findViewById(R.id.productDetailCount);
+
 
         /*
         Dividers
@@ -175,21 +179,36 @@ public class ProductDetailView extends AppCompatActivity
                 getProductFullDescription();
             }
         });
+        fab = (FloatingActionButton) findViewById(R.id.fabProductDetail);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+                //mBlankFragment.fragmentSettext(getString(R.string.frset_text));
+            }
+        });
     }
 
     private void getProductFullDescription() {
-        if (productFullDesc.getText().toString().equals(getResources().getString(R.string.productFullDesc))){
+        if (productFullDesc.getText().toString().equals(getResources().getString(R.string.productFullDesc))) {
             productDesc.setTextColor(getResources().getColor(R.color.primary_dark));
             productDesc.setText(R.string.productFullToShortDesc);
             productFullDesc.setTypeface(null, Typeface.NORMAL);
             productFullDesc.setTextColor(getResources().getColor(R.color.black));
             productFullDesc.setText(Html.fromHtml(fullTextDescription + fullTextDescription));
+            fab.setVisibility(View.INVISIBLE);
         } else {
             productDesc.setTextColor(getResources().getColor(R.color.black));
-            productDesc.setText(Html.fromHtml(TODOApplication.getDetail_description().substring(0,150))+"...");
+            if (TODOApplication.getDetail_description() != null && TODOApplication.getDetail_description().length() > 150) {
+                productDesc.setText(Html.fromHtml(TODOApplication.getDetail_description().substring(0, 150)) + "...");
+            } else {
+                productDesc.setText(Html.fromHtml(TODOApplication.getDetail_description()));
+            }
             productFullDesc.setTypeface(null, Typeface.BOLD);
             productFullDesc.setTextColor(getResources().getColor(R.color.primary_dark));
             productFullDesc.setText(R.string.productFullDesc);
+            fab.setVisibility(View.VISIBLE);
         }
     }
 
@@ -271,8 +290,12 @@ public class ProductDetailView extends AppCompatActivity
         mStringArrayList.clear();
 
         productName.setText(TODOApplication.getDetail_productName());
-        productDesc.setText(Html.fromHtml(TODOApplication.getDetail_description().substring(0,150))+"...");
-       // productDesc.setText(Html.fromHtml(TODOApplication.getDetail_description().substring(0,150+TODOApplication.getDetail_description().indexOf(" ",150)))+"...");
+        if (TODOApplication.getDetail_description() != null && TODOApplication.getDetail_description().length() > 150) {
+            productDesc.setText(Html.fromHtml(TODOApplication.getDetail_description().substring(0, 150)) + "...");
+        } else {
+            productDesc.setText(Html.fromHtml(TODOApplication.getDetail_description()));
+        }
+        // productDesc.setText(Html.fromHtml(TODOApplication.getDetail_description().substring(0,150+TODOApplication.getDetail_description().indexOf(" ",150)))+"...");
         fullTextDescription = TODOApplication.getDetail_description();
         if (TODOApplication.getUrl_Image() != null) {
             getImageRequest(TODOApplication.getUrl_Image());
@@ -328,7 +351,7 @@ public class ProductDetailView extends AppCompatActivity
         mPicasso.setLoggingEnabled(true);
         mPicasso.load(GET_IMAGES + url_image)
                 .resize(300, 300)
-              //  .centerCrop()
+                //  .centerCrop()
                 .centerInside()
                 .error(R.drawable.error_load_image)
                 .into(productImage);
