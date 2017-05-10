@@ -12,11 +12,12 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".ui.ProductDetailView">
 
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_collapseMode="parallax"
-        android:background="@android:color/black">
+        android:background="@android:color/black"
+        app:layout_collapseMode="parallax">
 
         <include layout="@layout/toolbar"/>
 
@@ -28,6 +29,7 @@
             android:background="@android:color/white"
             app:cardBackgroundColor="@color/cardview_light_background"
             app:cardCornerRadius="16dp">
+
 
             <RelativeLayout
                 android:id="@+id/rellayout_product_activity"
@@ -48,8 +50,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_alignParentTop="true"
-                        android:gravity="center"
                         android:layout_margin="8dp"
+                        android:gravity="center"
                         android:textColor="@android:color/black"
                         android:textStyle="bold"/>
 
@@ -78,9 +80,11 @@
                     </LinearLayout>
 
                     <TextView
+                        android:id="@+id/productDetailDivider1"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:background="@android:color/darker_gray"/>
+                        android:background="@android:color/darker_gray"
+                        android:visibility="gone"/>
 
                     <LinearLayout
                         android:id="@+id/linlayout_product_detail1"
@@ -89,44 +93,52 @@
                         android:orientation="horizontal">
 
                         <TextView
+                            android:id="@+id/productDetailDivider2"
                             android:layout_width="1dp"
                             android:layout_height="wrap_content"
-                            android:background="@android:color/darker_gray"/>
+                            android:background="@android:color/darker_gray"
+                            android:visibility="gone"/>
 
                         <TextView
                             android:id="@+id/productDetailCount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@android:color/black"
                             android:layout_weight="1"
                             android:gravity="left"
+                            android:textColor="@android:color/black"
                             android:textStyle="bold"/>
 
                         <TextView
+                            android:id="@+id/productDetailDivider3"
                             android:layout_width="1dp"
                             android:layout_height="wrap_content"
-                            android:background="@android:color/darker_gray"/>
+                            android:background="@android:color/darker_gray"
+                            android:visibility="gone"/>
 
                         <TextView
                             android:id="@+id/productDetailPrice"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:gravity="right"
                             android:layout_weight="1"
+                            android:gravity="right"
                             android:textColor="@android:color/black"
                             android:textStyle="bold"/>
 
                         <TextView
+                            android:id="@+id/productDetailDivider4"
                             android:layout_width="1dp"
                             android:layout_height="wrap_content"
-                            android:background="@android:color/darker_gray"/>
+                            android:background="@android:color/darker_gray"
+                            android:visibility="gone"/>
 
                     </LinearLayout>
 
                     <TextView
+                        android:id="@+id/productDetailDivider5"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:background="@android:color/darker_gray"/>
+                        android:background="@android:color/darker_gray"
+                        android:visibility="gone"/>
 
                 </LinearLayout>
 
@@ -142,8 +154,30 @@
                         android:id="@+id/productDetailShortDesc"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="10sp"
-                        android:textColor="@android:color/black"/>
+                        android:textColor="@android:color/black"
+                        />
+
+                    <ScrollView
+                        android:id="@+id/scroll"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/productDetailFullDesc"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/colorPrimaryDark"
+                            android:textStyle="bold"
+                            />
+                    </ScrollView>
+
+                    <TextView
+                        android:id="@+id/productDetailDivider6"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="8dp"
+                        android:background="@android:color/darker_gray"
+                        android:visibility="gone"/>
 
                 </LinearLayout>
 

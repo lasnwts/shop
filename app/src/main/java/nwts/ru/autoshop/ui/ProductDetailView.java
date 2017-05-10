@@ -1,6 +1,7 @@
 package nwts.ru.autoshop.ui;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -47,12 +48,14 @@ public class ProductDetailView extends AppCompatActivity
     private static final String TAG = BaseConstant.TAG_PRODUCT_DETAIL_FRAGMENT;
     private List<ProductDetailImage> productDetailImageList;
     ProgressBar prgLoading;
-    TextView productName, productDesc, productRating, productPrice, productCount;
+    TextView productName, productDesc,productFullDesc, productRating, productPrice, productCount;
+    TextView divider1,divider2,divider3, divider4,divider5,divider6;
     ImageView productImage;
     private String URL_KEY_STATE = "url_key_state";
     private SliderLayout mDemoSlider;
     private int mDemoSliderCounts = 0; //кол-во images
     private ArrayList<String> mStringArrayList;
+    private String fullTextDescription = "";
     //
 
     @Override
@@ -64,9 +67,20 @@ public class ProductDetailView extends AppCompatActivity
         prgLoading = (ProgressBar) findViewById(R.id.prgLoadProductDetail);
         productName = (TextView) findViewById(R.id.productDetailName);
         productDesc = (TextView) findViewById(R.id.productDetailShortDesc);
+        productFullDesc = (TextView) findViewById(R.id.productDetailFullDesc);
         productRating = (TextView) findViewById(R.id.productDetailRating);
         productPrice = (TextView) findViewById(R.id.productDetailPrice);
         productCount = (TextView) findViewById(R.id.productDetailCount);
+
+        /*
+        Dividers
+         */
+        divider1 = (TextView) findViewById(R.id.productDetailDivider1);
+        divider2 = (TextView) findViewById(R.id.productDetailDivider2);
+        divider3 = (TextView) findViewById(R.id.productDetailDivider3);
+        divider4 = (TextView) findViewById(R.id.productDetailDivider4);
+        divider5 = (TextView) findViewById(R.id.productDetailDivider5);
+        divider6 = (TextView) findViewById(R.id.productDetailDivider6);
 
         /*
         test
@@ -74,6 +88,7 @@ public class ProductDetailView extends AppCompatActivity
         productCount.setText("    20");
         productPrice.setText("200.00");
         productRating.setText("10");
+        productFullDesc.setText(R.string.productFullDesc);
         /*
         test
          */
@@ -147,6 +162,35 @@ public class ProductDetailView extends AppCompatActivity
                 startActivity(intentFresco);
             }
         });
+
+        productDesc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getProductFullDescription();
+            }
+        });
+        productFullDesc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getProductFullDescription();
+            }
+        });
+    }
+
+    private void getProductFullDescription() {
+        if (productFullDesc.getText().toString().equals(getResources().getString(R.string.productFullDesc))){
+            productDesc.setTextColor(getResources().getColor(R.color.primary_dark));
+            productDesc.setText(R.string.productFullToShortDesc);
+            productFullDesc.setTypeface(null, Typeface.NORMAL);
+            productFullDesc.setTextColor(getResources().getColor(R.color.black));
+            productFullDesc.setText(Html.fromHtml(fullTextDescription + fullTextDescription));
+        } else {
+            productDesc.setTextColor(getResources().getColor(R.color.black));
+            productDesc.setText(Html.fromHtml(TODOApplication.getDetail_description().substring(0,150))+"...");
+            productFullDesc.setTypeface(null, Typeface.BOLD);
+            productFullDesc.setTextColor(getResources().getColor(R.color.primary_dark));
+            productFullDesc.setText(R.string.productFullDesc);
+        }
     }
 
     private void request() {
@@ -216,12 +260,20 @@ public class ProductDetailView extends AppCompatActivity
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventProductDetails(ProductDetailImages event) {
         prgLoading.setVisibility(View.INVISIBLE);
+        divider1.setVisibility(View.VISIBLE);
+        divider2.setVisibility(View.VISIBLE);
+        divider3.setVisibility(View.VISIBLE);
+        divider4.setVisibility(View.VISIBLE);
+        divider5.setVisibility(View.VISIBLE);
+        divider6.setVisibility(View.VISIBLE);
         //clear url
         TODOApplication.clearUrlProductDetailImages();
         mStringArrayList.clear();
 
         productName.setText(TODOApplication.getDetail_productName());
-        productDesc.setText(Html.fromHtml(TODOApplication.getDetail_description()));
+        productDesc.setText(Html.fromHtml(TODOApplication.getDetail_description().substring(0,150))+"...");
+       // productDesc.setText(Html.fromHtml(TODOApplication.getDetail_description().substring(0,150+TODOApplication.getDetail_description().indexOf(" ",150)))+"...");
+        fullTextDescription = TODOApplication.getDetail_description();
         if (TODOApplication.getUrl_Image() != null) {
             getImageRequest(TODOApplication.getUrl_Image());
         }
