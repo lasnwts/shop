@@ -1,12 +1,9 @@
 package nwts.ru.autoshop;
 
 import android.app.Application;
-
+import com.facebook.stetho.Stetho;
 import org.greenrobot.greendao.database.Database;
-
-
 import java.util.ArrayList;
-
 import nwts.ru.autoshop.models.DaoMaster;
 import nwts.ru.autoshop.models.DaoSession;
 
@@ -55,9 +52,6 @@ public class TODOApplication extends Application {
     public static void setProductCatalog_Id(int productCatalog_Id) {
         TODOApplication.productCatalog_Id = productCatalog_Id;
     }
-
-
-
 
     public static double getDetail_price() {
         return TODOApplication.detail_price;
@@ -140,6 +134,31 @@ public class TODOApplication extends Application {
         Database db = helper.getWritableDb();
         sDaoSession = new DaoMaster(db).newSession();
         urlProductDetailImages = new ArrayList<>();
+
+        //**************************************************************************
+        // stetho
+        //**************************************************************************
+        // Create an InitializerBuilder
+        Stetho.InitializerBuilder initializerBuilder =
+                Stetho.newInitializerBuilder(this);
+        // Enable Chrome DevTools
+        initializerBuilder.enableWebKitInspector(
+                Stetho.defaultInspectorModulesProvider(this)
+        );
+
+        // Enable command line interface
+        initializerBuilder.enableDumpapp(
+                Stetho.defaultDumperPluginsProvider(this)
+        );
+
+        // Use the InitializerBuilder to generate an Initializer
+        Stetho.Initializer initializer = initializerBuilder.build();
+
+        // Initialize Stetho with the Initializer
+        Stetho.initialize(initializer);
+        //**************************************************************************
+        // stetho
+        //**************************************************************************
     }
 
     public static TODOApplication getInstance(){
@@ -189,4 +208,6 @@ public class TODOApplication extends Application {
     public static void setProductDetail_Id(int productDetail_Id) {
         TODOApplication.productDetail_Id = productDetail_Id;
     }
+
+
 }

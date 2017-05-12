@@ -61,5 +61,8 @@ dependencies {
     compile 'com.daimajia.slider:library:1.1.5@aar'
     compile 'com.daimajia.androidanimations:library:1.0.3@aar'
     compile 'org.greenrobot:greendao:3.2.2' // add library
+    compile 'com.facebook.stetho:stetho:1.4.2'      // stetho
+    compile 'com.facebook.stetho:stetho-okhttp3:1.4.2' // stetho
+    compile 'com.facebook.stetho:stetho-urlconnection:1.4.2' // stetho
     testCompile 'junit:junit:4.12'
 }

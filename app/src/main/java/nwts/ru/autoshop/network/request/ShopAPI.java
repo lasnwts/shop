@@ -1,5 +1,7 @@
 package nwts.ru.autoshop.network.request;
 
+import com.facebook.stetho.okhttp3.StethoInterceptor;
+
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -88,6 +90,7 @@ public interface ShopAPI {
             .writeTimeout(10, TimeUnit.SECONDS)
             .addInterceptor(new HeaderInterceptor())
             .addInterceptor((Interceptor) new HeaderLoggingInterceptor().getLoggingRetrofit())
+            .addNetworkInterceptor(new StethoInterceptor())
             .build();
 
     Retrofit retrofit = new Retrofit.Builder()
