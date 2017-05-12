@@ -12,6 +12,7 @@ public interface BaseConstant {
     public final String TAG = "myLogs";
 
     //API Constant
+    public final String API_URL = "192.168.56.1:81";
     public final String API_KEY_ID = "api_id";
     public int API_GET_FLOWERS = 10001;
     public int API_GET_FLOWER = 10002;
@@ -46,10 +47,5 @@ public interface BaseConstant {
     public final static String EX_NAME = "name";
     public final static String EX_CATEGORY_ID = "categoty_id";
     public final static String EX_SUBCATEGORY_ID = "subcategory_id";
-
-
-
-
-
 
 }

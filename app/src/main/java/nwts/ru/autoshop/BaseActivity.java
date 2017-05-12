@@ -36,6 +36,7 @@ import nwts.ru.autoshop.fragment.SplashScreen;
 import nwts.ru.autoshop.services.ServiceHelper;
 import nwts.ru.autoshop.setting.BaseConstant;
 import nwts.ru.autoshop.setting.PreferenceHelper;
+import nwts.ru.autoshop.ui.LoginActivity;
 import nwts.ru.autoshop.ui.ProductDetailView;
 
 
@@ -159,6 +160,8 @@ public class BaseActivity extends AppCompatActivity implements HomeMenu.OnLinkIt
                                         break;
                                     case 5: //масштабировать
                                         //   setScale();
+                                        Intent loginIntent = (Intent) new Intent(BaseActivity.this, LoginActivity.class);
+                                        startActivity(loginIntent);
                                         break;
                                     case 6: //About
                                         //    showAbout();

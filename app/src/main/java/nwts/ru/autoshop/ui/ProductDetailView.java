@@ -58,7 +58,7 @@ public class ProductDetailView extends AppCompatActivity
     private int mDemoSliderCounts = 0; //кол-во images
     private ArrayList<String> mStringArrayList;
     private String fullTextDescription = "";
-    private FloatingActionButton fab;
+    private FloatingActionButton fab, fabReview;
     //
 
     @Override
@@ -179,12 +179,21 @@ public class ProductDetailView extends AppCompatActivity
                 getProductFullDescription();
             }
         });
-        fab = (FloatingActionButton) findViewById(R.id.fabProductDetail);
+        fab = (FloatingActionButton) findViewById(R.id.fabProductDetailCart);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+                //mBlankFragment.fragmentSettext(getString(R.string.frset_text));
+            }
+        });
+        fabReview = (FloatingActionButton) findViewById(R.id.fabProductDetailReviews);
+        fabReview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intentScrollReview = (Intent) new Intent(ProductDetailView.this, ScrollingReviewActivity.class);
+                startActivity(intentScrollReview);
                 //mBlankFragment.fragmentSettext(getString(R.string.frset_text));
             }
         });
@@ -198,6 +207,7 @@ public class ProductDetailView extends AppCompatActivity
             productFullDesc.setTextColor(getResources().getColor(R.color.black));
             productFullDesc.setText(Html.fromHtml(fullTextDescription + fullTextDescription));
             fab.setVisibility(View.INVISIBLE);
+            fabReview.setVisibility(View.INVISIBLE);
         } else {
             productDesc.setTextColor(getResources().getColor(R.color.black));
             if (TODOApplication.getDetail_description() != null && TODOApplication.getDetail_description().length() > 150) {
@@ -209,6 +219,7 @@ public class ProductDetailView extends AppCompatActivity
             productFullDesc.setTextColor(getResources().getColor(R.color.primary_dark));
             productFullDesc.setText(R.string.productFullDesc);
             fab.setVisibility(View.VISIBLE);
+            fabReview.setVisibility(View.VISIBLE);
         }
     }
 

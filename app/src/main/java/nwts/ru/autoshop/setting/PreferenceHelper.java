@@ -35,6 +35,13 @@ public class PreferenceHelper {
         editor.apply();
     }
 
+    public void putAuthToken (String key, String value){
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(key,value);
+        editor.apply();
+    }
+
+
     public String getAuthToken(){
         return preferences.getString("AuthToken",null);
     }
