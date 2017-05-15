@@ -32,6 +32,15 @@ public class TODOApplication extends Application {
     private static String detail_productName;
     private static int detail_product_Id;
     private static ArrayList<String> urlProductDetailImages;
+    private boolean validateToken;
+
+    public boolean isValidateToken() {
+        return this.validateToken;
+    }
+
+    public void setValidateToken(boolean validateToken) {
+        this.validateToken = validateToken;
+    }
 
     public static ArrayList<String> getUrlProductDetailImages() {
         return urlProductDetailImages;
@@ -134,6 +143,7 @@ public class TODOApplication extends Application {
         Database db = helper.getWritableDb();
         sDaoSession = new DaoMaster(db).newSession();
         urlProductDetailImages = new ArrayList<>();
+        validateToken = false;
 
         //**************************************************************************
         // stetho

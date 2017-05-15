@@ -35,9 +35,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import nwts.ru.autoshop.R;
+import nwts.ru.autoshop.TODOApplication;
 import nwts.ru.autoshop.models.CategoryItem;
 import nwts.ru.autoshop.models.authority.AccessCreateUser;
 import nwts.ru.autoshop.models.authority.UserModel;
+import nwts.ru.autoshop.network.ValidateToken;
 import nwts.ru.autoshop.network.request.ShopAPI;
 import nwts.ru.autoshop.setting.BaseConstant;
 import nwts.ru.autoshop.setting.PreferenceHelper;
@@ -77,12 +79,18 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mProgressView;
     private View mLoginFormView;
     private boolean isCreateUser = false; //suggested create user = true or not = false
+    private PreferenceHelper mPreferenceHelper;
+    private ValidateToken validateToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         // Set up the login form.
+
+        PreferenceHelper.getInstance().init(getApplicationContext());
+        mPreferenceHelper = PreferenceHelper.getInstance();
+
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
 
@@ -424,18 +432,23 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     public void onResponse(Call<AccessCreateUser> call, Response<AccessCreateUser> response) {
                         if (response.isSuccessful()) {
                             if (response.code() == 201) {
-                                Toast.makeText(LoginActivity.this, "Success:" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(LoginActivity.this, "Success:" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
                                 mResult = true;
+                                if (ValidateToken.getInstance().getValidateToek()){
+                                    TODOApplication.getInstance().setValidateToken(true);
+                                }
                             } else {
                                 if (response.body() != null) {
-                                    Toast.makeText(LoginActivity.this, "Error code:" + response.code() + " Message:" + response.body().toString(), Toast.LENGTH_SHORT).show();
+                                    //Toast.makeText(LoginActivity.this, "Error code:" + response.code() + " Message:" + response.body().toString(), Toast.LENGTH_SHORT).show();
+                                    mPreferenceHelper.putString(BaseConstant.errorLogin,response.body().getMessage());
                                     Toast.makeText(LoginActivity.this, "Error code:" + response.code() + " Message:" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
                                 } else if (response.errorBody() != null) {
+                                    mPreferenceHelper.putString(BaseConstant.errorLogin,response.errorBody().toString());
                                     Toast.makeText(LoginActivity.this, "Error code:" + response.code() + " Message:" + response.errorBody().toString(), Toast.LENGTH_SHORT).show();
                                 } else if (response.message() != null) {
+                                    mPreferenceHelper.putString(BaseConstant.errorLogin,response.message().toString());
                                     Toast.makeText(LoginActivity.this, "Error code:" + response.code() + " Message:" + response.message().toString(), Toast.LENGTH_SHORT).show();
                                 }
-
                             }
                         }
                         mWait = true;
@@ -445,6 +458,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     @Override
                     public void onFailure(Call<AccessCreateUser> call, Throwable throwable) {
                         Toast.makeText(LoginActivity.this, "Erroe:" + throwable.toString(), Toast.LENGTH_SHORT).show();
+                        mPreferenceHelper.putString(BaseConstant.errorLogin,throwable.toString());
                         mWait = true;
                     }
                 });
@@ -459,19 +473,25 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     @Override
                     public void onResponse(Call<UserModel> call, Response<UserModel> response) {
                         if (response.isSuccessful()) {
-                            if (response.code() == 200 && response.body() != null) {
+                            if (response.code() == 200 && response.body() != null && !response.body().getError()) {
                                 mResult = true;
                                 mToken = response.body().getApikey();
-                                Toast.makeText(LoginActivity.this, "Success:" + response.body().getApikey(), Toast.LENGTH_SHORT).show();
+                                mPreferenceHelper.putAuthToken(mToken);
+                                mPreferenceHelper.putEmail(response.body().getUsername());
+                                mPreferenceHelper.putUserName(response.body().getName());
+                                TODOApplication.getInstance().setValidateToken(true);
+                                // Toast.makeText(LoginActivity.this, "Success:" + response.body().getApikey(), Toast.LENGTH_SHORT).show();
                             } else {
                                 if (response.body() != null) {
-                                    Toast.makeText(LoginActivity.this, "Error code:" + response.code() + " Message:" + response.body().toString(), Toast.LENGTH_SHORT).show();
+                                    mPreferenceHelper.putString(BaseConstant.errorLogin,response.body().getMessage());
+                                    Toast.makeText(LoginActivity.this, "Error code:" + response.code() + " Message:" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
                                 } else if (response.errorBody() != null) {
+                                    mPreferenceHelper.putString(BaseConstant.errorLogin,response.errorBody().toString());
                                     Toast.makeText(LoginActivity.this, "Error code:" + response.code() + " Message:" + response.errorBody().toString(), Toast.LENGTH_SHORT).show();
                                 } else if (response.message() != null) {
+                                    mPreferenceHelper.putString(BaseConstant.errorLogin,response.message().toString());
                                     Toast.makeText(LoginActivity.this, "Error code:" + response.code() + " Message:" + response.message().toString(), Toast.LENGTH_SHORT).show();
                                 }
-
                             }
                         }
                         mWait = true;
@@ -480,6 +500,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     @Override
                     public void onFailure(Call<UserModel> call, Throwable throwable) {
                         Toast.makeText(LoginActivity.this, "Erroe:" + throwable.toString(), Toast.LENGTH_SHORT).show();
+                        mPreferenceHelper.putString(BaseConstant.errorLogin,throwable.toString());
                         mWait = true;
                     }
                 });
@@ -509,7 +530,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }*/
             // TODO: register the new account here.
             if (mResult) {
-                PreferenceHelper.getInstance().putAuthToken("AuthToken", mToken);
+               // PreferenceHelper.getInstance().putAuthToken(mToken);
             }
             return mResult;
         }
@@ -520,9 +541,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(false);
 
             if (success) {
+
                 finish();
             } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
+                if (!TextUtils.isEmpty(mPreferenceHelper.getString(BaseConstant.errorLogin))) {
+                    mPasswordView.setError(mPreferenceHelper.getString(BaseConstant.errorLogin));
+                } else {
+                    mPasswordView.setError(getString(R.string.error_incorrect_password));
+                }
                 mPasswordView.requestFocus();
             }
         }

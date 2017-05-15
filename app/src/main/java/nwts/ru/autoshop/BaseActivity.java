@@ -22,9 +22,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import org.greenrobot.eventbus.EventBus;
 
+import nwts.ru.autoshop.network.ValidateToken;
 import nwts.ru.autoshop.ui.About;
 import nwts.ru.autoshop.fragment.HomeMenu;
 import nwts.ru.autoshop.fragment.ProductCatalog;
@@ -58,6 +60,7 @@ public class BaseActivity extends AppCompatActivity implements HomeMenu.OnLinkIt
     private String[] menu_items_Drawer;
     private int selectedDrawerItem = 0;
     private Fragment fragment;
+    ValidateToken validateToken;
 
     ProductCatalog productCatalogFragment;
 
@@ -89,7 +92,7 @@ public class BaseActivity extends AppCompatActivity implements HomeMenu.OnLinkIt
 
         int[] drawableId = new int[]{R.drawable.ic_view_list_white_18dp,
                 R.drawable.ic_add_box_white_18dp, R.drawable.ic_mail_white_18dp,
-                R.drawable.ic_location_disabled_white_18dp, R.drawable.ic_zoom_out_map_white_18dp,
+                R.drawable.ic_location_disabled_white_18dp, R.drawable.ic_account_circle_black_24dp,
                 R.drawable.ic_android_white_18dp, R.drawable.ic_settings_applications_white_18dp,
                 R.drawable.ic_settings_applications_white_18dp};
 
@@ -160,8 +163,16 @@ public class BaseActivity extends AppCompatActivity implements HomeMenu.OnLinkIt
                                         break;
                                     case 5: //масштабировать
                                         //   setScale();
-                                        Intent loginIntent = (Intent) new Intent(BaseActivity.this, LoginActivity.class);
-                                        startActivity(loginIntent);
+                                        if (!TODOApplication.getInstance().isValidateToken()){
+                                            if (validateToken.getValidateToek()) {
+                                                TODOApplication.getInstance().setValidateToken(true);
+                                            } else {
+                                                Intent loginIntent = (Intent) new Intent(BaseActivity.this, LoginActivity.class);
+                                                startActivity(loginIntent);
+                                            }
+                                        } else {
+                                            Toast.makeText(BaseActivity.this,"Token "+PreferenceHelper.getInstance().getAuthToken()+" is Valid.",Toast.LENGTH_LONG).show();
+                                        }
                                         break;
                                     case 6: //About
                                         //    showAbout();
@@ -211,6 +222,13 @@ public class BaseActivity extends AppCompatActivity implements HomeMenu.OnLinkIt
         } else {
             getShopPage(0);
             runSplash();
+        }
+
+        validateToken = ValidateToken.getInstance();
+        if (!TODOApplication.getInstance().isValidateToken()){
+            if (validateToken.getValidateToek()) {
+                TODOApplication.getInstance().setValidateToken(true);
+            }
         }
     }
 

@@ -10,6 +10,7 @@ public interface BaseConstant {
     public static final String SPLASH_IS_INVISIBLE = "splash_is_invisible";
     public final String LOG_TAG = "myLogs";
     public final String TAG = "myLogs";
+    public final String errorLogin = "ErrorLogin";
 
     //API Constant
     public final String API_URL = "192.168.56.1:81";

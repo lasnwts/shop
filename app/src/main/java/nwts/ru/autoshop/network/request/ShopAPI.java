@@ -56,6 +56,11 @@ public interface UmoriliApi {
 
 public interface ShopAPI {
 
+    //validate token
+    //@Headers("Cache-Control: max-age=640000")
+    @GET(Api.GET_VALIDATE_APIKEY)
+    Call<UserModel> getValidateToken();
+
     //Create Login
     @Headers("Cache-Control: max-age=640000")
     @FormUrlEncoded

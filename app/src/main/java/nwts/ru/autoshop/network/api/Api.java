@@ -19,4 +19,5 @@ public interface Api {
     public String AccessKey = "12345";
     public String GET_LOGIN = "/ecommerce/v1/studentlogin";
     public String GET_CREATE_LOGIN  = "/ecommerce/v1/createstudent";
+    public String GET_VALIDATE_APIKEY  = "/ecommerce/apiv2/get-validate_apikey.php";
 }

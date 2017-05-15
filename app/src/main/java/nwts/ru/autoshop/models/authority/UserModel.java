@@ -9,9 +9,26 @@ import com.google.gson.annotations.SerializedName;
 
 public class UserModel {
 
+    @SerializedName("id")
+    @Expose
+    private Integer id;
+
+    @SerializedName("name")
+    @Expose
+    private String name;
+
+    @SerializedName("username")
+    @Expose
+    private String username;
+
+    @SerializedName("apikey")
+    @Expose
+    private String apikey;
+
     @SerializedName("error")
     @Expose
     private Boolean error;
+
     @SerializedName("message")
     @Expose
     private String message;
@@ -23,19 +40,6 @@ public class UserModel {
     public void setMessage(String message) {
         this.message = message;
     }
-
-    @SerializedName("id")
-    @Expose
-    private Integer id;
-    @SerializedName("name")
-    @Expose
-    private String name;
-    @SerializedName("username")
-    @Expose
-    private String username;
-    @SerializedName("apikey")
-    @Expose
-    private String apikey;
 
     public Boolean getError() {
         return error;
