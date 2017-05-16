@@ -25,15 +25,15 @@ public class CabinetModelDao extends AbstractDao<CabinetModel, Long> {
      */
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
-        public final static Property BalanceID = new Property(1, String.class, "balanceID", false, "BALANCE_ID");
-        public final static Property DateOperation = new Property(2, String.class, "dateOperation", false, "DATE_OPERATION");
-        public final static Property Balance = new Property(3, String.class, "balance", false, "BALANCE");
-        public final static Property CartID = new Property(4, String.class, "cartID", false, "CART_ID");
-        public final static Property TovarCount = new Property(5, String.class, "tovarCount", false, "TOVAR_COUNT");
-        public final static Property CartSumma = new Property(6, String.class, "cartSumma", false, "CART_SUMMA");
-        public final static Property OrderStatus0 = new Property(7, String.class, "orderStatus0", false, "ORDER_STATUS0");
-        public final static Property OrderStatus1 = new Property(8, String.class, "orderStatus1", false, "ORDER_STATUS1");
-        public final static Property OrderStatus2 = new Property(9, String.class, "orderStatus2", false, "ORDER_STATUS2");
+        public final static Property BalanceID = new Property(1, int.class, "balanceID", false, "BALANCE_ID");
+        public final static Property DateOperation = new Property(2, long.class, "dateOperation", false, "DATE_OPERATION");
+        public final static Property Balance = new Property(3, double.class, "balance", false, "BALANCE");
+        public final static Property CartID = new Property(4, int.class, "cartID", false, "CART_ID");
+        public final static Property TovarCount = new Property(5, int.class, "tovarCount", false, "TOVAR_COUNT");
+        public final static Property CartSumma = new Property(6, double.class, "cartSumma", false, "CART_SUMMA");
+        public final static Property OrderStatus0 = new Property(7, int.class, "orderStatus0", false, "ORDER_STATUS0");
+        public final static Property OrderStatus1 = new Property(8, int.class, "orderStatus1", false, "ORDER_STATUS1");
+        public final static Property OrderStatus2 = new Property(9, int.class, "orderStatus2", false, "ORDER_STATUS2");
         public final static Property Error = new Property(10, Boolean.class, "error", false, "ERROR");
         public final static Property Message = new Property(11, String.class, "message", false, "MESSAGE");
     }
@@ -55,15 +55,15 @@ public class CabinetModelDao extends AbstractDao<CabinetModel, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"CABINET_MODEL\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY ," + // 0: id
-                "\"BALANCE_ID\" TEXT," + // 1: balanceID
-                "\"DATE_OPERATION\" TEXT," + // 2: dateOperation
-                "\"BALANCE\" TEXT," + // 3: balance
-                "\"CART_ID\" TEXT," + // 4: cartID
-                "\"TOVAR_COUNT\" TEXT," + // 5: tovarCount
-                "\"CART_SUMMA\" TEXT," + // 6: cartSumma
-                "\"ORDER_STATUS0\" TEXT," + // 7: orderStatus0
-                "\"ORDER_STATUS1\" TEXT," + // 8: orderStatus1
-                "\"ORDER_STATUS2\" TEXT," + // 9: orderStatus2
+                "\"BALANCE_ID\" INTEGER NOT NULL ," + // 1: balanceID
+                "\"DATE_OPERATION\" INTEGER NOT NULL ," + // 2: dateOperation
+                "\"BALANCE\" REAL NOT NULL ," + // 3: balance
+                "\"CART_ID\" INTEGER NOT NULL ," + // 4: cartID
+                "\"TOVAR_COUNT\" INTEGER NOT NULL ," + // 5: tovarCount
+                "\"CART_SUMMA\" REAL NOT NULL ," + // 6: cartSumma
+                "\"ORDER_STATUS0\" INTEGER NOT NULL ," + // 7: orderStatus0
+                "\"ORDER_STATUS1\" INTEGER NOT NULL ," + // 8: orderStatus1
+                "\"ORDER_STATUS2\" INTEGER NOT NULL ," + // 9: orderStatus2
                 "\"ERROR\" INTEGER," + // 10: error
                 "\"MESSAGE\" TEXT);"); // 11: message
     }
@@ -82,51 +82,15 @@ public class CabinetModelDao extends AbstractDao<CabinetModel, Long> {
         if (id != null) {
             stmt.bindLong(1, id);
         }
- 
-        String balanceID = entity.getBalanceID();
-        if (balanceID != null) {
-            stmt.bindString(2, balanceID);
-        }
- 
-        String dateOperation = entity.getDateOperation();
-        if (dateOperation != null) {
-            stmt.bindString(3, dateOperation);
-        }
- 
-        String balance = entity.getBalance();
-        if (balance != null) {
-            stmt.bindString(4, balance);
-        }
- 
-        String cartID = entity.getCartID();
-        if (cartID != null) {
-            stmt.bindString(5, cartID);
-        }
- 
-        String tovarCount = entity.getTovarCount();
-        if (tovarCount != null) {
-            stmt.bindString(6, tovarCount);
-        }
- 
-        String cartSumma = entity.getCartSumma();
-        if (cartSumma != null) {
-            stmt.bindString(7, cartSumma);
-        }
- 
-        String orderStatus0 = entity.getOrderStatus0();
-        if (orderStatus0 != null) {
-            stmt.bindString(8, orderStatus0);
-        }
- 
-        String orderStatus1 = entity.getOrderStatus1();
-        if (orderStatus1 != null) {
-            stmt.bindString(9, orderStatus1);
-        }
- 
-        String orderStatus2 = entity.getOrderStatus2();
-        if (orderStatus2 != null) {
-            stmt.bindString(10, orderStatus2);
-        }
+        stmt.bindLong(2, entity.getBalanceID());
+        stmt.bindLong(3, entity.getDateOperation());
+        stmt.bindDouble(4, entity.getBalance());
+        stmt.bindLong(5, entity.getCartID());
+        stmt.bindLong(6, entity.getTovarCount());
+        stmt.bindDouble(7, entity.getCartSumma());
+        stmt.bindLong(8, entity.getOrderStatus0());
+        stmt.bindLong(9, entity.getOrderStatus1());
+        stmt.bindLong(10, entity.getOrderStatus2());
  
         Boolean error = entity.getError();
         if (error != null) {
@@ -147,51 +111,15 @@ public class CabinetModelDao extends AbstractDao<CabinetModel, Long> {
         if (id != null) {
             stmt.bindLong(1, id);
         }
- 
-        String balanceID = entity.getBalanceID();
-        if (balanceID != null) {
-            stmt.bindString(2, balanceID);
-        }
- 
-        String dateOperation = entity.getDateOperation();
-        if (dateOperation != null) {
-            stmt.bindString(3, dateOperation);
-        }
- 
-        String balance = entity.getBalance();
-        if (balance != null) {
-            stmt.bindString(4, balance);
-        }
- 
-        String cartID = entity.getCartID();
-        if (cartID != null) {
-            stmt.bindString(5, cartID);
-        }
- 
-        String tovarCount = entity.getTovarCount();
-        if (tovarCount != null) {
-            stmt.bindString(6, tovarCount);
-        }
- 
-        String cartSumma = entity.getCartSumma();
-        if (cartSumma != null) {
-            stmt.bindString(7, cartSumma);
-        }
- 
-        String orderStatus0 = entity.getOrderStatus0();
-        if (orderStatus0 != null) {
-            stmt.bindString(8, orderStatus0);
-        }
- 
-        String orderStatus1 = entity.getOrderStatus1();
-        if (orderStatus1 != null) {
-            stmt.bindString(9, orderStatus1);
-        }
- 
-        String orderStatus2 = entity.getOrderStatus2();
-        if (orderStatus2 != null) {
-            stmt.bindString(10, orderStatus2);
-        }
+        stmt.bindLong(2, entity.getBalanceID());
+        stmt.bindLong(3, entity.getDateOperation());
+        stmt.bindDouble(4, entity.getBalance());
+        stmt.bindLong(5, entity.getCartID());
+        stmt.bindLong(6, entity.getTovarCount());
+        stmt.bindDouble(7, entity.getCartSumma());
+        stmt.bindLong(8, entity.getOrderStatus0());
+        stmt.bindLong(9, entity.getOrderStatus1());
+        stmt.bindLong(10, entity.getOrderStatus2());
  
         Boolean error = entity.getError();
         if (error != null) {
@@ -219,15 +147,15 @@ public class CabinetModelDao extends AbstractDao<CabinetModel, Long> {
     public CabinetModel readEntity(Cursor cursor, int offset) {
         CabinetModel entity = new CabinetModel( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
-            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // balanceID
-            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // dateOperation
-            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // balance
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // cartID
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // tovarCount
-            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // cartSumma
-            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // orderStatus0
-            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // orderStatus1
-            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // orderStatus2
+            cursor.getInt(offset + 1), // balanceID
+            cursor.getLong(offset + 2), // dateOperation
+            cursor.getDouble(offset + 3), // balance
+            cursor.getInt(offset + 4), // cartID
+            cursor.getInt(offset + 5), // tovarCount
+            cursor.getDouble(offset + 6), // cartSumma
+            cursor.getInt(offset + 7), // orderStatus0
+            cursor.getInt(offset + 8), // orderStatus1
+            cursor.getInt(offset + 9), // orderStatus2
             cursor.isNull(offset + 10) ? null : cursor.getShort(offset + 10) != 0, // error
             cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11) // message
         );
@@ -237,15 +165,15 @@ public class CabinetModelDao extends AbstractDao<CabinetModel, Long> {
     @Override
     public void readEntity(Cursor cursor, CabinetModel entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setBalanceID(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
-        entity.setDateOperation(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
-        entity.setBalance(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
-        entity.setCartID(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-        entity.setTovarCount(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
-        entity.setCartSumma(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
-        entity.setOrderStatus0(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
-        entity.setOrderStatus1(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
-        entity.setOrderStatus2(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
+        entity.setBalanceID(cursor.getInt(offset + 1));
+        entity.setDateOperation(cursor.getLong(offset + 2));
+        entity.setBalance(cursor.getDouble(offset + 3));
+        entity.setCartID(cursor.getInt(offset + 4));
+        entity.setTovarCount(cursor.getInt(offset + 5));
+        entity.setCartSumma(cursor.getDouble(offset + 6));
+        entity.setOrderStatus0(cursor.getInt(offset + 7));
+        entity.setOrderStatus1(cursor.getInt(offset + 8));
+        entity.setOrderStatus2(cursor.getInt(offset + 9));
         entity.setError(cursor.isNull(offset + 10) ? null : cursor.getShort(offset + 10) != 0);
         entity.setMessage(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
      }

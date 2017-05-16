@@ -53,6 +53,9 @@ public class ValidateToken {
                         } else {
                             validateResult = true;
                             TODOApplication.getInstance().setValidateToken(true);
+                            PreferenceHelper.getInstance().putUserId(response.body().getId());
+                            PreferenceHelper.getInstance().putEmail(response.body().getUsername());
+                            PreferenceHelper.getInstance().putUserName(response.body().getName());
                         }
                     } else {
                         PreferenceHelper.getInstance().putAuthToken("");

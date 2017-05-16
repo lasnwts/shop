@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mikepenz.materialdrawer.AccountHeader;
@@ -25,6 +26,8 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +51,13 @@ public class CabinetBase extends AppCompatActivity {
     private String[] menu_items_Drawer;
     private int selectedDrawerItem = 0;
     private List<CabinetModel> mCabinetModels;
-    FloatingActionButton fab;
+    private FloatingActionButton fab;
+    private TextView mTextView;
+    private TextView mTextViewCart, mTextViewSumma;
+    // create price format
+    DecimalFormat formatData = new DecimalFormat("0.00");
+    SimpleDateFormat dateformat = new SimpleDateFormat("dd.MM.yyyy' 'HH:mm:ss");
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +87,10 @@ public class CabinetBase extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        mTextView = (TextView) findViewById(R.id.name_cabinet);
+        mTextViewCart = (TextView) findViewById(R.id.cart_content_cabinet);
+        mTextViewSumma = (TextView) findViewById(R.id.summa_cart_cabinet);
     }
 
     private void getMenuDriwer(Bundle savedInstanceState, Toolbar toolbar) {
@@ -237,6 +250,9 @@ public class CabinetBase extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventCabinet(CabinetModels event){
         mCabinetModels.addAll(event.getCabinetModels());
-        Toast.makeText(this,mCabinetModels.get(0).getBalanceID(), Toast.LENGTH_LONG).show();
+        mTextView.setText(preferenceHelper.getUserName());
+        mTextViewCart.setText(dateformat.format(mCabinetModels.get(0).getDateOperation()*1000l));
+        mTextViewSumma.setText(formatData.format(mCabinetModels.get(0).getCartSumma()));
+        Toast.makeText(this,""+mCabinetModels.get(0).getBalanceID(), Toast.LENGTH_LONG).show();
     }
 }

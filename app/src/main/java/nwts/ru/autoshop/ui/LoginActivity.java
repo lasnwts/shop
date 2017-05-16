@@ -477,6 +477,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                                 mResult = true;
                                 mToken = response.body().getApikey();
                                 mPreferenceHelper.putAuthToken(mToken);
+                                mPreferenceHelper.putUserId(response.body().getId());
                                 mPreferenceHelper.putEmail(response.body().getUsername());
                                 mPreferenceHelper.putUserName(response.body().getName());
                                 TODOApplication.getInstance().setValidateToken(true);

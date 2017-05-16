@@ -23,31 +23,31 @@ public class CabinetModel {
     private Long id;
     @SerializedName("Balance_ID")
     @Expose
-    private String balanceID;
+    private int balanceID;
     @SerializedName("Date_Operation")
     @Expose
-    private String dateOperation;
+    private long dateOperation;
     @SerializedName("Balance")
     @Expose
-    private String balance;
+    private double balance;
     @SerializedName("Cart_ID")
     @Expose
-    private String cartID;
+    private int cartID;
     @SerializedName("Tovar_Count")
     @Expose
-    private String tovarCount;
+    private int tovarCount;
     @SerializedName("CartSumma")
     @Expose
-    private String cartSumma;
+    private double cartSumma;
     @SerializedName("orderStatus0")
     @Expose
-    private String orderStatus0;
+    private int orderStatus0;
     @SerializedName("orderStatus1")
     @Expose
-    private String orderStatus1;
+    private int orderStatus1;
     @SerializedName("orderStatus2")
     @Expose
-    private String orderStatus2;
+    private int orderStatus2;
 
     @SerializedName("error")
     @Expose
@@ -62,11 +62,11 @@ public class CabinetModel {
     @Generated(hash = 1792680461)
     private transient CabinetModelDao myDao;
 
-    @Generated(hash = 890766024)
-    public CabinetModel(Long id, String balanceID, String dateOperation,
-            String balance, String cartID, String tovarCount, String cartSumma,
-            String orderStatus0, String orderStatus1, String orderStatus2,
-            Boolean error, String message) {
+
+    @Generated(hash = 894541346)
+    public CabinetModel(Long id, int balanceID, long dateOperation, double balance,
+            int cartID, int tovarCount, double cartSumma, int orderStatus0,
+            int orderStatus1, int orderStatus2, Boolean error, String message) {
         this.id = id;
         this.balanceID = balanceID;
         this.dateOperation = dateOperation;
@@ -81,81 +81,83 @@ public class CabinetModel {
         this.message = message;
     }
 
-
     @Generated(hash = 1022222618)
     public CabinetModel() {
     }
-    
 
-    public String getBalanceID() {
+
+
+
+
+    public int getBalanceID() {
         return balanceID;
     }
 
-    public void setBalanceID(String balanceID) {
+    public void setBalanceID(int balanceID) {
         this.balanceID = balanceID;
     }
 
-    public String getDateOperation() {
+    public long getDateOperation() {
         return dateOperation;
     }
 
-    public void setDateOperation(String dateOperation) {
+    public void setDateOperation(long dateOperation) {
         this.dateOperation = dateOperation;
     }
 
-    public String getBalance() {
+    public double getBalance() {
         return balance;
     }
 
-    public void setBalance(String balance) {
+    public void setBalance(double balance) {
         this.balance = balance;
     }
 
-    public String getCartID() {
+    public int getCartID() {
         return cartID;
     }
 
-    public void setCartID(String cartID) {
+    public void setCartID(int cartID) {
         this.cartID = cartID;
     }
 
-    public String getTovarCount() {
+    public int getTovarCount() {
         return tovarCount;
     }
 
-    public void setTovarCount(String tovarCount) {
+    public void setTovarCount(int tovarCount) {
         this.tovarCount = tovarCount;
     }
 
-    public String getCartSumma() {
+    public double getCartSumma() {
         return cartSumma;
     }
 
-    public void setCartSumma(String cartSumma) {
+    public void setCartSumma(double cartSumma) {
         this.cartSumma = cartSumma;
     }
 
-    public String getOrderStatus0() {
+    public int getOrderStatus0() {
         return orderStatus0;
     }
 
-    public void setOrderStatus0(String orderStatus0) {
+    public void setOrderStatus0(int orderStatus0) {
         this.orderStatus0 = orderStatus0;
     }
 
-    public String getOrderStatus1() {
+    public int getOrderStatus1() {
         return orderStatus1;
     }
 
-    public void setOrderStatus1(String orderStatus1) {
+    public void setOrderStatus1(int orderStatus1) {
         this.orderStatus1 = orderStatus1;
     }
 
-    public String getOrderStatus2() {
+    public int getOrderStatus2() {
         return orderStatus2;
     }
 
-    public void setOrderStatus2(String orderStatus2) {
+    public void setOrderStatus2(int orderStatus2) {
         this.orderStatus2 = orderStatus2;
     }
 
@@ -225,4 +227,6 @@ public class CabinetModel {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getCabinetModelDao() : null;
     }
+
+
 }

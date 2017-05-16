@@ -68,6 +68,12 @@ public class PreferenceHelper {
         return preferences.getString("AuthToken", null);
     }
 
+    public void putUserId(int value){
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt("UserId", value);
+        editor.apply();
+    }
+
     public String getUserName() {
         return preferences.getString("UserName", null);
     }
