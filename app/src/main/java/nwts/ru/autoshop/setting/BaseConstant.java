@@ -29,6 +29,7 @@ public interface BaseConstant {
     public final String ACTION_SERVICE_GET_SUBCATEGORY_LIST = "ru.nwts.get_subcategory_list";
     public final String ACTION_SERVICE_GET_PRODUCT_LIST = "ru.nwts.get_product_list"; //каталог проуктов из одной категории
     public final String ACTION_SERVICE_GET_PRODUCT_DETAIL = "ru.nwts.get_product_detail"; //детализация продукта
+    public final String ACTION_SERVICE_GET_CABINET = "ru.nwts.get-cabinet-data"; //информаиця о кабинете
 
     //URL between activities
     public final String URL_IMAGE_DOWNLOADED = "url_downloaded";

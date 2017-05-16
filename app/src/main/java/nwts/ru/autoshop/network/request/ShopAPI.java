@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 import nwts.ru.autoshop.models.authority.AccessCreateUser;
 import nwts.ru.autoshop.models.authority.UserModel;
+import nwts.ru.autoshop.models.network.CabinetModel;
 import nwts.ru.autoshop.network.HeaderInterceptor;
 import nwts.ru.autoshop.network.HeaderLoggingInterceptor;
 import nwts.ru.autoshop.network.api.Api;
@@ -60,6 +61,9 @@ public interface ShopAPI {
     //@Headers("Cache-Control: max-age=640000")
     @GET(Api.GET_VALIDATE_APIKEY)
     Call<UserModel> getValidateToken();
+
+    @GET(Api.GET_CABINET_APIKEY)
+    Call<List<CabinetModel>> getCabinet();
 
     //Create Login
     @Headers("Cache-Control: max-age=640000")

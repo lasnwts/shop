@@ -434,7 +434,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                             if (response.code() == 201) {
                                 //Toast.makeText(LoginActivity.this, "Success:" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
                                 mResult = true;
-                                if (ValidateToken.getInstance().getValidateToek()){
+                                if (ValidateToken.getInstance().getValidateToken()){
                                     TODOApplication.getInstance().setValidateToken(true);
                                 }
                             } else {

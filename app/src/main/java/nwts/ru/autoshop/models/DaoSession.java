@@ -10,12 +10,14 @@ import org.greenrobot.greendao.internal.DaoConfig;
 
 import nwts.ru.autoshop.models.CategoryItem;
 import nwts.ru.autoshop.models.GetCache;
+import nwts.ru.autoshop.models.network.CabinetModel;
 import nwts.ru.autoshop.models.ProductCategory;
 import nwts.ru.autoshop.models.ProductDetailImage;
 import nwts.ru.autoshop.models.SubCategoryItem;
 
 import nwts.ru.autoshop.models.CategoryItemDao;
 import nwts.ru.autoshop.models.GetCacheDao;
+import nwts.ru.autoshop.models.network.CabinetModelDao;
 import nwts.ru.autoshop.models.ProductCategoryDao;
 import nwts.ru.autoshop.models.ProductDetailImageDao;
 import nwts.ru.autoshop.models.SubCategoryItemDao;
@@ -31,12 +33,14 @@ public class DaoSession extends AbstractDaoSession {
 
     private final DaoConfig categoryItemDaoConfig;
     private final DaoConfig getCacheDaoConfig;
+    private final DaoConfig cabinetModelDaoConfig;
     private final DaoConfig productCategoryDaoConfig;
     private final DaoConfig productDetailImageDaoConfig;
     private final DaoConfig subCategoryItemDaoConfig;
 
     private final CategoryItemDao categoryItemDao;
     private final GetCacheDao getCacheDao;
+    private final CabinetModelDao cabinetModelDao;
     private final ProductCategoryDao productCategoryDao;
     private final ProductDetailImageDao productDetailImageDao;
     private final SubCategoryItemDao subCategoryItemDao;
@@ -51,6 +55,9 @@ public class DaoSession extends AbstractDaoSession {
         getCacheDaoConfig = daoConfigMap.get(GetCacheDao.class).clone();
         getCacheDaoConfig.initIdentityScope(type);
 
+        cabinetModelDaoConfig = daoConfigMap.get(CabinetModelDao.class).clone();
+        cabinetModelDaoConfig.initIdentityScope(type);
+
         productCategoryDaoConfig = daoConfigMap.get(ProductCategoryDao.class).clone();
         productCategoryDaoConfig.initIdentityScope(type);
 
@@ -62,12 +69,14 @@ public class DaoSession extends AbstractDaoSession {
 
         categoryItemDao = new CategoryItemDao(categoryItemDaoConfig, this);
         getCacheDao = new GetCacheDao(getCacheDaoConfig, this);
+        cabinetModelDao = new CabinetModelDao(cabinetModelDaoConfig, this);
         productCategoryDao = new ProductCategoryDao(productCategoryDaoConfig, this);
         productDetailImageDao = new ProductDetailImageDao(productDetailImageDaoConfig, this);
         subCategoryItemDao = new SubCategoryItemDao(subCategoryItemDaoConfig, this);
 
         registerDao(CategoryItem.class, categoryItemDao);
         registerDao(GetCache.class, getCacheDao);
+        registerDao(CabinetModel.class, cabinetModelDao);
         registerDao(ProductCategory.class, productCategoryDao);
         registerDao(ProductDetailImage.class, productDetailImageDao);
         registerDao(SubCategoryItem.class, subCategoryItemDao);
@@ -76,6 +85,7 @@ public class DaoSession extends AbstractDaoSession {
     public void clear() {
         categoryItemDaoConfig.clearIdentityScope();
         getCacheDaoConfig.clearIdentityScope();
+        cabinetModelDaoConfig.clearIdentityScope();
         productCategoryDaoConfig.clearIdentityScope();
         productDetailImageDaoConfig.clearIdentityScope();
         subCategoryItemDaoConfig.clearIdentityScope();
@@ -87,6 +97,10 @@ public class DaoSession extends AbstractDaoSession {
 
     public GetCacheDao getGetCacheDao() {
         return getCacheDao;
+    }
+
+    public CabinetModelDao getCabinetModelDao() {
+        return cabinetModelDao;
     }
 
     public ProductCategoryDao getProductCategoryDao() {

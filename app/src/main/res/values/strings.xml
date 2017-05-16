@@ -9,15 +9,26 @@
 
 
     <string name="exit">Выйти</string>
+    <string name="ret_exit">Вернуться</string>
 
     <string-array name="menu_items">
         <item>Главная</item>
         <item>Товары</item>
         <item>Корзина</item>
-        <item>Заказы</item>
         <item>Кабинет</item>
-        <item>Информация</item>
+        <item>Контакты</item>
+        <item>О магазине</item>
         <item>О приложении</item>
+        <item>Контакты</item>
+    </string-array>
+
+    <string-array name="menu_cabinet_items">
+        <item>Главная</item>
+        <item>Товары</item>
+        <item>Корзина</item>
+        <item>Кабинет</item>
+        <item>Заказы</item>
+        <item>Баланс</item>
         <item>Контакты</item>
     </string-array>
 
@@ -180,4 +191,5 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="title_activity_cabinet">cabinet</string>
 </resources>

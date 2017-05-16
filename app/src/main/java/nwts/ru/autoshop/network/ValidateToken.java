@@ -35,7 +35,7 @@ public class ValidateToken {
         return  INSTANCE;
     }
 
-    public boolean getValidateToek(){
+    public boolean getValidateToken(){
 
         if (TextUtils.isEmpty(PreferenceHelper.getInstance().getAuthToken())) {
             return false;

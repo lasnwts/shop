@@ -31,7 +31,13 @@ public class ServiceHelper extends Service {
 
         Log.d(BaseConstant.TAG, "Start ServiceHelper:onStartCommand: services..");
         if (intent != null){
-            if (intent.getAction() != null){
+            if (intent.getAction() != null) {
+                if (intent.getAction().equals(BaseConstant.ACTION_SERVICE_GET_CABINET)){
+                    Log.d(BaseConstant.TAG, "Start ServiceHelper:BaseConstant.ACTION_SERVICE_GET_CABINET..");
+                    Intent intent1Service = new Intent(getApplication(), ServiceIntentGetData.class);
+                    intent1Service.putExtra(BaseConstant.API_PAGE ,BaseConstant.ACTION_SERVICE_GET_CABINET);
+                    startService(intent1Service);
+                }
                 if (intent.getAction().equals(BaseConstant.ACTION_SERVICE_GET_CATEGORY_LIST)){
                     Log.d(BaseConstant.TAG, "Start ServiceHelper:BaseConstant.ACTION_SERVICE_GET_CATEGORY_LIST..");
                     Intent intent1Service = new Intent(getApplication(), ServiceIntentGetData.class);

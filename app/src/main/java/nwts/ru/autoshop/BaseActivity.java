@@ -22,9 +22,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
-
-import org.greenrobot.eventbus.EventBus;
 
 import nwts.ru.autoshop.network.ValidateToken;
 import nwts.ru.autoshop.ui.About;
@@ -32,6 +29,7 @@ import nwts.ru.autoshop.fragment.HomeMenu;
 import nwts.ru.autoshop.fragment.ProductCatalog;
 import nwts.ru.autoshop.fragment.SubCatalog;
 import nwts.ru.autoshop.setting.ToolBarTitle;
+import nwts.ru.autoshop.ui.CabinetBase;
 import nwts.ru.autoshop.ui.Information;
 import nwts.ru.autoshop.fragment.Category;
 import nwts.ru.autoshop.fragment.SplashScreen;
@@ -158,21 +156,21 @@ public class BaseActivity extends AppCompatActivity implements HomeMenu.OnLinkIt
                                         //    startActivity(Intent.createChooser(shareIntent, getString(R.string.share_to)));
                                         break;
                                     case 4:
-                                        //    DialogFragmentYesNo dialogFragmentYesNo = DialogFragmentYesNo.newInstance(0, 0, getResources().getString(R.string.dialog_title_yes_no_logout));
-                                        //    dialogFragmentYesNo.show(manager, "dialog");
-                                        break;
-                                    case 5: //масштабировать
-                                        //   setScale();
                                         if (!TODOApplication.getInstance().isValidateToken()){
-                                            if (validateToken.getValidateToek()) {
+                                            if (validateToken.getValidateToken()) {
                                                 TODOApplication.getInstance().setValidateToken(true);
                                             } else {
                                                 Intent loginIntent = (Intent) new Intent(BaseActivity.this, LoginActivity.class);
                                                 startActivity(loginIntent);
                                             }
                                         } else {
-                                            Toast.makeText(BaseActivity.this,"Token "+PreferenceHelper.getInstance().getAuthToken()+" is Valid.",Toast.LENGTH_LONG).show();
+                                           // Toast.makeText(BaseActivity.this,"Token "+PreferenceHelper.getInstance().getAuthToken()+" is Valid.",Toast.LENGTH_LONG).show();
+                                            Intent cabinetIntent = (Intent) new Intent(BaseActivity.this, CabinetBase.class);
+                                            startActivity(cabinetIntent);
                                         }
+                                        break;
+                                    case 5: //масштабировать
+                                        //   setScale();
                                         break;
                                     case 6: //About
                                         //    showAbout();
@@ -226,7 +224,7 @@ public class BaseActivity extends AppCompatActivity implements HomeMenu.OnLinkIt
 
         validateToken = ValidateToken.getInstance();
         if (!TODOApplication.getInstance().isValidateToken()){
-            if (validateToken.getValidateToek()) {
+            if (validateToken.getValidateToken()) {
                 TODOApplication.getInstance().setValidateToken(true);
             }
         }

@@ -46,6 +46,11 @@
             android:name=".ui.LoginActivity"
             android:label="@string/title_activity_login">
         </activity>
+        <activity
+            android:name=".ui.CabinetBase"
+            android:label="@string/title_activity_cabinet"
+            android:theme="@style/AppTheme">
+        </activity>
     </application>
 
 </manifest>
