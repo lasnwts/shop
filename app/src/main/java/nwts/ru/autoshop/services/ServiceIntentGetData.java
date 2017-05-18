@@ -484,14 +484,12 @@ public class ServiceIntentGetData extends IntentService {
         if (orderModelList == null || orderModelList.size() < 1) {
             return;
         } else {
-            for (int i = 0; i < orderModelList.size(); i++) {
                 Query<OrderModel> mOrderModel = mDaoSession.queryBuilder(OrderModel.class).
                         where(OrderModelDao.Properties.User_ID.eq(userId)).build();
                 mOrderModels = mOrderModel.list();
                 if (mOrderModels != null && mOrderModels.size() != 0 && !mOrderModels.isEmpty()) {
                     mOrderModelDao.deleteInTx(mOrderModels);
                 }
-            }
             mOrderModelDao.insertOrReplaceInTx(orderModelList);
         }
     }

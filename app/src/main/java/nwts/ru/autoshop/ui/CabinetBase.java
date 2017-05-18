@@ -99,10 +99,27 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
         bnv.setOnNavigationItemSelectedListener(getBottomNavigationListener());
         Fragment fragment = getFragmentManager().findFragmentById(R.id.content_frame_cabinet);
         //String tag = (String) fragment.getTag();
-        getOrders();
+        if (savedInstanceState != null) {
+            if (savedInstanceState.get(BaseConstant.TAG_CABINET) != null) {
+                if (savedInstanceState.get(BaseConstant.TAG_CABINET).equals(BaseConstant.TAG_ORDERS_FRAGMENT)) {
+                    getOrders();
+                }
+                if (savedInstanceState.get(BaseConstant.TAG_CABINET).equals(BaseConstant.TAG_BALANCE_FRAGMENT)) {
+              //      getOrders();
+                }
+                if (savedInstanceState.get(BaseConstant.TAG_CABINET).equals(BaseConstant.TAG_CART_FRAGMENT)) {
+              //      getOrders();
+                }
+            } else {
+                getOrders();
+            }
+        } else {
+            getOrders();
+        }
     }
 
     private void getOrders(){
+        mTextViewNameFragment.setText(R.string.name_liost_orders);
         OrdersFragment ordersFragment = new OrdersFragment();
         if ( getFragmentManager().getBackStackEntryCount() != 0) {
             getFragmentManager().popBackStack();
@@ -118,7 +135,7 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.action_orders:
-                        mTextViewNameFragment.setText(R.string.name_liost_orders);
+                        getOrders();
 //                        textFavorites.setVisibility(View.VISIBLE);
 //                        textCollection.setVisibility(View.GONE);
 //                        textFriends.setVisibility(View.GONE);
@@ -301,11 +318,36 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
         mTextView.setText(preferenceHelper.getUserName());
         mTextViewCart.setText(dateformat.format(mCabinetModels.get(0).getDateOperation()*1000l));
         mTextViewSumma.setText(formatData.format(mCabinetModels.get(0).getCartSumma()));
-        Toast.makeText(this,""+mCabinetModels.get(0).getBalanceID(), Toast.LENGTH_LONG).show();
+        //Toast.makeText(this,""+mCabinetModels.get(0).getBalanceID(), Toast.LENGTH_LONG).show();
+       // selectorFragments();
     }
 
     @Override
     public void startOrder(int item) {
-        Toast.makeText(this,"id = "+ item,Toast.LENGTH_LONG).show();
+        Toast.makeText(this,"id = "+ item,Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        Fragment fragment = getFragmentManager().findFragmentById(R.id.content_frame_cabinet);
+        String tag = (String) fragment.getTag();
+        outState.putString(BaseConstant.TAG_CABINET,  tag);
+        super.onSaveInstanceState(outState);
+    }
+
+    private void selectorFragments(){
+        Fragment fragment = getFragmentManager().findFragmentById(R.id.content_frame_cabinet);
+        String tag = (String) fragment.getTag();
+        if (tag != null) {
+            if (tag.equals(BaseConstant.TAG_ORDERS_FRAGMENT)) {
+                getOrders();
+            }
+            if (tag.equals(BaseConstant.TAG_BALANCE_FRAGMENT)) {
+          //      getOrders();
+            }
+            if (tag.equals(BaseConstant.TAG_CART_FRAGMENT)) {
+         //       getOrders();
+            }
+        }
     }
 }

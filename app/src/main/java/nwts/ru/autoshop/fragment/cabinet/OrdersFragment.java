@@ -31,6 +31,7 @@ import nwts.ru.autoshop.models.network.OrderModels;
 import nwts.ru.autoshop.services.ServiceHelper;
 import nwts.ru.autoshop.setting.BaseConstant;
 import nwts.ru.autoshop.setting.PreferenceHelper;
+import nwts.ru.autoshop.ui.CabinetBase;
 
 /**
  * Created by пользователь on 17.05.2017.
@@ -51,6 +52,7 @@ public class OrdersFragment extends Fragment {
         GRID_LAYOUT_MANAGER,
         LINEAR_LAYOUT_MANAGER
     }
+    private isOrdersFragment mIsOrdersFragment;
     // create price format
     DecimalFormat formatData = new DecimalFormat("0.00");
     SimpleDateFormat dateformat = new SimpleDateFormat("dd.MM.yyyy");
@@ -81,6 +83,8 @@ public class OrdersFragment extends Fragment {
             @Override
             public void adapterOnClickListener(int item) {
                 //item click...
+                mIsOrdersFragment = (isOrdersFragment) activity_context;
+                mIsOrdersFragment.startOrder(item);
             }
         });
         recyclerView.setAdapter(adapterOrders);
@@ -123,6 +127,12 @@ public class OrdersFragment extends Fragment {
     public void onSaveInstanceState(Bundle outState) {
         outState.putBoolean(TAG, true);
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
     }
 
     public interface isOrdersFragment {

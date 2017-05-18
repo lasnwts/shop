@@ -45,6 +45,7 @@ public interface BaseConstant {
     public final static String TAG_PRODUCT_DETAIL_FRAGMENT = "tag_product_detail_fragment";
     public final static String TAG_MAIN_MENU_FRAGMENT = "tag_main_menu_fragment";
     //Cabinet fragment
+    public final static String TAG_CABINET = "tag_cabinet";
     public final static String TAG_ORDERS_FRAGMENT = "tag_orders_fragment";
     public final static String TAG_BALANCE_FRAGMENT = "tag_balance_fragment";
     public final static String TAG_CART_FRAGMENT = "tag_cart_fragment";
