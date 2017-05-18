@@ -3,7 +3,6 @@ package nwts.ru.autoshop.services;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
-import android.database.sqlite.SQLiteException;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.annotation.Nullable;
@@ -16,7 +15,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import nwts.ru.autoshop.TODOApplication;
 import nwts.ru.autoshop.databases.DataManager;
 import nwts.ru.autoshop.models.CategoryItem;
 import nwts.ru.autoshop.models.CategoryItemDao;
@@ -34,6 +32,9 @@ import nwts.ru.autoshop.models.SubCategoryItemDao;
 import nwts.ru.autoshop.models.network.CabinetModel;
 import nwts.ru.autoshop.models.network.CabinetModelDao;
 import nwts.ru.autoshop.models.network.CabinetModels;
+import nwts.ru.autoshop.models.network.OrderModel;
+import nwts.ru.autoshop.models.network.OrderModelDao;
+import nwts.ru.autoshop.models.network.OrderModels;
 import nwts.ru.autoshop.network.request.ShopAPI;
 import nwts.ru.autoshop.models.SubCategoryItem;
 import nwts.ru.autoshop.models.SubCategoryItems;
@@ -50,14 +51,20 @@ import retrofit2.Response;
 
 public class ServiceIntentGetData extends IntentService {
 
+    //заказы
+    List<OrderModel> mOrderModels;
+    private OrderModels mOrderModelsList;
+    private OrderModelDao mOrderModelDao;
+    //Кабинет
     List<CabinetModel> cabinetModels;
+    private CabinetModelDao mCabinetModelDao;
+    //
     List<CategoryItem> categoryItems;
     private CategoryItems mCategoryItemsList;
     List<ProductCategory> productCategory;
     List<SubCategoryItem> subCategoryItems;
     private SubCategoryItem mSubCategoryItem;
     private SubCategoryItemDao mSubCategoryItemDao;
-    //  List<ProductDetail> productDetail;
     List<ProductDetailImage> productDetailImages;
     private ProductDetailImage mProductDetailImage;
     private ProductDetailImageDao mProductDetailImageDao;
@@ -66,7 +73,6 @@ public class ServiceIntentGetData extends IntentService {
     GetCache mGetCache;
     private GetCacheDao mGetCacheDao;
     private CategoryItemDao mCategoryItemDao;
-    private CabinetModelDao mCabinetModelDao;
     private long timeLoadedFromServer = 60000 * 3; //1 min
     private DaoSession mDaoSession;
 
@@ -79,6 +85,7 @@ public class ServiceIntentGetData extends IntentService {
         super.onCreate();
         Log.d(BaseConstant.TAG, "Start:ServiceHelper:ServiceIntentGetData:Create: services..");
         categoryItems = new ArrayList<>();
+        mOrderModels = new ArrayList<>();
         productCategory = new ArrayList<>();
         cabinetModels = new ArrayList<>();
         subCategoryItems = new ArrayList<>();
@@ -96,6 +103,7 @@ public class ServiceIntentGetData extends IntentService {
             mSubCategoryItemDao = mDaoSession.getSubCategoryItemDao();
             mProductDetailImageDao = mDaoSession.getProductDetailImageDao();
             mCabinetModelDao = mDaoSession.getCabinetModelDao();
+            mOrderModelDao = mDaoSession.getOrderModelDao();
         }
     }
 
@@ -114,6 +122,13 @@ public class ServiceIntentGetData extends IntentService {
                     cabinetModels.clear();
                 }
                 getCabinet();
+            }
+            if (intent.getStringExtra(BaseConstant.API_PAGE).equals(BaseConstant.ACTION_SERVICE_GET_ORDERS)) {
+                int key_id = intent.getIntExtra(BaseConstant.API_GET_KEY, 0);
+                if (mOrderModels != null) {
+                    mOrderModels.clear();
+                }
+                getOrders(key_id);
             }
             if (intent.getStringExtra(BaseConstant.API_PAGE).equals(BaseConstant.ACTION_SERVICE_GET_SUBCATEGORY_LIST)) {
                 int key_id = intent.getIntExtra(BaseConstant.API_GET_KEY, 0);
@@ -143,6 +158,35 @@ public class ServiceIntentGetData extends IntentService {
         }
     }
 
+    //get заказы
+    private void getOrders(final int userId) {
+        ShopAPI shopApi = ShopAPI.retrofit.create(ShopAPI.class);
+        final Call<List<OrderModel>> call = shopApi.getCabinetOrders();
+        if (System.currentTimeMillis() - getDateTimeFromGetCache(call.request().toString()) > timeLoadedFromServer) {
+            call.enqueue(new Callback<List<OrderModel>>() {
+                @Override
+                public void onResponse(Call<List<OrderModel>> call, Response<List<OrderModel>> response) {
+                    if (response.isSuccessful()) {
+                        mOrderModels.addAll(response.body());
+                        putGetCache(call.request().toString());
+                        putCabinetOrders(mOrderModels,userId);
+                        //EventBus.getDefault().post(new OrderModels(mOrderModels,200));
+                        getCabinetOrdersDao(userId, 200);
+                    } else {
+                        getCabinetOrdersDao(userId, 400);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<List<OrderModel>> call, Throwable throwable) {
+                    getCabinetOrdersDao(userId, 500);
+                }
+            });
+        } else {
+            getCabinetOrdersDao(userId, 700);
+        }
+    }
+
     private void getCabinet() {
         ShopAPI shopApi = ShopAPI.retrofit.create(ShopAPI.class);
         final Call<List<CabinetModel>> call = shopApi.getCabinet();
@@ -155,18 +199,21 @@ public class ServiceIntentGetData extends IntentService {
                         EventBus.getDefault().post(new CabinetModels(cabinetModels, 200));
                         putCabinet(cabinetModels);
                         putGetCache(call.request().toString());
+                    } else {
+                        getCabinetDao(400);
                     }
                 }
 
                 @Override
                 public void onFailure(Call<List<CabinetModel>> call, Throwable t) {
-
+                    getCabinetDao(500);
                 }
             });
         } else {
             getCabinetDao(700);
         }
     }
+
 
     private void getCategory() {
         Log.d(BaseConstant.TAG, "Start:ServiceHelper:ServiceIntentGetData:: services.getCategory.");
@@ -429,6 +476,26 @@ public class ServiceIntentGetData extends IntentService {
         }
     }
 
+
+    /**
+     *  Сохраняем значения заказов
+     */
+    private void putCabinetOrders(List<OrderModel> orderModelList, int userId) {
+        if (orderModelList == null || orderModelList.size() < 1) {
+            return;
+        } else {
+            for (int i = 0; i < orderModelList.size(); i++) {
+                Query<OrderModel> mOrderModel = mDaoSession.queryBuilder(OrderModel.class).
+                        where(OrderModelDao.Properties.User_ID.eq(userId)).build();
+                mOrderModels = mOrderModel.list();
+                if (mOrderModels != null && mOrderModels.size() != 0 && !mOrderModels.isEmpty()) {
+                    mOrderModelDao.deleteInTx(mOrderModels);
+                }
+            }
+            mOrderModelDao.insertOrReplaceInTx(orderModelList);
+        }
+    }
+
     /**
      * Вставка и удаление из кэша старых записей
      *
@@ -578,9 +645,18 @@ public class ServiceIntentGetData extends IntentService {
         }
     }
 
+
     private void getCabinetDao(int errors) {
         Query<CabinetModel> mCabinetModel = mDaoSession.queryBuilder(CabinetModel.class).build();
         cabinetModels = mCabinetModel.list();
         EventBus.getDefault().post(new CabinetModels(cabinetModels, errors));
+    }
+
+    //Получаем заказы из памяти
+    private void getCabinetOrdersDao(int userId, int errors) {
+        Query<OrderModel> mOrderModel = mDaoSession.queryBuilder(OrderModel.class).
+                where(OrderModelDao.Properties.User_ID.eq(userId)).orderDesc(OrderModelDao.Properties.Date_Operation).build();
+        mOrderModels = mOrderModel.list();
+        EventBus.getDefault().post(new OrderModels(mOrderModels, errors));
     }
 }

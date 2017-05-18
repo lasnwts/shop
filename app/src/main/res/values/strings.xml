@@ -192,4 +192,14 @@
         completions."
     </string>
     <string name="title_activity_cabinet">cabinet</string>
+    <string name="error_net">Сервер недоступен:</string>
+    <string name="balans_on_date">Баланс на :</string>
+    <string name="bottom_nav_text_orders">Заказы</string>
+    <string name="bottom_nav_text_balance">Баланс</string>
+    <string name="bottom_nav_text_cart">Корзина</string>
+    <string name="name_liost_orders">Заказы (перечень)</string>
+    <string name="cabinet_date">Дата</string>
+    <string name="cabinet_summa">Сумма</string>
+    <string name="cabinet_summa_name">Статус</string>
+
 </resources>

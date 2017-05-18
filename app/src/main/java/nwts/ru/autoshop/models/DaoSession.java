@@ -11,6 +11,7 @@ import org.greenrobot.greendao.internal.DaoConfig;
 import nwts.ru.autoshop.models.CategoryItem;
 import nwts.ru.autoshop.models.GetCache;
 import nwts.ru.autoshop.models.network.CabinetModel;
+import nwts.ru.autoshop.models.network.OrderModel;
 import nwts.ru.autoshop.models.ProductCategory;
 import nwts.ru.autoshop.models.ProductDetailImage;
 import nwts.ru.autoshop.models.SubCategoryItem;
@@ -18,6 +19,7 @@ import nwts.ru.autoshop.models.SubCategoryItem;
 import nwts.ru.autoshop.models.CategoryItemDao;
 import nwts.ru.autoshop.models.GetCacheDao;
 import nwts.ru.autoshop.models.network.CabinetModelDao;
+import nwts.ru.autoshop.models.network.OrderModelDao;
 import nwts.ru.autoshop.models.ProductCategoryDao;
 import nwts.ru.autoshop.models.ProductDetailImageDao;
 import nwts.ru.autoshop.models.SubCategoryItemDao;
@@ -34,6 +36,7 @@ public class DaoSession extends AbstractDaoSession {
     private final DaoConfig categoryItemDaoConfig;
     private final DaoConfig getCacheDaoConfig;
     private final DaoConfig cabinetModelDaoConfig;
+    private final DaoConfig orderModelDaoConfig;
     private final DaoConfig productCategoryDaoConfig;
     private final DaoConfig productDetailImageDaoConfig;
     private final DaoConfig subCategoryItemDaoConfig;
@@ -41,6 +44,7 @@ public class DaoSession extends AbstractDaoSession {
     private final CategoryItemDao categoryItemDao;
     private final GetCacheDao getCacheDao;
     private final CabinetModelDao cabinetModelDao;
+    private final OrderModelDao orderModelDao;
     private final ProductCategoryDao productCategoryDao;
     private final ProductDetailImageDao productDetailImageDao;
     private final SubCategoryItemDao subCategoryItemDao;
@@ -58,6 +62,9 @@ public class DaoSession extends AbstractDaoSession {
         cabinetModelDaoConfig = daoConfigMap.get(CabinetModelDao.class).clone();
         cabinetModelDaoConfig.initIdentityScope(type);
 
+        orderModelDaoConfig = daoConfigMap.get(OrderModelDao.class).clone();
+        orderModelDaoConfig.initIdentityScope(type);
+
         productCategoryDaoConfig = daoConfigMap.get(ProductCategoryDao.class).clone();
         productCategoryDaoConfig.initIdentityScope(type);
 
@@ -70,6 +77,7 @@ public class DaoSession extends AbstractDaoSession {
         categoryItemDao = new CategoryItemDao(categoryItemDaoConfig, this);
         getCacheDao = new GetCacheDao(getCacheDaoConfig, this);
         cabinetModelDao = new CabinetModelDao(cabinetModelDaoConfig, this);
+        orderModelDao = new OrderModelDao(orderModelDaoConfig, this);
         productCategoryDao = new ProductCategoryDao(productCategoryDaoConfig, this);
         productDetailImageDao = new ProductDetailImageDao(productDetailImageDaoConfig, this);
         subCategoryItemDao = new SubCategoryItemDao(subCategoryItemDaoConfig, this);
@@ -77,6 +85,7 @@ public class DaoSession extends AbstractDaoSession {
         registerDao(CategoryItem.class, categoryItemDao);
         registerDao(GetCache.class, getCacheDao);
         registerDao(CabinetModel.class, cabinetModelDao);
+        registerDao(OrderModel.class, orderModelDao);
         registerDao(ProductCategory.class, productCategoryDao);
         registerDao(ProductDetailImage.class, productDetailImageDao);
         registerDao(SubCategoryItem.class, subCategoryItemDao);
@@ -86,6 +95,7 @@ public class DaoSession extends AbstractDaoSession {
         categoryItemDaoConfig.clearIdentityScope();
         getCacheDaoConfig.clearIdentityScope();
         cabinetModelDaoConfig.clearIdentityScope();
+        orderModelDaoConfig.clearIdentityScope();
         productCategoryDaoConfig.clearIdentityScope();
         productDetailImageDaoConfig.clearIdentityScope();
         subCategoryItemDaoConfig.clearIdentityScope();
@@ -101,6 +111,10 @@ public class DaoSession extends AbstractDaoSession {
 
     public CabinetModelDao getCabinetModelDao() {
         return cabinetModelDao;
+    }
+
+    public OrderModelDao getOrderModelDao() {
+        return orderModelDao;
     }
 
     public ProductCategoryDao getProductCategoryDao() {

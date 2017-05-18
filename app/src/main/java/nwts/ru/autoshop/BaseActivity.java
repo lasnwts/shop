@@ -22,6 +22,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import nwts.ru.autoshop.network.ValidateToken;
 import nwts.ru.autoshop.ui.About;
@@ -160,8 +161,12 @@ public class BaseActivity extends AppCompatActivity implements HomeMenu.OnLinkIt
                                             if (validateToken.getValidateToken()) {
                                                 TODOApplication.getInstance().setValidateToken(true);
                                             } else {
-                                                Intent loginIntent = (Intent) new Intent(BaseActivity.this, LoginActivity.class);
-                                                startActivity(loginIntent);
+                                                if (!preferenceHelper.getBoolean(BaseConstant.errorNetworkValidation)) {
+                                                    Intent loginIntent = (Intent) new Intent(BaseActivity.this, LoginActivity.class);
+                                                    startActivity(loginIntent);
+                                                } else {
+                                                    Toast.makeText(BaseActivity.this, "Войти в кабинет невозможно, отсутствует связь с сервером.", Toast.LENGTH_LONG).show();
+                                                }
                                             }
                                         } else {
                                            // Toast.makeText(BaseActivity.this,"Token "+PreferenceHelper.getInstance().getAuthToken()+" is Valid.",Toast.LENGTH_LONG).show();
@@ -222,6 +227,8 @@ public class BaseActivity extends AppCompatActivity implements HomeMenu.OnLinkIt
             runSplash();
         }
 
+        //set net validation
+        PreferenceHelper.getInstance().putBoolean(BaseConstant.errorNetworkValidation,false);
         validateToken = ValidateToken.getInstance();
         if (!TODOApplication.getInstance().isValidateToken()){
             if (validateToken.getValidateToken()) {

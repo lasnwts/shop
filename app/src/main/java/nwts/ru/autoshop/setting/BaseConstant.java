@@ -11,6 +11,8 @@ public interface BaseConstant {
     public final String LOG_TAG = "myLogs";
     public final String TAG = "myLogs";
     public final String errorLogin = "ErrorLogin";
+    public final String errorNetworkValidation = "ErrorNetValidation";
+
 
     //API Constant
     public final String API_URL = "192.168.56.1:81";
@@ -30,6 +32,7 @@ public interface BaseConstant {
     public final String ACTION_SERVICE_GET_PRODUCT_LIST = "ru.nwts.get_product_list"; //каталог проуктов из одной категории
     public final String ACTION_SERVICE_GET_PRODUCT_DETAIL = "ru.nwts.get_product_detail"; //детализация продукта
     public final String ACTION_SERVICE_GET_CABINET = "ru.nwts.get-cabinet-data"; //информаиця о кабинете
+    public final String ACTION_SERVICE_GET_ORDERS = "ru.nwts.get-cabinet-orders"; //информаиця о заказах
 
     //URL between activities
     public final String URL_IMAGE_DOWNLOADED = "url_downloaded";
@@ -41,6 +44,10 @@ public interface BaseConstant {
     public final static String TAG_PRODUCT_CATALOG_FRAGMENT = "tag_product_catalog_fragment";
     public final static String TAG_PRODUCT_DETAIL_FRAGMENT = "tag_product_detail_fragment";
     public final static String TAG_MAIN_MENU_FRAGMENT = "tag_main_menu_fragment";
+    //Cabinet fragment
+    public final static String TAG_ORDERS_FRAGMENT = "tag_orders_fragment";
+    public final static String TAG_BALANCE_FRAGMENT = "tag_balance_fragment";
+    public final static String TAG_CART_FRAGMENT = "tag_cart_fragment";
 
     //EXTRA
     public final static String EX_PRICE = "price";

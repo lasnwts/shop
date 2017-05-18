@@ -78,8 +78,8 @@ public class PreferenceHelper {
         return preferences.getString("UserName", null);
     }
 
-    public String getUserId() {
-        return preferences.getString("UserId", null);
+    public int getUserId() {
+        return preferences.getInt("UserId", 0);
     }
 
     public boolean getBoolean(String key) {

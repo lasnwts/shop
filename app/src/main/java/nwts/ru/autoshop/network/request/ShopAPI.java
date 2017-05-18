@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 import nwts.ru.autoshop.models.authority.AccessCreateUser;
 import nwts.ru.autoshop.models.authority.UserModel;
 import nwts.ru.autoshop.models.network.CabinetModel;
+import nwts.ru.autoshop.models.network.OrderModel;
 import nwts.ru.autoshop.network.HeaderInterceptor;
 import nwts.ru.autoshop.network.HeaderLoggingInterceptor;
 import nwts.ru.autoshop.network.api.Api;
@@ -64,6 +65,10 @@ public interface ShopAPI {
 
     @GET(Api.GET_CABINET_APIKEY)
     Call<List<CabinetModel>> getCabinet();
+
+    //get Orders
+    @GET(Api.GET_CABINET_ORDERS)
+    Call<List<OrderModel>> getCabinetOrders();
 
     //Create Login
     @Headers("Cache-Control: max-age=640000")

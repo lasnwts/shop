@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import nwts.ru.autoshop.TODOApplication;
 import nwts.ru.autoshop.models.authority.UserModel;
 import nwts.ru.autoshop.network.request.ShopAPI;
+import nwts.ru.autoshop.setting.BaseConstant;
 import nwts.ru.autoshop.setting.PreferenceHelper;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -41,6 +42,7 @@ public class ValidateToken {
             return false;
         }
 
+        //try validation
         ShopAPI mShopAPI = ShopAPI.retrofit.create(ShopAPI.class);
         Call<UserModel> mCall = mShopAPI.getValidateToken();
         mCall.enqueue(new Callback<UserModel>() {
@@ -68,10 +70,10 @@ public class ValidateToken {
             @Override
             public void onFailure(Call<UserModel> call, Throwable throwable) {
                 // log what non network
+                PreferenceHelper.getInstance().putBoolean(BaseConstant.errorNetworkValidation,true);
             }
         });
 
         return validateResult;
     }
-
 }

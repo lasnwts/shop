@@ -501,7 +501,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     @Override
                     public void onFailure(Call<UserModel> call, Throwable throwable) {
                         Toast.makeText(LoginActivity.this, "Erroe:" + throwable.toString(), Toast.LENGTH_SHORT).show();
-                        mPreferenceHelper.putString(BaseConstant.errorLogin,throwable.toString());
+                        mPreferenceHelper.putString(BaseConstant.errorLogin,getString(R.string.error_net)+throwable.toString());
                         mWait = true;
                     }
                 });

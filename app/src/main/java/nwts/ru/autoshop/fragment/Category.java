@@ -124,18 +124,6 @@ public class Category extends Fragment {
             txtAlert.setVisibility(View.INVISIBLE);
             recyclerView.getAdapter().notifyDataSetChanged();
         }
-
-/*        for (int i = 0; i < categoryItems.size(); i++) {
-            Log.d(BaseConstant.TAG, "Category:onEventCategoryList: "
-                    + categoryItems.get(i).getCategory_ID() + " "
-                    + categoryItems.get(i).getCategory_name() + " "
-                    + categoryItems.get(i).getCategory_image()
-            );
-        }
-        Log.d(BaseConstant.TAG, "EventBus get! Subscribe  CategoryItems:" + categoryItems.toString());
-        Log.d(BaseConstant.TAG, "EventBus get! Subscribe  CategoryItems:categoryItems.size():" + categoryItems.size());
-        Log.d(BaseConstant.TAG, "EventBus get! Subscribe  CategoryItems:getAdapter().getItemCount():" + recyclerView.getAdapter().getItemCount());
-        viewCategory();*/
     }
 
     private void viewCategory() {

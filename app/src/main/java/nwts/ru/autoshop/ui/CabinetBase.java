@@ -1,8 +1,12 @@
 package nwts.ru.autoshop.ui;
 
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -13,7 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import android.app.FragmentManager;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -31,19 +35,15 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import nwts.ru.autoshop.BaseActivity;
 import nwts.ru.autoshop.R;
-import nwts.ru.autoshop.TODOApplication;
-import nwts.ru.autoshop.models.ProductDetailImages;
+import nwts.ru.autoshop.fragment.cabinet.OrdersFragment;
 import nwts.ru.autoshop.models.network.CabinetModel;
 import nwts.ru.autoshop.models.network.CabinetModels;
 import nwts.ru.autoshop.services.ServiceHelper;
 import nwts.ru.autoshop.setting.BaseConstant;
 import nwts.ru.autoshop.setting.PreferenceHelper;
 
-import static nwts.ru.autoshop.R.id.fab;
-
-public class CabinetBase extends AppCompatActivity {
+public class CabinetBase extends AppCompatActivity implements OrdersFragment.isOrdersFragment {
 
     private Toolbar toolbar;
     PreferenceHelper preferenceHelper;
@@ -52,11 +52,13 @@ public class CabinetBase extends AppCompatActivity {
     private int selectedDrawerItem = 0;
     private List<CabinetModel> mCabinetModels;
     private FloatingActionButton fab;
-    private TextView mTextView;
+    private TextView mTextView, mTextViewNameFragment;
     private TextView mTextViewCart, mTextViewSumma;
+    private Fragment fragment;
     // create price format
     DecimalFormat formatData = new DecimalFormat("0.00");
     SimpleDateFormat dateformat = new SimpleDateFormat("dd.MM.yyyy' 'HH:mm:ss");
+
 
 
     @Override
@@ -83,7 +85,7 @@ public class CabinetBase extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "Replace with your own action,", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
@@ -91,6 +93,52 @@ public class CabinetBase extends AppCompatActivity {
         mTextView = (TextView) findViewById(R.id.name_cabinet);
         mTextViewCart = (TextView) findViewById(R.id.cart_content_cabinet);
         mTextViewSumma = (TextView) findViewById(R.id.summa_cart_cabinet);
+        mTextViewNameFragment = (TextView) findViewById(R.id.name_fragment_cabinet);
+
+        BottomNavigationView bnv = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        bnv.setOnNavigationItemSelectedListener(getBottomNavigationListener());
+        Fragment fragment = getFragmentManager().findFragmentById(R.id.content_frame_cabinet);
+        //String tag = (String) fragment.getTag();
+        getOrders();
+    }
+
+    private void getOrders(){
+        OrdersFragment ordersFragment = new OrdersFragment();
+        if ( getFragmentManager().getBackStackEntryCount() != 0) {
+            getFragmentManager().popBackStack();
+        }
+        getFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
+                .replace(R.id.content_frame_cabinet,ordersFragment,BaseConstant.TAG_ORDERS_FRAGMENT).commit();
+    }
+
+    @NonNull
+    private BottomNavigationView.OnNavigationItemSelectedListener getBottomNavigationListener() {
+        return new BottomNavigationView.OnNavigationItemSelectedListener(){
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.action_orders:
+                        mTextViewNameFragment.setText(R.string.name_liost_orders);
+//                        textFavorites.setVisibility(View.VISIBLE);
+//                        textCollection.setVisibility(View.GONE);
+//                        textFriends.setVisibility(View.GONE);
+                        break;
+
+                    case R.id.action_balance:
+/*                        textFavorites.setVisibility(View.GONE);
+                        textCollection.setVisibility(View.VISIBLE);
+                        textFriends.setVisibility(View.GONE);*/
+                        break;
+
+                    case R.id.action_cart:
+//                        textFavorites.setVisibility(View.GONE);
+//                        textCollection.setVisibility(View.GONE);
+//                        textFriends.setVisibility(View.VISIBLE);
+                        break;
+                }
+                return true;
+            }
+        };
     }
 
     private void getMenuDriwer(Bundle savedInstanceState, Toolbar toolbar) {
@@ -254,5 +302,10 @@ public class CabinetBase extends AppCompatActivity {
         mTextViewCart.setText(dateformat.format(mCabinetModels.get(0).getDateOperation()*1000l));
         mTextViewSumma.setText(formatData.format(mCabinetModels.get(0).getCartSumma()));
         Toast.makeText(this,""+mCabinetModels.get(0).getBalanceID(), Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void startOrder(int item) {
+        Toast.makeText(this,"id = "+ item,Toast.LENGTH_LONG).show();
     }
 }

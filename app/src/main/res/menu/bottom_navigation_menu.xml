@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_orders"
+        android:enabled="true"
+        android:icon="@drawable/ic_assignment_black_24dp"
+        android:title="@string/bottom_nav_text_orders"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_balance"
+        android:enabled="true"
+        android:icon="@drawable/ic_attach_money_black_24dp"
+        android:title="@string/bottom_nav_text_balance"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_cart"
+        android:enabled="true"
+        android:icon="@drawable/ic_cart"
+        android:title="@string/bottom_nav_text_cart"
+        app:showAsAction="ifRoom" />
+</menu>
