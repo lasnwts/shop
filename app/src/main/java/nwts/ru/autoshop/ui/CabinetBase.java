@@ -3,7 +3,9 @@ package nwts.ru.autoshop.ui;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -15,9 +17,12 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.app.FragmentManager;
+
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -43,6 +48,8 @@ import nwts.ru.autoshop.services.ServiceHelper;
 import nwts.ru.autoshop.setting.BaseConstant;
 import nwts.ru.autoshop.setting.PreferenceHelper;
 
+import static nwts.ru.autoshop.R.mipmap.ic_fab_add;
+
 public class CabinetBase extends AppCompatActivity implements OrdersFragment.isOrdersFragment {
 
     private Toolbar toolbar;
@@ -58,7 +65,8 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
     // create price format
     DecimalFormat formatData = new DecimalFormat("0.00");
     SimpleDateFormat dateformat = new SimpleDateFormat("dd.MM.yyyy' 'HH:mm:ss");
-
+    private int fabTypeComand = 0;
+    OrdersFragment ordersFragment;
 
 
     @Override
@@ -85,8 +93,13 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action,", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+//                Snackbar.make(view, "Replace with your own action,", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+                Fragment fragment = getFragmentManager().findFragmentById(R.id.content_frame_cabinet);
+                String tag = (String) fragment.getTag();
+                if (tag.equals(BaseConstant.TAG_ORDERS_FRAGMENT)) {
+                    ordersFragment.movedRecyclerViewOnTop();
+                }
             }
         });
 
@@ -105,10 +118,10 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
                     getOrders();
                 }
                 if (savedInstanceState.get(BaseConstant.TAG_CABINET).equals(BaseConstant.TAG_BALANCE_FRAGMENT)) {
-              //      getOrders();
+                    //      getOrders();
                 }
                 if (savedInstanceState.get(BaseConstant.TAG_CABINET).equals(BaseConstant.TAG_CART_FRAGMENT)) {
-              //      getOrders();
+                    //      getOrders();
                 }
             } else {
                 getOrders();
@@ -118,19 +131,19 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
         }
     }
 
-    private void getOrders(){
+    private void getOrders() {
         mTextViewNameFragment.setText(R.string.name_liost_orders);
-        OrdersFragment ordersFragment = new OrdersFragment();
-        if ( getFragmentManager().getBackStackEntryCount() != 0) {
+        ordersFragment = new OrdersFragment();
+        if (getFragmentManager().getBackStackEntryCount() != 0) {
             getFragmentManager().popBackStack();
         }
         getFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
-                .replace(R.id.content_frame_cabinet,ordersFragment,BaseConstant.TAG_ORDERS_FRAGMENT).commit();
+                .replace(R.id.content_frame_cabinet, ordersFragment, BaseConstant.TAG_ORDERS_FRAGMENT).commit();
     }
 
     @NonNull
     private BottomNavigationView.OnNavigationItemSelectedListener getBottomNavigationListener() {
-        return new BottomNavigationView.OnNavigationItemSelectedListener(){
+        return new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
@@ -286,14 +299,14 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
     }
 
     private void setToolbarAndSelectedDrawerItem(String title, int selectedDrawerItem) {
-        if (toolbar !=  null) {
+        if (toolbar != null) {
             toolbar.setTitle(title);
         }
         drawer.setSelection(selectedDrawerItem, false);
     }
 
     private void request() {
-        Log.d(BaseConstant.TAG, getClass().getName()+":request:");
+        Log.d(BaseConstant.TAG, getClass().getName() + ":request:");
         Intent intentService = new Intent(this, ServiceHelper.class);
         intentService.setAction(BaseConstant.ACTION_SERVICE_GET_CABINET);
         startService(intentService);
@@ -313,29 +326,43 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEventCabinet(CabinetModels event){
+    public void onEventCabinet(CabinetModels event) {
         mCabinetModels.addAll(event.getCabinetModels());
         mTextView.setText(preferenceHelper.getUserName());
-        mTextViewCart.setText(dateformat.format(mCabinetModels.get(0).getDateOperation()*1000l));
+        mTextViewCart.setText(dateformat.format(mCabinetModels.get(0).getDateOperation() * 1000l));
         mTextViewSumma.setText(formatData.format(mCabinetModels.get(0).getCartSumma()));
         //Toast.makeText(this,""+mCabinetModels.get(0).getBalanceID(), Toast.LENGTH_LONG).show();
-       // selectorFragments();
+        // selectorFragments();
     }
 
     @Override
     public void startOrder(int item) {
-        Toast.makeText(this,"id = "+ item,Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "id = " + item, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void fabCommand(int fabItem) {
+        fabTypeComand = fabItem;
+        //fab.setImageDrawable(R.drawable.);
+        // fab.setImageIcon(R.mipmap.ic_fab_add);
+        if (fabTypeComand == 0) {
+            showFab();
+            fab.setImageResource(R.drawable.ic_fab_action_top);
+        } else {
+            hideFab();
+            fab.setImageResource(R.mipmap.ic_balance);
+        }
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         Fragment fragment = getFragmentManager().findFragmentById(R.id.content_frame_cabinet);
         String tag = (String) fragment.getTag();
-        outState.putString(BaseConstant.TAG_CABINET,  tag);
+        outState.putString(BaseConstant.TAG_CABINET, tag);
         super.onSaveInstanceState(outState);
     }
 
-    private void selectorFragments(){
+    private void selectorFragments() {
         Fragment fragment = getFragmentManager().findFragmentById(R.id.content_frame_cabinet);
         String tag = (String) fragment.getTag();
         if (tag != null) {
@@ -343,11 +370,77 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
                 getOrders();
             }
             if (tag.equals(BaseConstant.TAG_BALANCE_FRAGMENT)) {
-          //      getOrders();
+                //      getOrders();
             }
             if (tag.equals(BaseConstant.TAG_CART_FRAGMENT)) {
-         //       getOrders();
+                //       getOrders();
             }
         }
     }
+
+    /*
+    fab
+     */
+    //magic happens here
+    private void hideFab() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            final Point point = new Point();
+            CabinetBase.this.getWindow().getWindowManager().getDefaultDisplay().getSize(point);
+            final float translation = fab.getY() - point.y;
+            fab.animate().translationYBy(-translation).start();
+        } else {
+            Animation animation = AnimationUtils.makeOutAnimation(CabinetBase.this, true);
+            animation.setFillAfter(true);
+
+            animation.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    fab.setClickable(false);
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+
+            fab.startAnimation(animation);
+        }
+    }
+
+    private void showFab() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            fab.animate().translationY(0).start();
+        } else {
+            Animation animation = AnimationUtils.makeInAnimation(CabinetBase.this, false);
+            animation.setFillAfter(true);
+
+            animation.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    fab.setClickable(true);
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+
+            fab.startAnimation(animation);
+        }
+    }
+    /*
+     fab 2
+     */
 }

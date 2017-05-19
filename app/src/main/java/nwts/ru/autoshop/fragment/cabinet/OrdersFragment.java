@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +28,7 @@ import nwts.ru.autoshop.R;
 import nwts.ru.autoshop.TODOApplication;
 import nwts.ru.autoshop.adapter.cabinet.AdapterOrders;
 import nwts.ru.autoshop.adapter.interfaces.AdapterClickListener;
+import nwts.ru.autoshop.adapter.interfaces.OnLoadMoreListener;
 import nwts.ru.autoshop.models.network.OrderModel;
 import nwts.ru.autoshop.models.network.OrderModels;
 import nwts.ru.autoshop.services.ServiceHelper;
@@ -56,6 +59,10 @@ public class OrdersFragment extends Fragment {
     // create price format
     DecimalFormat formatData = new DecimalFormat("0.00");
     SimpleDateFormat dateformat = new SimpleDateFormat("dd.MM.yyyy");
+    //
+    private int lastVisibleItem;
+    private int totalItemCount = 4;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -83,11 +90,32 @@ public class OrdersFragment extends Fragment {
             @Override
             public void adapterOnClickListener(int item) {
                 //item click...
-                mIsOrdersFragment = (isOrdersFragment) activity_context;
+                if (mIsOrdersFragment == null) {
+                    mIsOrdersFragment = (isOrdersFragment) activity_context;
+                }
                 mIsOrdersFragment.startOrder(item);
             }
         });
         recyclerView.setAdapter(adapterOrders);
+        final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                //
+                //totalItemCount = linearLayoutManager.getItemCount();
+                //lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
+                lastVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
+                if (mIsOrdersFragment == null) {
+                    mIsOrdersFragment = (isOrdersFragment) activity_context;
+                }
+                if (lastVisibleItem > totalItemCount ) {
+                    mIsOrdersFragment.fabCommand(0);
+                } else {
+                    mIsOrdersFragment.fabCommand(1);
+                }
+            }
+        });
         return view;
     }
 
@@ -137,6 +165,13 @@ public class OrdersFragment extends Fragment {
 
     public interface isOrdersFragment {
         void startOrder(int item);
+        void fabCommand(int fabItem);
     }
 
+    public void movedRecyclerViewOnTop(){
+        if (recyclerView != null && recyclerView.getLayoutManager().canScrollVertically() && recyclerView.getLayoutManager().getItemCount() > 0) {
+            recyclerView.smoothScrollToPosition(0);
+            // recyclerView.getLayoutManager().scrollToPosition(0);
+        }
+    }
 }

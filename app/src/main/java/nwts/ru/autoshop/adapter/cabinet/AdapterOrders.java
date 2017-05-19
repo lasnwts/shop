@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,7 +30,7 @@ public class AdapterOrders  extends RecyclerView.Adapter<AdapterOrders.ViewHolde
     private Drawable background;
     private List<OrderModel> mOrderModelList;
     private AdapterClickListener mAdapterClickListener;
-
+    //final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) mRecyclerView.getLayoutManager();
     // create price format
     DecimalFormat formatData = new DecimalFormat("0.00");
     SimpleDateFormat dateformat = new SimpleDateFormat("dd.MM.yyyy");
@@ -39,6 +40,7 @@ public class AdapterOrders  extends RecyclerView.Adapter<AdapterOrders.ViewHolde
         this.activity = activity;
         mOrderModelList = orderModelList;
         mAdapterClickListener = adapterClickListener;
+
     }
 
 
