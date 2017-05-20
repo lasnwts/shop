@@ -11,6 +11,7 @@
         />
 
     <TextView
+        android:id="@+id/cabinet_data"
         android:text="@string/cabinet_date"
         style="@android:style/TextAppearance.Small"
         android:layout_width="match_parent"
@@ -27,6 +28,7 @@
         />
 
     <TextView
+        android:id="@+id/cabinet_summa"
         android:text="@string/cabinet_summa"
         style="@android:style/TextAppearance.Small"
         android:layout_width="match_parent"
@@ -43,6 +45,7 @@
         />
 
     <TextView
+        android:id="@+id/cabinet_summa_name"
         android:text="@string/cabinet_summa_name"
         style="@android:style/TextAppearance.Small"
         android:layout_width="match_parent"

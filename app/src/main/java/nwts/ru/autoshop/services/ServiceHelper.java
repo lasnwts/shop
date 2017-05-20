@@ -40,6 +40,13 @@ public class ServiceHelper extends Service {
                     intent1Service.putExtra(BaseConstant.API_GET_KEY , PreferenceHelper.getInstance().getUserId());
                     startService(intent1Service);
                 }
+                if (intent.getAction().equals(BaseConstant.ACTION_SERVICE_GET_BALANCE)){
+                    Log.d(BaseConstant.TAG, "Start ServiceHelper:BaseConstant.ACTION_SERVICE_GET_BALANCE..");
+                    Intent intent1Service = new Intent(getApplication(), ServiceIntentGetData.class);
+                    intent1Service.putExtra(BaseConstant.API_PAGE ,BaseConstant.ACTION_SERVICE_GET_BALANCE);
+                    intent1Service.putExtra(BaseConstant.API_GET_KEY , PreferenceHelper.getInstance().getUserId());
+                    startService(intent1Service);
+                }
                 if (intent.getAction().equals(BaseConstant.ACTION_SERVICE_GET_CABINET)){
                     Log.d(BaseConstant.TAG, "Start ServiceHelper:BaseConstant.ACTION_SERVICE_GET_CABINET..");
                     Intent intent1Service = new Intent(getApplication(), ServiceIntentGetData.class);

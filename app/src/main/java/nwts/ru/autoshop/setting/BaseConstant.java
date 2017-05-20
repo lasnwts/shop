@@ -26,13 +26,14 @@ public interface BaseConstant {
     public final String KEY_CATEGORY_ID = "key_category_id"; //каталог продуктов какой категории
 
     //Action
-    public final String ACTION_SERVICE_GET_FLOWERS = "ru.nwts.get_flowers";
     public final String ACTION_SERVICE_GET_CATEGORY_LIST = "ru.nwts.get_category_list";
     public final String ACTION_SERVICE_GET_SUBCATEGORY_LIST = "ru.nwts.get_subcategory_list";
     public final String ACTION_SERVICE_GET_PRODUCT_LIST = "ru.nwts.get_product_list"; //каталог проуктов из одной категории
     public final String ACTION_SERVICE_GET_PRODUCT_DETAIL = "ru.nwts.get_product_detail"; //детализация продукта
     public final String ACTION_SERVICE_GET_CABINET = "ru.nwts.get-cabinet-data"; //информаиця о кабинете
     public final String ACTION_SERVICE_GET_ORDERS = "ru.nwts.get-cabinet-orders"; //информаиця о заказах
+    public final String ACTION_SERVICE_GET_BALANCE = "ru.nwts.get-cabinet-balance"; //информаиця о балансе
+    public final String ACTION_SERVICE_GET_CART = "ru.nwts.get-cabinet-cart"; //информаиця о корзине
 
     //URL between activities
     public final String URL_IMAGE_DOWNLOADED = "url_downloaded";

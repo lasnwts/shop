@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,28 +24,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 import nwts.ru.autoshop.R;
-import nwts.ru.autoshop.TODOApplication;
-import nwts.ru.autoshop.adapter.cabinet.AdapterOrders;
+import nwts.ru.autoshop.adapter.cabinet.AdapterBalance;
 import nwts.ru.autoshop.adapter.interfaces.AdapterClickListener;
-import nwts.ru.autoshop.adapter.interfaces.OnLoadMoreListener;
-import nwts.ru.autoshop.models.network.OrderModel;
+import nwts.ru.autoshop.models.network.BalanceModel;
+import nwts.ru.autoshop.models.network.BalanceModels;
 import nwts.ru.autoshop.models.network.OrderModels;
 import nwts.ru.autoshop.services.ServiceHelper;
 import nwts.ru.autoshop.setting.BaseConstant;
 import nwts.ru.autoshop.setting.PreferenceHelper;
-import nwts.ru.autoshop.ui.CabinetBase;
 
 /**
- * Created by пользователь on 17.05.2017.
+ * Created by пользователь on 20.05.2017.
  */
 
-public class OrdersFragment extends Fragment {
+public class BalanceFragment extends Fragment {
 
-    private static final String TAG = BaseConstant.TAG_ORDERS_FRAGMENT;
+    private static final String TAG = BaseConstant.TAG_BALANCE_FRAGMENT;
     private static final String KEY_LAYOUT_MANAGER = "layoutManager";
     private static final int SPAN_COUNT = 1;
     private Activity activity_context;
-    private List<OrderModel> mOrderModelList;
+    private List<BalanceModel> mBalanceModelList;
     protected RecyclerView.LayoutManager layoutManager;
     RecyclerView recyclerView;
     ProgressBar prgLoading;
@@ -55,7 +52,7 @@ public class OrdersFragment extends Fragment {
         GRID_LAYOUT_MANAGER,
         LINEAR_LAYOUT_MANAGER
     }
-    private isOrdersFragment mIsOrdersFragment;
+    private isBalanceFragment mIsBalanceFragment;
     // create price format
     DecimalFormat formatData = new DecimalFormat("0.00");
     SimpleDateFormat dateformat = new SimpleDateFormat("dd.MM.yyyy");
@@ -64,15 +61,23 @@ public class OrdersFragment extends Fragment {
     private int totalItemCount = 4;
 
 
+    public BalanceFragment() {
+        //
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activity_context = getActivity();
         request();;
+
     }
 
-    public OrdersFragment() {
-        //
+    private void request() {
+        Intent intentService = new Intent(getActivity(), ServiceHelper.class);
+        intentService.setAction(BaseConstant.ACTION_SERVICE_GET_BALANCE);
+        intentService.putExtra(BaseConstant.API_GET_KEY, PreferenceHelper.getInstance().getUserId());
+        getActivity().startService(intentService);
     }
 
     @Nullable
@@ -80,25 +85,30 @@ public class OrdersFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.cabinet_list, container, false);
         view.setTag(TAG);
-        mOrderModelList = new ArrayList<>();
+        mBalanceModelList = new ArrayList<>();
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerViewCabinet);
         layoutManager = new GridLayoutManager(getActivity(), SPAN_COUNT);
         recyclerView.setLayoutManager(layoutManager);
         prgLoading = (ProgressBar) view.findViewById(R.id.prgLoadingCabinet);
         txtAlert = (TextView) view.findViewById(R.id.txtAlertCabinet);
-        AdapterOrders adapterOrders = new AdapterOrders( mOrderModelList, activity_context,
-                new AdapterClickListener() {
+        AdapterBalance adapterBalance = new AdapterBalance( mBalanceModelList,
+                activity_context, new AdapterClickListener() {
             @Override
             public void adapterOnClickListener(int item) {
-                //item click...
-                if (mIsOrdersFragment == null) {
-                    mIsOrdersFragment = (isOrdersFragment) activity_context;
+                if (mIsBalanceFragment == null) {
+                    mIsBalanceFragment = (isBalanceFragment) activity_context;
                 }
-                mIsOrdersFragment.startOrder(item);
+                mIsBalanceFragment.startBalance(item);
             }
         });
-        recyclerView.setAdapter(adapterOrders);
+        recyclerView.setAdapter(adapterBalance);
         final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+        //
+        if (mIsBalanceFragment == null) {
+            mIsBalanceFragment = (isBalanceFragment) activity_context;
+        }
+        mIsBalanceFragment.fabCommandBalance(0);
+        //
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -107,38 +117,20 @@ public class OrdersFragment extends Fragment {
                 //totalItemCount = linearLayoutManager.getItemCount();
                 //lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
                 lastVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
-                if (mIsOrdersFragment == null) {
-                    mIsOrdersFragment = (isOrdersFragment) activity_context;
+                if (mIsBalanceFragment == null) {
+                    mIsBalanceFragment = (isBalanceFragment) activity_context;
                 }
                 if (lastVisibleItem > totalItemCount ) {
-                    mIsOrdersFragment.fabCommand(0);
+                    mIsBalanceFragment.fabCommandBalance(0);
                 } else {
-                    mIsOrdersFragment.fabCommand(1);
+                    mIsBalanceFragment.fabCommandBalance(1);
                 }
             }
         });
         return view;
     }
 
-    private void request(){
-        Intent intentService = new Intent(getActivity(), ServiceHelper.class);
-        intentService.setAction(BaseConstant.ACTION_SERVICE_GET_ORDERS);
-        intentService.putExtra(BaseConstant.API_GET_KEY, PreferenceHelper.getInstance().getUserId());
-        getActivity().startService(intentService);
-    }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEventOrders(OrderModels event) {
-        prgLoading.setVisibility(View.INVISIBLE);
-        if (event.getOrderModels().isEmpty() || event.getOrderModels().size() < 1){
-            txtAlert.setVisibility(View.VISIBLE);
-        } else {
-            txtAlert.setVisibility(View.INVISIBLE);
-            mOrderModelList.clear();
-            mOrderModelList.addAll(event.getOrderModels());
-            recyclerView.getAdapter().notifyDataSetChanged();
-        }
-    }
 
     @Override
     public void onStart() {
@@ -152,6 +144,7 @@ public class OrdersFragment extends Fragment {
         EventBus.getDefault().unregister(this);
     }
 
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putBoolean(TAG, true);
@@ -164,10 +157,11 @@ public class OrdersFragment extends Fragment {
 
     }
 
-    public interface isOrdersFragment {
-        void startOrder(int item);
-        void fabCommand(int fabItem);
+    public interface isBalanceFragment {
+        void startBalance(int item);
+        void fabCommandBalance(int fabItem);
     }
+
 
     public void movedRecyclerViewOnTop(){
         if (recyclerView != null && recyclerView.getLayoutManager().canScrollVertically() && recyclerView.getLayoutManager().getItemCount() > 0) {
@@ -175,4 +169,19 @@ public class OrdersFragment extends Fragment {
             // recyclerView.getLayoutManager().scrollToPosition(0);
         }
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventOrders(BalanceModels event) {
+        prgLoading.setVisibility(View.INVISIBLE);
+        if (event.getBalanceModels().isEmpty() || event.getBalanceModels().size() < 1){
+            txtAlert.setVisibility(View.VISIBLE);
+        } else {
+            txtAlert.setVisibility(View.INVISIBLE);
+            mBalanceModelList.clear();
+            mBalanceModelList.addAll(event.getBalanceModels());
+            recyclerView.getAdapter().notifyDataSetChanged();
+        }
+    }
+
+
 }

@@ -41,7 +41,8 @@
         app:layout_anchor="@id/bottom_navigation"
         android:layout_marginBottom="@dimen/action_bar_height"
         android:layout_marginLeft="@dimen/padding_large"
+        app:backgroundTint="@color/primary_color"
         app:layout_anchorGravity="bottom|end"
-        app:srcCompat="@android:drawable/ic_dialog_email"/>
+        app:srcCompat="@drawable/ic_action_plus_white"/>
 
 </android.support.design.widget.CoordinatorLayout>

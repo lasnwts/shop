@@ -23,13 +23,12 @@
     </string-array>
 
     <string-array name="menu_cabinet_items">
-        <item>Главная</item>
-        <item>Товары</item>
         <item>Корзина</item>
-        <item>Кабинет</item>
         <item>Заказы</item>
         <item>Баланс</item>
+        <item>Доставка</item>
         <item>Контакты</item>
+        <item>Выйти</item>
     </string-array>
 
     <string name="menu_product">Товары</string>
@@ -201,5 +200,7 @@
     <string name="cabinet_date">Дата</string>
     <string name="cabinet_summa">Сумма</string>
     <string name="cabinet_summa_name">Статус</string>
+    <string name="cabinet_summa_direction">Направление</string>
+    <string name="cabinet_rest_name">Остаток на счете</string>
 
 </resources>

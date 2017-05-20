@@ -29,6 +29,9 @@ import nwts.ru.autoshop.models.ProductDetailImage;
 import nwts.ru.autoshop.models.ProductDetailImageDao;
 import nwts.ru.autoshop.models.ProductDetailImages;
 import nwts.ru.autoshop.models.SubCategoryItemDao;
+import nwts.ru.autoshop.models.network.BalanceModel;
+import nwts.ru.autoshop.models.network.BalanceModelDao;
+import nwts.ru.autoshop.models.network.BalanceModels;
 import nwts.ru.autoshop.models.network.CabinetModel;
 import nwts.ru.autoshop.models.network.CabinetModelDao;
 import nwts.ru.autoshop.models.network.CabinetModels;
@@ -51,6 +54,10 @@ import retrofit2.Response;
 
 public class ServiceIntentGetData extends IntentService {
 
+    //баланс
+    List<BalanceModel> mBalanceModels;
+    private BalanceModels mBalanceModelsList;
+    private BalanceModelDao mBalanceModelDao;
     //заказы
     List<OrderModel> mOrderModels;
     private OrderModels mOrderModelsList;
@@ -86,6 +93,7 @@ public class ServiceIntentGetData extends IntentService {
         Log.d(BaseConstant.TAG, "Start:ServiceHelper:ServiceIntentGetData:Create: services..");
         categoryItems = new ArrayList<>();
         mOrderModels = new ArrayList<>();
+        mBalanceModels = new ArrayList<>();
         productCategory = new ArrayList<>();
         cabinetModels = new ArrayList<>();
         subCategoryItems = new ArrayList<>();
@@ -104,6 +112,7 @@ public class ServiceIntentGetData extends IntentService {
             mProductDetailImageDao = mDaoSession.getProductDetailImageDao();
             mCabinetModelDao = mDaoSession.getCabinetModelDao();
             mOrderModelDao = mDaoSession.getOrderModelDao();
+            mBalanceModelDao = mDaoSession.getBalanceModelDao();
         }
     }
 
@@ -129,6 +138,13 @@ public class ServiceIntentGetData extends IntentService {
                     mOrderModels.clear();
                 }
                 getOrders(key_id);
+            }
+            if (intent.getStringExtra(BaseConstant.API_PAGE).equals(BaseConstant.ACTION_SERVICE_GET_BALANCE)) {
+                int key_id = intent.getIntExtra(BaseConstant.API_GET_KEY, 0);
+                if (mBalanceModels != null) {
+                    mBalanceModels.clear();
+                }
+                getBalance(key_id);
             }
             if (intent.getStringExtra(BaseConstant.API_PAGE).equals(BaseConstant.ACTION_SERVICE_GET_SUBCATEGORY_LIST)) {
                 int key_id = intent.getIntExtra(BaseConstant.API_GET_KEY, 0);
@@ -158,6 +174,35 @@ public class ServiceIntentGetData extends IntentService {
         }
     }
 
+    //баланс
+    private void getBalance(final int userId) {
+        ShopAPI shopApi = ShopAPI.retrofit.create(ShopAPI.class);
+        final Call<List<BalanceModel>> call = shopApi.getCabinetBalance();
+        if (System.currentTimeMillis() - getDateTimeFromGetCache(call.request().toString()) > timeLoadedFromServer) {
+            call.enqueue(new Callback<List<BalanceModel>>() {
+                @Override
+                public void onResponse(Call<List<BalanceModel>> call, Response<List<BalanceModel>> response) {
+                    if (response.isSuccessful()) {
+                        mBalanceModels.addAll(response.body());
+                        putGetCache(call.request().toString());
+                        putCabinetBalance(mBalanceModels, userId);
+                        getCabinetBalance(userId,200);
+                    } else {
+                        getCabinetBalance(userId,400);
+                    }
+                }
+                @Override
+                public void onFailure(Call<List<BalanceModel>> call, Throwable t) {
+                    getCabinetBalance(userId,500);
+                }
+            });
+        } else {
+            getCabinetBalance(userId,700);
+        }
+    }
+
+
+
     //get заказы
     private void getOrders(final int userId) {
         ShopAPI shopApi = ShopAPI.retrofit.create(ShopAPI.class);
@@ -169,7 +214,7 @@ public class ServiceIntentGetData extends IntentService {
                     if (response.isSuccessful()) {
                         mOrderModels.addAll(response.body());
                         putGetCache(call.request().toString());
-                        putCabinetOrders(mOrderModels,userId);
+                        putCabinetOrders(mOrderModels, userId);
                         //EventBus.getDefault().post(new OrderModels(mOrderModels,200));
                         getCabinetOrdersDao(userId, 200);
                     } else {
@@ -478,19 +523,34 @@ public class ServiceIntentGetData extends IntentService {
 
 
     /**
-     *  Сохраняем значения заказов
+     * Сохраняем значения заказов
      */
     private void putCabinetOrders(List<OrderModel> orderModelList, int userId) {
         if (orderModelList == null || orderModelList.size() < 1) {
             return;
         } else {
-                Query<OrderModel> mOrderModel = mDaoSession.queryBuilder(OrderModel.class).
-                        where(OrderModelDao.Properties.User_ID.eq(userId)).build();
-                mOrderModels = mOrderModel.list();
-                if (mOrderModels != null && mOrderModels.size() != 0 && !mOrderModels.isEmpty()) {
-                    mOrderModelDao.deleteInTx(mOrderModels);
-                }
+            Query<OrderModel> mOrderModel = mDaoSession.queryBuilder(OrderModel.class).
+                    where(OrderModelDao.Properties.User_ID.eq(userId)).build();
+            mOrderModels = mOrderModel.list();
+            if (mOrderModels != null && mOrderModels.size() != 0 && !mOrderModels.isEmpty()) {
+                mOrderModelDao.deleteInTx(mOrderModels);
+            }
             mOrderModelDao.insertOrReplaceInTx(orderModelList);
+        }
+    }
+
+
+    private void putCabinetBalance(List<BalanceModel> balanceModel, int userId) {
+        if (balanceModel == null || balanceModel.size() < 1) {
+            return;
+        } else {
+            Query<BalanceModel> mBalanceModel = mDaoSession.queryBuilder(BalanceModel.class).
+                    where(BalanceModelDao.Properties.User_ID.eq(userId)).build();
+            mBalanceModels = mBalanceModel.list();
+            if (mBalanceModels != null && mBalanceModels.size() != 0 && !mBalanceModels.isEmpty()) {
+                mBalanceModelDao.deleteInTx(mBalanceModels);
+            }
+            mBalanceModelDao.insertOrReplaceInTx(balanceModel);
         }
     }
 
@@ -656,5 +716,12 @@ public class ServiceIntentGetData extends IntentService {
                 where(OrderModelDao.Properties.User_ID.eq(userId)).orderDesc(OrderModelDao.Properties.Date_Operation).build();
         mOrderModels = mOrderModel.list();
         EventBus.getDefault().post(new OrderModels(mOrderModels, errors));
+    }
+
+    private void getCabinetBalance(int userId, int errors) {
+        Query<BalanceModel> mBalanceModel = mDaoSession.queryBuilder(BalanceModel.class).
+                where(BalanceModelDao.Properties.User_ID.eq(userId)).orderDesc(BalanceModelDao.Properties.Date_Operation).build();
+        mBalanceModels = mBalanceModel.list();
+        EventBus.getDefault().post(new BalanceModels(mBalanceModels, errors));
     }
 }

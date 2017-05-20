@@ -12,7 +12,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_collapseMode="parallax"
+
         tools:layout_editor_absoluteX="8dp"
         tools:layout_editor_absoluteY="8dp">
 
@@ -48,7 +48,7 @@
                     android:layout_marginLeft="4dp"
                     android:layout_weight="1"
                     android:gravity="left"
-                    android:text="@string/balans_on_date"
+                    android:text=""
                     android:textColor="@android:color/black"
                     android:textStyle="bold"/>
 
