@@ -32,6 +32,7 @@
 
         <service android:name=".services.ServiceHelper"/>
         <service android:name=".services.ServiceIntentGetData"/>
+        <service android:name=".services.ServiceIntentGetDataMore"/>
 
         <activity android:name=".ui.Information"/>
         <activity android:name=".ui.ProductDetailView"/>

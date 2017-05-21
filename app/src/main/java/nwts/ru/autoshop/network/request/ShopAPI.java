@@ -10,6 +10,7 @@ import nwts.ru.autoshop.models.authority.UserModel;
 import nwts.ru.autoshop.models.network.BalanceModel;
 import nwts.ru.autoshop.models.network.CabinetModel;
 import nwts.ru.autoshop.models.network.OrderModel;
+import nwts.ru.autoshop.models.network.cart.CartModel;
 import nwts.ru.autoshop.network.HeaderInterceptor;
 import nwts.ru.autoshop.network.HeaderLoggingInterceptor;
 import nwts.ru.autoshop.network.api.Api;
@@ -74,6 +75,10 @@ public interface ShopAPI {
     //get Balance
     @GET(Api.GET_CABINET_BALANCE)
     Call<List<BalanceModel>> getCabinetBalance();
+
+    //get Balance
+    @GET(Api.GET_CABINET_CART)
+    Call<List<CartModel>> getCart();
 
     //Create Login
     @Headers("Cache-Control: max-age=640000")

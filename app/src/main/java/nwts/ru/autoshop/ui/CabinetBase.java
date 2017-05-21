@@ -42,9 +42,11 @@ import java.util.List;
 
 import nwts.ru.autoshop.R;
 import nwts.ru.autoshop.fragment.cabinet.BalanceFragment;
+import nwts.ru.autoshop.fragment.cabinet.CartFragment;
 import nwts.ru.autoshop.fragment.cabinet.OrdersFragment;
 import nwts.ru.autoshop.models.network.CabinetModel;
 import nwts.ru.autoshop.models.network.CabinetModels;
+import nwts.ru.autoshop.models.network.cart.CartModel;
 import nwts.ru.autoshop.services.ServiceHelper;
 import nwts.ru.autoshop.setting.BaseConstant;
 import nwts.ru.autoshop.setting.PreferenceHelper;
@@ -52,7 +54,7 @@ import nwts.ru.autoshop.setting.PreferenceHelper;
 import static nwts.ru.autoshop.R.mipmap.ic_fab_add;
 
 public class CabinetBase extends AppCompatActivity implements OrdersFragment.isOrdersFragment,
-            BalanceFragment.isBalanceFragment {
+            BalanceFragment.isBalanceFragment, CartFragment.isCartFragment {
 
     private Toolbar toolbar;
     PreferenceHelper preferenceHelper;
@@ -71,6 +73,7 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
     private int fabTypeComand = 0;
     OrdersFragment ordersFragment;
     BalanceFragment mBalanceFragment;
+    CartFragment mCartFragment;
     BottomNavigationView bnv;
 
     @Override
@@ -181,7 +184,16 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
     }
 
     private void getCart() {
-        //
+        mTextViewNameFragment.setText(R.string.bottom_nav_text_cart);
+        mTextViewCabinetData.setText(R.string.cabinet_tovar_name);
+        mTextViewCabinetSumma.setText(R.string.cabinet_tovar_count);
+        mTextViewCabinetSummaName.setText(R.string.cabinet_summa);
+        mCartFragment = new CartFragment();
+        if (getFragmentManager().getBackStackEntryCount() != 0) {
+            getFragmentManager().popBackStack();
+        }
+        getFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
+                .replace(R.id.content_frame_cabinet, mCartFragment, BaseConstant.TAG_CART_FRAGMENT).commit();
     }
 
     @NonNull
@@ -206,6 +218,7 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
                         break;
 
                     case R.id.action_cart:
+                        getCart();
 //                        textFavorites.setVisibility(View.GONE);
 //                        textCollection.setVisibility(View.GONE);
 //                        textFriends.setVisibility(View.VISIBLE);
@@ -509,4 +522,13 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
         }
     }
 
+    @Override
+    public void startCart(int item) {
+        //
+    }
+
+    @Override
+    public void fabCommandCart(int fabItem) {
+        //
+    }
 }

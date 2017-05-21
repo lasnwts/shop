@@ -197,6 +197,10 @@ public class CartModel {
         return Tovar_Count;
     }
 
+    public String getTovar_CountS() {
+        return " " + Tovar_Count;
+    }
+
     public void setTovar_Count(int tovar_Count) {
         Tovar_Count = tovar_Count;
     }
