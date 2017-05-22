@@ -46,6 +46,7 @@ import nwts.ru.autoshop.R;
 import nwts.ru.autoshop.fragment.cabinet.BalanceFragment;
 import nwts.ru.autoshop.fragment.cabinet.CartFragment;
 import nwts.ru.autoshop.fragment.cabinet.OrdersFragment;
+import nwts.ru.autoshop.fragment.dialogs.DialogFragmentAddBalance;
 import nwts.ru.autoshop.models.network.CabinetModel;
 import nwts.ru.autoshop.models.network.CabinetModels;
 import nwts.ru.autoshop.models.network.cart.CartModel;
@@ -78,6 +79,7 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
     BalanceFragment mBalanceFragment;
     CartFragment mCartFragment;
     BottomNavigationView bnv;
+    DialogFragmentAddBalance mDialogFragmentAddBalance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,7 +113,14 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
                     ordersFragment.movedRecyclerViewOnTop();
                 }
                 if (tag.equals(BaseConstant.TAG_BALANCE_FRAGMENT)) {
-                    mBalanceFragment.movedRecyclerViewOnTop();
+                    if (fabTypeComand == 0) {
+                        mBalanceFragment.movedRecyclerViewOnTop();
+                    } else {
+                        //
+                        mDialogFragmentAddBalance = new DialogFragmentAddBalance();
+                        mDialogFragmentAddBalance.show(getFragmentManager(),"dialog");
+                    }
+
                 }
             }
         });

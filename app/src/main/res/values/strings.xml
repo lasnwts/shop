@@ -205,5 +205,11 @@
     <string name="cabinet_tovar_name">Наименование</string>
     <string name="cabinet_tovar_count">Количество</string>
     <string name="cabinet_cart_image">Изображение</string>
+    <string name="summa_hint">Введите сумму</string>
+    <string name="rur_name">0.00 руб.</string>
+    <string name="web_money">Web Money</string>
+    <string name="qiwi">Qiwi</string>
+    <string name="yandex_money">Яндекс.Деньги</string>
+    <string name="paypal">PayPal</string>
 
 </resources>
