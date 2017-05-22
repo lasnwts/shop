@@ -76,7 +76,7 @@ public class CartFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.cabinet_list, container, false);
+        View view = inflater.inflate(R.layout.cabinet_cart_list, container, false);
         view.setTag(TAG);
         mCartModels = new ArrayList<>();
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerViewCabinet);

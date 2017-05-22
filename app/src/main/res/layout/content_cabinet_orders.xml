@@ -5,6 +5,26 @@
               android:layout_height="match_parent">
 
     <TextView
+        android:id="@+id/productDetailDivider9"
+        android:layout_width="1dp"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:background="@android:color/darker_gray"
+        />
+
+    <TextView
+        android:id="@+id/cart_content_imageview"
+        android:text="@string/cabinet_date"
+        style="@android:style/TextAppearance.Small"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:visibility="gone"
+        android:paddingLeft="@dimen/padding_small"
+        android:textColor="@android:color/black"/>
+
+    <TextView
         android:layout_width="1dp"
         android:layout_height="wrap_content"
         android:background="@android:color/darker_gray"

@@ -204,5 +204,6 @@
     <string name="cabinet_rest_name">Остаток на счете</string>
     <string name="cabinet_tovar_name">Наименование</string>
     <string name="cabinet_tovar_count">Количество</string>
+    <string name="cabinet_cart_image">Изображение</string>
 
 </resources>

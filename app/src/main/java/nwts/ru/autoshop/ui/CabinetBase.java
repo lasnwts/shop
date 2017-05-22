@@ -3,6 +3,7 @@ package nwts.ru.autoshop.ui;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
@@ -19,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.app.FragmentManager;
@@ -66,6 +68,7 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
     private TextView mTextView, mTextViewNameFragment;
     private TextView mTextViewCart, mTextViewSumma,mTextcartBalans;
     private TextView mTextViewCabinetData, mTextViewCabinetSumma, mTextViewCabinetSummaName;
+    private TextView mTextViewImageView, mTextViewDivider;
     private Fragment fragment;
     // create price format
     DecimalFormat formatData = new DecimalFormat("0.00");
@@ -118,6 +121,8 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
         mTextViewSumma = (TextView) findViewById(R.id.summa_cart_cabinet);
         mTextViewNameFragment = (TextView) findViewById(R.id.name_fragment_cabinet);
         mTextcartBalans = (TextView) findViewById(R.id.cart_content_balans);
+        mTextViewImageView = (TextView) findViewById(R.id.cart_content_imageview);
+        mTextViewDivider = (TextView) findViewById(R.id.productDetailDivider9);
         //
         mTextViewCabinetData = (TextView) findViewById(R.id.cabinet_data);
         mTextViewCabinetSumma= (TextView) findViewById(R.id.cabinet_summa);
@@ -161,6 +166,8 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
         mTextViewCabinetData.setText(R.string.cabinet_date);
         mTextViewCabinetSumma.setText(R.string.cabinet_summa);
         mTextViewCabinetSummaName.setText(R.string.cabinet_summa_name);
+        mTextViewImageView.setVisibility(View.GONE);
+        mTextViewDivider.setVisibility(View.GONE);
         ordersFragment = new OrdersFragment();
         if (getFragmentManager().getBackStackEntryCount() != 0) {
             getFragmentManager().popBackStack();
@@ -175,6 +182,8 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
         mTextViewCabinetData.setText(R.string.cabinet_date);
         mTextViewCabinetSumma.setText(R.string.cabinet_summa);
         mTextViewCabinetSummaName.setText(R.string.cabinet_summa_direction);
+        mTextViewImageView.setVisibility(View.GONE);
+        mTextViewDivider.setVisibility(View.GONE);
         mBalanceFragment = new BalanceFragment();
         if (getFragmentManager().getBackStackEntryCount() != 0) {
             getFragmentManager().popBackStack();
@@ -184,6 +193,14 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
     }
 
     private void getCart() {
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            mTextViewImageView.setVisibility(View.GONE);
+            mTextViewDivider.setVisibility(View.GONE);
+        } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            mTextViewImageView.setVisibility(View.VISIBLE);
+            mTextViewImageView.setText(R.string.cabinet_cart_image);
+            mTextViewDivider.setVisibility(View.VISIBLE);
+        }
         mTextViewNameFragment.setText(R.string.bottom_nav_text_cart);
         mTextViewCabinetData.setText(R.string.cabinet_tovar_name);
         mTextViewCabinetSumma.setText(R.string.cabinet_tovar_count);
