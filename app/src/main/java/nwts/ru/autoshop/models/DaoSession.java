@@ -14,6 +14,7 @@ import nwts.ru.autoshop.models.network.BalanceModel;
 import nwts.ru.autoshop.models.network.CabinetModel;
 import nwts.ru.autoshop.models.network.cart.CartModel;
 import nwts.ru.autoshop.models.network.cart.CartModelBay;
+import nwts.ru.autoshop.models.network.cart.ErrorModel;
 import nwts.ru.autoshop.models.network.OrderModel;
 import nwts.ru.autoshop.models.ProductCategory;
 import nwts.ru.autoshop.models.ProductDetailImage;
@@ -25,6 +26,7 @@ import nwts.ru.autoshop.models.network.BalanceModelDao;
 import nwts.ru.autoshop.models.network.CabinetModelDao;
 import nwts.ru.autoshop.models.network.cart.CartModelDao;
 import nwts.ru.autoshop.models.network.cart.CartModelBayDao;
+import nwts.ru.autoshop.models.network.cart.ErrorModelDao;
 import nwts.ru.autoshop.models.network.OrderModelDao;
 import nwts.ru.autoshop.models.ProductCategoryDao;
 import nwts.ru.autoshop.models.ProductDetailImageDao;
@@ -45,6 +47,7 @@ public class DaoSession extends AbstractDaoSession {
     private final DaoConfig cabinetModelDaoConfig;
     private final DaoConfig cartModelDaoConfig;
     private final DaoConfig cartModelBayDaoConfig;
+    private final DaoConfig errorModelDaoConfig;
     private final DaoConfig orderModelDaoConfig;
     private final DaoConfig productCategoryDaoConfig;
     private final DaoConfig productDetailImageDaoConfig;
@@ -56,6 +59,7 @@ public class DaoSession extends AbstractDaoSession {
     private final CabinetModelDao cabinetModelDao;
     private final CartModelDao cartModelDao;
     private final CartModelBayDao cartModelBayDao;
+    private final ErrorModelDao errorModelDao;
     private final OrderModelDao orderModelDao;
     private final ProductCategoryDao productCategoryDao;
     private final ProductDetailImageDao productDetailImageDao;
@@ -83,6 +87,9 @@ public class DaoSession extends AbstractDaoSession {
         cartModelBayDaoConfig = daoConfigMap.get(CartModelBayDao.class).clone();
         cartModelBayDaoConfig.initIdentityScope(type);
 
+        errorModelDaoConfig = daoConfigMap.get(ErrorModelDao.class).clone();
+        errorModelDaoConfig.initIdentityScope(type);
+
         orderModelDaoConfig = daoConfigMap.get(OrderModelDao.class).clone();
         orderModelDaoConfig.initIdentityScope(type);
 
@@ -101,6 +108,7 @@ public class DaoSession extends AbstractDaoSession {
         cabinetModelDao = new CabinetModelDao(cabinetModelDaoConfig, this);
         cartModelDao = new CartModelDao(cartModelDaoConfig, this);
         cartModelBayDao = new CartModelBayDao(cartModelBayDaoConfig, this);
+        errorModelDao = new ErrorModelDao(errorModelDaoConfig, this);
         orderModelDao = new OrderModelDao(orderModelDaoConfig, this);
         productCategoryDao = new ProductCategoryDao(productCategoryDaoConfig, this);
         productDetailImageDao = new ProductDetailImageDao(productDetailImageDaoConfig, this);
@@ -112,6 +120,7 @@ public class DaoSession extends AbstractDaoSession {
         registerDao(CabinetModel.class, cabinetModelDao);
         registerDao(CartModel.class, cartModelDao);
         registerDao(CartModelBay.class, cartModelBayDao);
+        registerDao(ErrorModel.class, errorModelDao);
         registerDao(OrderModel.class, orderModelDao);
         registerDao(ProductCategory.class, productCategoryDao);
         registerDao(ProductDetailImage.class, productDetailImageDao);
@@ -125,6 +134,7 @@ public class DaoSession extends AbstractDaoSession {
         cabinetModelDaoConfig.clearIdentityScope();
         cartModelDaoConfig.clearIdentityScope();
         cartModelBayDaoConfig.clearIdentityScope();
+        errorModelDaoConfig.clearIdentityScope();
         orderModelDaoConfig.clearIdentityScope();
         productCategoryDaoConfig.clearIdentityScope();
         productDetailImageDaoConfig.clearIdentityScope();
@@ -153,6 +163,10 @@ public class DaoSession extends AbstractDaoSession {
 
     public CartModelBayDao getCartModelBayDao() {
         return cartModelBayDao;
+    }
+
+    public ErrorModelDao getErrorModelDao() {
+        return errorModelDao;
     }
 
     public OrderModelDao getOrderModelDao() {

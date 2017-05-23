@@ -17,9 +17,11 @@ public interface BaseConstant {
     //API Constant
     public final String API_URL = "192.168.56.1:81";
     public final String API_KEY_ID = "api_id";
-    public int API_GET_FLOWERS = 10001;
-    public int API_GET_FLOWER = 10002;
     public final String API_GET_KEY = "api_get_key"; //что выбирать ключ
+    public final String API_BAL_SUM = "api_bul_sum";
+    public final String API_BAL_SYS = "api_bul_sys";
+
+
     public final String API_PAGE = "api_page"; //какую страницу выбрать
     public final int GET_CATEGORY = 0; // список категорий
     public final int GET_PRODUCTS = 1; // список проудктов из категории
@@ -34,6 +36,8 @@ public interface BaseConstant {
     public final String ACTION_SERVICE_GET_ORDERS = "ru.nwts.get-cabinet-orders"; //информаиця о заказах
     public final String ACTION_SERVICE_GET_BALANCE = "ru.nwts.get-cabinet-balance"; //информаиця о балансе
     public final String ACTION_SERVICE_GET_CART = "ru.nwts.get-cabinet-cart"; //информаиця о корзине
+    public final String ACTION_SERVICE_GET_BALANCE_ADD = "ru.nwts.get-cabinet-add-balancer"; //пополнить баланс
+    public final String ACTION_SERVICE_GET_BALANCE_ID = "ru.nwts.get-cabinet-balance-id";
 
     //URL between activities
     public final String URL_IMAGE_DOWNLOADED = "url_downloaded";

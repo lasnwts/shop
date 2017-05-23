@@ -11,6 +11,7 @@ import org.greenrobot.greendao.query.Query;
 import java.util.ArrayList;
 import java.util.List;
 
+import nwts.ru.autoshop.TODOApplication;
 import nwts.ru.autoshop.databases.DataManager;
 import nwts.ru.autoshop.models.DaoSession;
 import nwts.ru.autoshop.models.GetCache;
@@ -19,8 +20,12 @@ import nwts.ru.autoshop.models.network.CabinetModels;
 import nwts.ru.autoshop.models.network.cart.CartModel;
 import nwts.ru.autoshop.models.network.cart.CartModelDao;
 import nwts.ru.autoshop.models.network.cart.CartModels;
+import nwts.ru.autoshop.models.network.cart.ErrorModel;
+import nwts.ru.autoshop.models.network.cart.ErrorModelDao;
+import nwts.ru.autoshop.network.api.Api;
 import nwts.ru.autoshop.network.request.ShopAPI;
 import nwts.ru.autoshop.setting.BaseConstant;
+import nwts.ru.autoshop.setting.PreferenceHelper;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -35,6 +40,10 @@ public class ServiceIntentGetDataMore extends IntentService {
     private List<CartModel> mCartModels;
     private CabinetModels mCabinetModelsList;
     private CartModelDao mCartModelDao;
+
+    //error
+    private ErrorModel mErrorModel;
+    private ErrorModelDao mErrorModelDao;
 
     private DaoSession mDaoSession;
     List<GetCache> mGetCacheList;
@@ -65,12 +74,19 @@ public class ServiceIntentGetDataMore extends IntentService {
         } else {
             mGetCacheDao = mDaoSession.getGetCacheDao();
             mCartModelDao = mDaoSession.getCartModelDao();
+            mErrorModelDao = mDaoSession.getErrorModelDao();
         }
     }
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         if (intent != null) {
+            if (intent.getStringExtra(BaseConstant.API_PAGE).equals(BaseConstant.ACTION_SERVICE_GET_BALANCE_ADD)) {
+                int key_id = intent.getIntExtra(BaseConstant.API_GET_KEY, 0);
+                double sumBal = intent.getDoubleExtra(BaseConstant.API_BAL_SUM,0);
+                String paySys = intent.getStringExtra(BaseConstant.API_BAL_SYS);
+                postSumBalance(key_id,sumBal,paySys);
+            }
             if (intent.getStringExtra(BaseConstant.API_PAGE).equals(BaseConstant.ACTION_SERVICE_GET_CART)) {
                 int key_id = intent.getIntExtra(BaseConstant.API_GET_KEY, 0);
                 if (mCartModels != null) {
@@ -78,7 +94,44 @@ public class ServiceIntentGetDataMore extends IntentService {
                 }
                 getCart(key_id);
             }
+            if (intent.getStringExtra(BaseConstant.API_PAGE).equals(BaseConstant.ACTION_SERVICE_GET_BALANCE_ID)) {
+                int key_id = intent.getIntExtra(BaseConstant.API_GET_KEY, 0);
+//                if (mCartModels != null) {
+//                    mCartModels.clear();
+//                }
+//                getCart(key_id);
+            }
         }
+    }
+
+    private void postSumBalance(int key_id, double sumBal, String paySys) {
+        ShopAPI shopApi = ShopAPI.retrofit.create(ShopAPI.class);
+        final Call<ErrorModel> call = shopApi.addBalance(sumBal,paySys);
+        call.enqueue(new Callback<ErrorModel>() {
+            @Override
+            public void onResponse(Call<ErrorModel> call, Response<ErrorModel> response) {
+                if (response.isSuccessful()) {
+                    if (response.code() == 201) {
+                        delBalanceCache(Api.GET_CABINET_BALANCE);
+                        Intent intentService = new Intent(getApplication(), ServiceHelper.class);
+                        intentService.setAction(BaseConstant.ACTION_SERVICE_GET_BALANCE);
+                        intentService.putExtra(BaseConstant.API_GET_KEY, PreferenceHelper.getInstance().getUserId());
+                        getApplication().startService(intentService);
+
+                    } else {
+                        //get error messgae
+                    }
+
+                } else {
+                    //get error message
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ErrorModel> call, Throwable t) {
+                //get error message
+            }
+        });
     }
 
     //get cart
@@ -106,6 +159,19 @@ public class ServiceIntentGetDataMore extends IntentService {
             });
         } else {
             getCartModelDao(userId, 700);
+        }
+    }
+
+
+    private void delBalanceCache(String get_Url) {
+        if (TODOApplication.getUrlGetBalance() == null) {
+            return;
+        }
+        Query<GetCache> mGetCache = mDaoSession.queryBuilder(GetCache.class)
+                .where(GetCacheDao.Properties.FieldGet.like(TODOApplication.getUrlGetBalance())).build();
+        mGetCacheList = mGetCache.list();
+        if (mGetCacheList != null || mGetCacheList.size() > 0) {
+            mGetCacheDao.deleteInTx(mGetCacheList);
         }
     }
 

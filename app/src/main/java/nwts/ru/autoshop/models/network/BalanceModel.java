@@ -45,6 +45,12 @@ public class BalanceModel {
     @SerializedName("message")
     @Expose
     private String message;
+    @SerializedName("Oper_ID")
+    @Expose
+    public int Oper_ID;
+    @SerializedName("PaySystem")
+    @Expose
+    public String PaySystem;
     /** Used to resolve relations */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
@@ -52,19 +58,26 @@ public class BalanceModel {
     @Generated(hash = 1185920071)
     private transient BalanceModelDao myDao;
 
-    public BalanceModel(int balanceID, int userID, long dateOperation,
-                        double summaOperation, double summa, int credit,
-                        String typeOperation, Boolean error, String message) {
-        this.Balance_ID = balanceID;
-        this.User_ID = userID;
-        this.Date_Operation = dateOperation;
-        this.SummaOperation = summaOperation;
-        this.Summa = summa;
-        this.Credit = credit;
-        this.TypeOperation = typeOperation;
+
+    public BalanceModel(int balance_ID, int user_ID, long date_Operation, double summaOperation, double summa,
+                        int credit, String typeOperation, Boolean error,
+                        String message, int oper_ID, String paySystem,
+                        DaoSession daoSession, BalanceModelDao myDao) {
+        Balance_ID = balance_ID;
+        User_ID = user_ID;
+        Date_Operation = date_Operation;
+        SummaOperation = summaOperation;
+        Summa = summa;
+        Credit = credit;
+        TypeOperation = typeOperation;
         this.error = error;
         this.message = message;
+        Oper_ID = oper_ID;
+        PaySystem = paySystem;
+        this.daoSession = daoSession;
+        this.myDao = myDao;
     }
+
 
 
     @Generated(hash = 2135541164)
@@ -72,10 +85,10 @@ public class BalanceModel {
     }
 
 
-    @Generated(hash = 2023101982)
+    @Generated(hash = 806106333)
     public BalanceModel(Long id, int Balance_ID, int User_ID, long Date_Operation,
             double SummaOperation, double Summa, int Credit, String TypeOperation,
-            Boolean error, String message) {
+            Boolean error, String message, int Oper_ID, String PaySystem) {
         this.id = id;
         this.Balance_ID = Balance_ID;
         this.User_ID = User_ID;
@@ -86,7 +99,10 @@ public class BalanceModel {
         this.TypeOperation = TypeOperation;
         this.error = error;
         this.message = message;
+        this.Oper_ID = Oper_ID;
+        this.PaySystem = PaySystem;
     }
+
 
     public Long getId() {
         return id;
@@ -139,6 +155,7 @@ public class BalanceModel {
     public int getCredit() {
         return Credit;
     }
+
 
     public void setCredit(int credit) {
         this.Credit = credit;
@@ -239,6 +256,26 @@ public class BalanceModel {
 
     public void setDate_Operation(long Date_Operation) {
         this.Date_Operation = Date_Operation;
+    }
+
+
+    public int getOper_ID() {
+        return this.Oper_ID;
+    }
+
+
+    public void setOper_ID(int Oper_ID) {
+        this.Oper_ID = Oper_ID;
+    }
+
+
+    public String getPaySystem() {
+        return this.PaySystem;
+    }
+
+
+    public void setPaySystem(String PaySystem) {
+        this.PaySystem = PaySystem;
     }
 }
 

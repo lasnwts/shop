@@ -11,6 +11,7 @@ import nwts.ru.autoshop.models.network.BalanceModel;
 import nwts.ru.autoshop.models.network.CabinetModel;
 import nwts.ru.autoshop.models.network.OrderModel;
 import nwts.ru.autoshop.models.network.cart.CartModel;
+import nwts.ru.autoshop.models.network.cart.ErrorModel;
 import nwts.ru.autoshop.network.HeaderInterceptor;
 import nwts.ru.autoshop.network.HeaderLoggingInterceptor;
 import nwts.ru.autoshop.network.api.Api;
@@ -79,6 +80,12 @@ public interface ShopAPI {
     //get Balance
     @GET(Api.GET_CABINET_CART)
     Call<List<CartModel>> getCart();
+
+    //add balance
+    @Headers("Cache-Control: max-age=640000")
+    @FormUrlEncoded
+    @POST(Api.GET_CABINET_ADD_BALANCE)
+    Call<ErrorModel> addBalance(@Field("summa") double summa, @Field("paysys") String paySystem);
 
     //Create Login
     @Headers("Cache-Control: max-age=640000")

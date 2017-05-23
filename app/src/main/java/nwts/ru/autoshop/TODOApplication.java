@@ -33,6 +33,10 @@ public class TODOApplication extends Application {
     private static int detail_product_Id;
     private static ArrayList<String> urlProductDetailImages;
     private boolean validateToken;
+    private static String urlGetBalance;
+    private static String dialogImageSourceUrl;
+    private static String dialogMessageText;
+
 
     public boolean isValidateToken() {
         return this.validateToken;
@@ -219,5 +223,27 @@ public class TODOApplication extends Application {
         TODOApplication.productDetail_Id = productDetail_Id;
     }
 
+    public static String getUrlGetBalance() {
+        return urlGetBalance;
+    }
 
+    public static void setUrlGetBalance(String urlGetBalance) {
+        TODOApplication.urlGetBalance = urlGetBalance;
+    }
+
+    public static String getDialogImageSourceUrl() {
+        return dialogImageSourceUrl;
+    }
+
+    public static void setDialogImageSourceUrl(String dialogImageSourceUrl) {
+        TODOApplication.dialogImageSourceUrl = dialogImageSourceUrl;
+    }
+
+    public static String getDialogMessageText() {
+        return dialogMessageText;
+    }
+
+    public static void setDialogMessageText(String dialogMessageText) {
+        TODOApplication.dialogMessageText = dialogMessageText;
+    }
 }

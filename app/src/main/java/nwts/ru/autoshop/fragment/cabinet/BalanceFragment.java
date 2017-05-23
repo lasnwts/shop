@@ -98,6 +98,7 @@ public class BalanceFragment extends Fragment {
                 if (mIsBalanceFragment == null) {
                     mIsBalanceFragment = (isBalanceFragment) activity_context;
                 }
+
                 mIsBalanceFragment.startBalance(item);
             }
         });

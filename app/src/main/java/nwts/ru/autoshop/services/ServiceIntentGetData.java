@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import nwts.ru.autoshop.TODOApplication;
 import nwts.ru.autoshop.databases.DataManager;
 import nwts.ru.autoshop.models.CategoryItem;
 import nwts.ru.autoshop.models.CategoryItemDao;
@@ -185,6 +186,7 @@ public class ServiceIntentGetData extends IntentService {
                     if (response.isSuccessful()) {
                         mBalanceModels.addAll(response.body());
                         putGetCache(call.request().toString());
+                        TODOApplication.setUrlGetBalance(call.request().toString());
                         putCabinetBalance(mBalanceModels, userId);
                         getCabinetBalance(userId,200);
                     } else {

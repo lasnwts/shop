@@ -55,6 +55,7 @@ import nwts.ru.autoshop.services.ServiceHelper;
 import nwts.ru.autoshop.setting.BaseConstant;
 import nwts.ru.autoshop.setting.PreferenceHelper;
 
+import static android.icu.text.RelativeDateTimeFormatter.Direction.THIS;
 import static nwts.ru.autoshop.R.mipmap.ic_fab_add;
 
 public class CabinetBase extends AppCompatActivity implements OrdersFragment.isOrdersFragment,
@@ -529,8 +530,11 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
      fab 2
      */
 
+
     @Override
     public void startBalance(int item) {
+
+
         Toast.makeText(this, "Balance Fragment id = " + item, Toast.LENGTH_SHORT).show();
     }
 
@@ -562,15 +566,37 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
     @Override
     public void getMoney(String money, String paySystem) {
         String paySystems;
+        double parseSum;
 
         if (money == null || TextUtils.isEmpty(money)) {
             return;
+        } else {
+            parseSum = Double.parseDouble(money);
         }
         if (paySystem == null || TextUtils.isEmpty(paySystem)){
             paySystems = "Не определено";
         } else {
             paySystems = paySystem;
         }
+        addBalance(parseSum, paySystems);
         Toast.makeText(this, "Вы ввели cумму:"+money+" по системе: "+paySystems, Toast.LENGTH_SHORT).show();
+    }
+
+    //add balance
+    private void addBalance(double sumBal, String paysys){
+        Intent intentService = new Intent(this, ServiceHelper.class);
+        intentService.setAction(BaseConstant.ACTION_SERVICE_GET_BALANCE_ADD);
+        intentService.putExtra(BaseConstant.API_GET_KEY, PreferenceHelper.getInstance().getUserId());
+        intentService.putExtra(BaseConstant.API_BAL_SUM, sumBal);
+        intentService.putExtra(BaseConstant.API_BAL_SYS, paysys);
+        this.startService(intentService);
+    }
+
+    //get record from Balance
+    private void getBalansRecord(int id) {
+        Intent intentService = new Intent(this, ServiceHelper.class);
+        intentService.setAction(BaseConstant.ACTION_SERVICE_GET_BALANCE_ID);
+        intentService.putExtra(BaseConstant.API_GET_KEY, id);
+        this.startService(intentService);
     }
 }

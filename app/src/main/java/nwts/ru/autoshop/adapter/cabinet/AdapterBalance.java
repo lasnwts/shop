@@ -60,7 +60,7 @@ public class AdapterBalance extends RecyclerView.Adapter<AdapterBalance.ViewHold
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                holder.mAdapterClickListener.adapterOnClickListener(mBalanceModel.getBalance_ID());
+                holder.mAdapterClickListener.adapterOnClickListener(mBalanceModel.getOper_ID());
             }
         });
     }
