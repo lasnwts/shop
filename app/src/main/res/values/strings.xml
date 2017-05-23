@@ -211,5 +211,8 @@
     <string name="qiwi">Qiwi</string>
     <string name="yandex_money">Яндекс.Деньги</string>
     <string name="paypal">PayPal</string>
+    <string name="choice_pay_system">Выберите систему оплаты</string>
+    <string name="button_add_balance">Пополнить</string>
+    <string name="button_not_add_balance">Отказаться</string>
 
 </resources>

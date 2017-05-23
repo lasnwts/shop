@@ -7,20 +7,10 @@
     <TextView
         android:text="@string/choice_pay_system"
         android:textStyle="bold"
-        android:layout_marginBottom="@dimen/padding_small"
-        android:layout_marginTop="@dimen/padding_small"
         style="@android:style/TextAppearance.Medium"
         android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
-
-    <ImageView
-        android:src="@drawable/money_input"
-        android:layout_width="match_parent"
-        android:layout_height="64dp"
-        android:scaleType="center"
-        android:background="#FFFFFFFF"
-        android:contentDescription="@string/app_name" />
 
     <RadioGroup
         android:id="@+id/radioGroup"
@@ -33,26 +23,25 @@
         android:orientation="vertical">
 
         <RadioButton
-            android:id="@+id/radio_webmoney"
+            android:id="@+id/radio_red"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="24dp"
-            android:layout_marginBottom="@dimen/padding_medium"
             android:text="@string/web_money"
             android:drawableRight="@drawable/webmoney"
             android:layout_weight="1" />
 
         <RadioButton
-            android:id="@+id/radio_qiwi"
+            android:id="@+id/radio_blue"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="24dp"
             android:text="@string/qiwi"
-            android:drawableRight="@drawable/qiwi22"
+            android:drawableRight="@drawable/qiwi2"
             android:layout_weight="1" />
 
         <RadioButton
-            android:id="@+id/radio_yandex"
+            android:id="@+id/radio_green"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="24dp"
@@ -61,7 +50,7 @@
             android:layout_weight="1" />
 
         <RadioButton
-            android:id="@+id/radio_paypal"
+            android:id="@+id/radio_gray"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="24dp"

@@ -14,6 +14,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -57,7 +58,7 @@ import nwts.ru.autoshop.setting.PreferenceHelper;
 import static nwts.ru.autoshop.R.mipmap.ic_fab_add;
 
 public class CabinetBase extends AppCompatActivity implements OrdersFragment.isOrdersFragment,
-            BalanceFragment.isBalanceFragment, CartFragment.isCartFragment {
+            BalanceFragment.isBalanceFragment, CartFragment.isCartFragment , DialogFragmentAddBalance.DialogPositiveClick {
 
     private Toolbar toolbar;
     PreferenceHelper preferenceHelper;
@@ -556,5 +557,20 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
     @Override
     public void fabCommandCart(int fabItem) {
         //
+    }
+
+    @Override
+    public void getMoney(String money, String paySystem) {
+        String paySystems;
+
+        if (money == null || TextUtils.isEmpty(money)) {
+            return;
+        }
+        if (paySystem == null || TextUtils.isEmpty(paySystem)){
+            paySystems = "Не определено";
+        } else {
+            paySystems = paySystem;
+        }
+        Toast.makeText(this, "Вы ввели cумму:"+money+" по системе: "+paySystems, Toast.LENGTH_SHORT).show();
     }
 }
