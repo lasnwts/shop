@@ -12,11 +12,20 @@ import nwts.ru.autoshop.models.DaoSession;
 /**
  * Created by пользователь on 23.05.2017.
  */
+
 @Entity(active = true)
 public class BalOrderModel {
 
     @Id
-    private long id;
+    private Long id;
+
+    @SerializedName("TC_ID")
+    @Expose
+    private int TC_ID;
+    
+    @SerializedName("Oper_ID")
+    @Expose
+    private int Oper_ID;
 
     @SerializedName("User_ID")
     @Expose
@@ -29,10 +38,6 @@ public class BalOrderModel {
     @SerializedName("Summa")
     @Expose
     private double Summa;
-
-    @SerializedName("TC_ID")
-    @Expose
-    private int TC_ID;
 
     @SerializedName("PaySystem")
     @Expose
@@ -74,6 +79,14 @@ public class BalOrderModel {
     @Expose
     private String Status_Name;
 
+    @SerializedName("Menu_name")
+    @Expose
+    private String Menu_name;
+
+    @SerializedName("Menu_image")
+    @Expose
+    private String Menu_image;
+
     @SerializedName("error")
     @Expose
     private Boolean error;
@@ -89,13 +102,14 @@ public class BalOrderModel {
     @Generated(hash = 1221286629)
     private transient BalOrderModelDao myDao;
 
-    public BalOrderModel(int user_ID, int credit, double summa, int TC_ID, String paySystem, int tovar_ID,
-                         int statusID, double price, long date_Operation, int order_ID, int balance_ID,
-                         double summaTovar, int tovar_Count, String status_Name, Boolean error, String message) {
+    public BalOrderModel(int TC_ID, int oper_ID, int user_ID, int credit, double summa, String paySystem, int tovar_ID,
+                         int statusID, double price, long date_Operation, int order_ID, int balance_ID, double summaTovar,
+                         int tovar_Count, String status_Name, String menu_name, String menu_image, Boolean error, String message) {
+        this.TC_ID = TC_ID;
+        Oper_ID = oper_ID;
         User_ID = user_ID;
         Credit = credit;
         Summa = summa;
-        this.TC_ID = TC_ID;
         PaySystem = paySystem;
         Tovar_ID = tovar_ID;
         StatusID = statusID;
@@ -106,19 +120,22 @@ public class BalOrderModel {
         SummaTovar = summaTovar;
         Tovar_Count = tovar_Count;
         Status_Name = status_Name;
+        Menu_name = menu_name;
+        Menu_image = menu_image;
         this.error = error;
         this.message = message;
     }
 
-    @Generated(hash = 1079356128)
-    public BalOrderModel(long id, int User_ID, int Credit, double Summa, int TC_ID, String PaySystem,
-            int Tovar_ID, int StatusID, double Price, long Date_Operation, int Order_ID, int Balance_ID,
-            double SummaTovar, int Tovar_Count, String Status_Name, Boolean error, String message) {
+    @Generated(hash = 1165117043)
+    public BalOrderModel(Long id, int TC_ID, int Oper_ID, int User_ID, int Credit, double Summa, String PaySystem, int Tovar_ID,
+            int StatusID, double Price, long Date_Operation, int Order_ID, int Balance_ID, double SummaTovar, int Tovar_Count,
+            String Status_Name, String Menu_name, String Menu_image, Boolean error, String message) {
         this.id = id;
+        this.TC_ID = TC_ID;
+        this.Oper_ID = Oper_ID;
         this.User_ID = User_ID;
         this.Credit = Credit;
         this.Summa = Summa;
-        this.TC_ID = TC_ID;
         this.PaySystem = PaySystem;
         this.Tovar_ID = Tovar_ID;
         this.StatusID = StatusID;
@@ -129,6 +146,8 @@ public class BalOrderModel {
         this.SummaTovar = SummaTovar;
         this.Tovar_Count = Tovar_Count;
         this.Status_Name = Status_Name;
+        this.Menu_name = Menu_name;
+        this.Menu_image = Menu_image;
         this.error = error;
         this.message = message;
     }
@@ -137,12 +156,28 @@ public class BalOrderModel {
     public BalOrderModel() {
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
+    }
+
+    public int getTC_ID() {
+        return TC_ID;
+    }
+
+    public void setTC_ID(int TC_ID) {
+        this.TC_ID = TC_ID;
+    }
+
+    public int getOper_ID() {
+        return Oper_ID;
+    }
+
+    public void setOper_ID(int oper_ID) {
+        Oper_ID = oper_ID;
     }
 
     public int getUser_ID() {
@@ -167,14 +202,6 @@ public class BalOrderModel {
 
     public void setSumma(double summa) {
         Summa = summa;
-    }
-
-    public int getTC_ID() {
-        return TC_ID;
-    }
-
-    public void setTC_ID(int TC_ID) {
-        this.TC_ID = TC_ID;
     }
 
     public String getPaySystem() {
@@ -255,6 +282,22 @@ public class BalOrderModel {
 
     public void setStatus_Name(String status_Name) {
         Status_Name = status_Name;
+    }
+
+    public String getMenu_name() {
+        return Menu_name;
+    }
+
+    public void setMenu_name(String menu_name) {
+        Menu_name = menu_name;
+    }
+
+    public String getMenu_image() {
+        return Menu_image;
+    }
+
+    public void setMenu_image(String menu_image) {
+        Menu_image = menu_image;
     }
 
     public Boolean getError() {

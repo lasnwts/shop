@@ -16,12 +16,20 @@ import nwts.ru.autoshop.databases.DataManager;
 import nwts.ru.autoshop.models.DaoSession;
 import nwts.ru.autoshop.models.GetCache;
 import nwts.ru.autoshop.models.GetCacheDao;
+import nwts.ru.autoshop.models.ProductCategory;
+import nwts.ru.autoshop.models.ProductCategoryDao;
+import nwts.ru.autoshop.models.network.BalanceModel;
+import nwts.ru.autoshop.models.network.BalanceModelDao;
+import nwts.ru.autoshop.models.network.BalanceModels;
 import nwts.ru.autoshop.models.network.CabinetModels;
 import nwts.ru.autoshop.models.network.cart.CartModel;
 import nwts.ru.autoshop.models.network.cart.CartModelDao;
 import nwts.ru.autoshop.models.network.cart.CartModels;
 import nwts.ru.autoshop.models.network.cart.ErrorModel;
 import nwts.ru.autoshop.models.network.cart.ErrorModelDao;
+import nwts.ru.autoshop.models.network.orders.BalOrderModel;
+import nwts.ru.autoshop.models.network.orders.BalOrderModelDao;
+import nwts.ru.autoshop.models.network.orders.BalOrderModels;
 import nwts.ru.autoshop.network.api.Api;
 import nwts.ru.autoshop.network.request.ShopAPI;
 import nwts.ru.autoshop.setting.BaseConstant;
@@ -41,6 +49,11 @@ public class ServiceIntentGetDataMore extends IntentService {
     private CabinetModels mCabinetModelsList;
     private CartModelDao mCartModelDao;
 
+    //Bal order id
+    private List<BalOrderModel> mBalOrderModelList;
+    private BalOrderModels mBalOrderModels;
+    private BalOrderModelDao mBalOrderModelDao;
+
     //error
     private ErrorModel mErrorModel;
     private ErrorModelDao mErrorModelDao;
@@ -54,8 +67,6 @@ public class ServiceIntentGetDataMore extends IntentService {
 
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
-     *
-     * @param name Used to name the worker thread, important only for debugging.
      */
     public ServiceIntentGetDataMore() {
         super("name");
@@ -66,6 +77,7 @@ public class ServiceIntentGetDataMore extends IntentService {
         super.onCreate();
         mGetCacheList = new ArrayList<>();
         mCartModels = new ArrayList<>();
+        mBalOrderModelList = new ArrayList<>();
         DataManager dataManager = DataManager.getInstance();
         mDaoSession = dataManager.getDaoSession();
         if (mDaoSession == null) {
@@ -75,6 +87,7 @@ public class ServiceIntentGetDataMore extends IntentService {
             mGetCacheDao = mDaoSession.getGetCacheDao();
             mCartModelDao = mDaoSession.getCartModelDao();
             mErrorModelDao = mDaoSession.getErrorModelDao();
+            mBalOrderModelDao = mDaoSession.getBalOrderModelDao();
         }
     }
 
@@ -83,9 +96,9 @@ public class ServiceIntentGetDataMore extends IntentService {
         if (intent != null) {
             if (intent.getStringExtra(BaseConstant.API_PAGE).equals(BaseConstant.ACTION_SERVICE_GET_BALANCE_ADD)) {
                 int key_id = intent.getIntExtra(BaseConstant.API_GET_KEY, 0);
-                double sumBal = intent.getDoubleExtra(BaseConstant.API_BAL_SUM,0);
+                double sumBal = intent.getDoubleExtra(BaseConstant.API_BAL_SUM, 0);
                 String paySys = intent.getStringExtra(BaseConstant.API_BAL_SYS);
-                postSumBalance(key_id,sumBal,paySys);
+                postSumBalance(key_id, sumBal, paySys);
             }
             if (intent.getStringExtra(BaseConstant.API_PAGE).equals(BaseConstant.ACTION_SERVICE_GET_CART)) {
                 int key_id = intent.getIntExtra(BaseConstant.API_GET_KEY, 0);
@@ -95,18 +108,65 @@ public class ServiceIntentGetDataMore extends IntentService {
                 getCart(key_id);
             }
             if (intent.getStringExtra(BaseConstant.API_PAGE).equals(BaseConstant.ACTION_SERVICE_GET_BALANCE_ID)) {
-                int key_id = intent.getIntExtra(BaseConstant.API_GET_KEY, 0);
-//                if (mCartModels != null) {
-//                    mCartModels.clear();
-//                }
-//                getCart(key_id);
+               // int key_id = intent.getIntExtra(BaseConstant.API_GET_KEY, 0);
+                int key_id = TODOApplication.getKey_id();
+                if (mBalOrderModelList != null) {
+                    mBalOrderModelList.clear();
+                }
+                getBalOrderModel(key_id);
             }
+        }
+    }
+
+    private void getBalOrderModel(final int key_id) {
+        ShopAPI shopApi = ShopAPI.retrofit.create(ShopAPI.class);
+        final Call<List<BalOrderModel>> call = shopApi.getBalOrdersId(key_id);
+            call.enqueue(new Callback<List<BalOrderModel>>() {
+                @Override
+                public void onResponse(Call<List<BalOrderModel>> call, Response<List<BalOrderModel>> response) {
+                    if (response.isSuccessful()) {
+                        mBalOrderModelList.clear();
+                        mBalOrderModelList.addAll(response.body());
+                        putGetCache(call.request().toString());
+                        putBalOrderModels(mBalOrderModelList, key_id);
+                        getBalOrderModels(key_id, 200);
+
+                    } else {
+                        getBalOrderModels(key_id, 400);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<List<BalOrderModel>> call, Throwable t) {
+                    getBalOrderModels(key_id, 500);
+                }
+            });
+    }
+
+    private void getBalOrderModels(int key_id, int errors) {
+        Query<BalOrderModel> balOrderModels = mDaoSession.queryBuilder(BalOrderModel.class).
+                where(BalOrderModelDao.Properties.Oper_ID.eq(key_id)).build();
+        List<BalOrderModel> balOrderModels1 = balOrderModels.list();
+        EventBus.getDefault().post(new BalOrderModels(balOrderModels1, errors));
+    }
+
+    private void putBalOrderModels(List<BalOrderModel> balOrderModels, int key_id) {
+        if (balOrderModels == null || balOrderModels.size() < 1) {
+            return;
+        } else {
+                Query<BalOrderModel> mBalOrderModelDel = mDaoSession.queryBuilder(BalOrderModel.class)
+                        .where(BalOrderModelDao.Properties.Oper_ID.eq(key_id)).build();
+                List<BalOrderModel> balOrderModelsDel = mBalOrderModelDel.list();
+                if (balOrderModelsDel != null && balOrderModelsDel.size() != 0 && !balOrderModelsDel.isEmpty()) {
+                    mBalOrderModelDao.deleteInTx(balOrderModelsDel);
+            }
+            mBalOrderModelDao.insertInTx(balOrderModels);
         }
     }
 
     private void postSumBalance(int key_id, double sumBal, String paySys) {
         ShopAPI shopApi = ShopAPI.retrofit.create(ShopAPI.class);
-        final Call<ErrorModel> call = shopApi.addBalance(sumBal,paySys);
+        final Call<ErrorModel> call = shopApi.addBalance(sumBal, paySys);
         call.enqueue(new Callback<ErrorModel>() {
             @Override
             public void onResponse(Call<ErrorModel> call, Response<ErrorModel> response) {

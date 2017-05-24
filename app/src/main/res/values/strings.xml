@@ -195,8 +195,11 @@
     <string name="balans_on_date">Баланс на :</string>
     <string name="bottom_nav_text_orders">Заказы</string>
     <string name="bottom_nav_text_balance">Баланс</string>
+    <string name="bottom_nav_text_operation">Операции</string>
     <string name="bottom_nav_text_cart">Корзина</string>
     <string name="name_liost_orders">Заказы (перечень)</string>
+    <string name="name_list_orders">Заказ (содержание)</string>
+    <string name="name_list_add_balance">Пополнение баланса</string>
     <string name="cabinet_date">Дата</string>
     <string name="cabinet_summa">Сумма</string>
     <string name="cabinet_summa_name">Статус</string>
@@ -214,5 +217,8 @@
     <string name="choice_pay_system">Выберите систему оплаты</string>
     <string name="button_add_balance">Пополнить</string>
     <string name="button_not_add_balance">Отказаться</string>
+    <string name="order_tovar">Товары (перечень)</string>
+    <string name="name_pay_sys">Система не определена</string>
+    <string name="count_pay_sys">Пополнение, одна операция</string>
 
 </resources>

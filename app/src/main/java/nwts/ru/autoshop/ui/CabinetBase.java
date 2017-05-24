@@ -44,22 +44,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 import nwts.ru.autoshop.R;
+import nwts.ru.autoshop.TODOApplication;
+import nwts.ru.autoshop.fragment.cabinet.BalOrderFragment;
 import nwts.ru.autoshop.fragment.cabinet.BalanceFragment;
 import nwts.ru.autoshop.fragment.cabinet.CartFragment;
 import nwts.ru.autoshop.fragment.cabinet.OrdersFragment;
 import nwts.ru.autoshop.fragment.dialogs.DialogFragmentAddBalance;
 import nwts.ru.autoshop.models.network.CabinetModel;
 import nwts.ru.autoshop.models.network.CabinetModels;
-import nwts.ru.autoshop.models.network.cart.CartModel;
 import nwts.ru.autoshop.services.ServiceHelper;
 import nwts.ru.autoshop.setting.BaseConstant;
 import nwts.ru.autoshop.setting.PreferenceHelper;
+import nwts.ru.autoshop.setting.ToolBarTitle;
 
-import static android.icu.text.RelativeDateTimeFormatter.Direction.THIS;
-import static nwts.ru.autoshop.R.mipmap.ic_fab_add;
+import static android.R.attr.fragment;
+import static android.R.attr.tag;
+
 
 public class CabinetBase extends AppCompatActivity implements OrdersFragment.isOrdersFragment,
-            BalanceFragment.isBalanceFragment, CartFragment.isCartFragment , DialogFragmentAddBalance.DialogPositiveClick {
+        BalanceFragment.isBalanceFragment, CartFragment.isCartFragment, DialogFragmentAddBalance.DialogPositiveClick,
+        BalOrderFragment.isBalOrderFragment, ToolBarTitle {
 
     private Toolbar toolbar;
     PreferenceHelper preferenceHelper;
@@ -69,10 +73,10 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
     private List<CabinetModel> mCabinetModels;
     private FloatingActionButton fab;
     private TextView mTextView, mTextViewNameFragment;
-    private TextView mTextViewCart, mTextViewSumma,mTextcartBalans;
+    private TextView mTextViewCart, mTextViewSumma, mTextcartBalans;
     private TextView mTextViewCabinetData, mTextViewCabinetSumma, mTextViewCabinetSummaName;
     private TextView mTextViewImageView, mTextViewDivider;
-    private Fragment fragment;
+    //private Fragment fragment;
     // create price format
     DecimalFormat formatData = new DecimalFormat("0.00");
     SimpleDateFormat dateformat = new SimpleDateFormat("dd.MM.yyyy' 'HH:mm:ss");
@@ -80,6 +84,7 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
     OrdersFragment ordersFragment;
     BalanceFragment mBalanceFragment;
     CartFragment mCartFragment;
+    BalOrderFragment mBalOrderFragment;
     BottomNavigationView bnv;
     DialogFragmentAddBalance mDialogFragmentAddBalance;
 
@@ -88,7 +93,7 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cabinet);
         mCabinetModels = new ArrayList<>();
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         PreferenceHelper.getInstance().init(getApplicationContext());
@@ -120,7 +125,7 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
                     } else {
                         //
                         mDialogFragmentAddBalance = new DialogFragmentAddBalance();
-                        mDialogFragmentAddBalance.show(getFragmentManager(),"dialog");
+                        mDialogFragmentAddBalance.show(getFragmentManager(), "dialog");
                     }
 
                 }
@@ -136,9 +141,8 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
         mTextViewDivider = (TextView) findViewById(R.id.productDetailDivider9);
         //
         mTextViewCabinetData = (TextView) findViewById(R.id.cabinet_data);
-        mTextViewCabinetSumma= (TextView) findViewById(R.id.cabinet_summa);
-        mTextViewCabinetSummaName= (TextView) findViewById(R.id.cabinet_summa_name);
-
+        mTextViewCabinetSumma = (TextView) findViewById(R.id.cabinet_summa);
+        mTextViewCabinetSummaName = (TextView) findViewById(R.id.cabinet_summa_name);
 
 
         bnv = (BottomNavigationView) findViewById(R.id.bottom_navigation);
@@ -163,6 +167,11 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
                 if (savedInstanceState.get(BaseConstant.TAG_CABINET).equals(BaseConstant.TAG_CART_FRAGMENT)) {
                     getCart();
                     bnv.getMenu().getItem(2).setChecked(true);
+                }
+                if (savedInstanceState.get(BaseConstant.TAG_CABINET).equals(BaseConstant.TAG_BAL_ORDER_FRAGMENT)) {
+                    getBalOrder();
+                    hideFab();
+                    // bnv.getMenu().getItem(2).setChecked(true);
                 }
             } else {
                 getOrders();
@@ -189,7 +198,7 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
 
 
     private void getBalance() {
-        mTextViewNameFragment.setText(R.string.bottom_nav_text_balance);
+        mTextViewNameFragment.setText(R.string.bottom_nav_text_operation);
         mTextViewCabinetData.setText(R.string.cabinet_date);
         mTextViewCabinetSumma.setText(R.string.cabinet_summa);
         mTextViewCabinetSummaName.setText(R.string.cabinet_summa_direction);
@@ -204,7 +213,7 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
     }
 
     private void getCart() {
-        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             mTextViewImageView.setVisibility(View.GONE);
             mTextViewDivider.setVisibility(View.GONE);
         } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -413,17 +422,12 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
         mCabinetModels.addAll(event.getCabinetModels());
         mTextView.setText(preferenceHelper.getUserName());
 
-       mTextViewCart.setText(getString(R.string.cabinet_rest_name));
-      //  mTextViewCart.setText(dateformat.format(mCabinetModels.get(0).getDateOperation() * 1000l));
+        mTextViewCart.setText(getString(R.string.cabinet_rest_name));
+        //  mTextViewCart.setText(dateformat.format(mCabinetModels.get(0).getDateOperation() * 1000l));
         mTextViewSumma.setText(formatData.format(mCabinetModels.get(0).getCartSumma()));
-       //mTextcartBalans.setText(R.string.balans_on_date);
+        //mTextcartBalans.setText(R.string.balans_on_date);
         //Toast.makeText(this,""+mCabinetModels.get(0).getBalanceID(), Toast.LENGTH_LONG).show();
         // selectorFragments();
-    }
-
-    @Override
-    public void startOrder(int item) {
-        Toast.makeText(this, "id = " + item, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -533,9 +537,16 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
 
     @Override
     public void startBalance(int item) {
+        TODOApplication.setKey_id(item);
+        getBalOrder();
+        hideFab();
+    }
 
-
-        Toast.makeText(this, "Balance Fragment id = " + item, Toast.LENGTH_SHORT).show();
+    @Override
+    public void startOrder(int item) {
+        TODOApplication.setKey_id(item);
+        getBalOrder();
+        hideFab();
     }
 
     @Override
@@ -547,7 +558,7 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
             showFab();
             fab.setImageResource(R.drawable.ic_fab_action_top);
         } else {
-           // hideFab();
+            // hideFab();
             showFab();
             fab.setImageResource(R.drawable.ic_action_plus_white);
         }
@@ -573,17 +584,17 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
         } else {
             parseSum = Double.parseDouble(money);
         }
-        if (paySystem == null || TextUtils.isEmpty(paySystem)){
+        if (paySystem == null || TextUtils.isEmpty(paySystem)) {
             paySystems = "Не определено";
         } else {
             paySystems = paySystem;
         }
         addBalance(parseSum, paySystems);
-        Toast.makeText(this, "Вы ввели cумму:"+money+" по системе: "+paySystems, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Вы ввели cумму:" + money + " по системе: " + paySystems, Toast.LENGTH_SHORT).show();
     }
 
     //add balance
-    private void addBalance(double sumBal, String paysys){
+    private void addBalance(double sumBal, String paysys) {
         Intent intentService = new Intent(this, ServiceHelper.class);
         intentService.setAction(BaseConstant.ACTION_SERVICE_GET_BALANCE_ADD);
         intentService.putExtra(BaseConstant.API_GET_KEY, PreferenceHelper.getInstance().getUserId());
@@ -598,5 +609,45 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
         intentService.setAction(BaseConstant.ACTION_SERVICE_GET_BALANCE_ID);
         intentService.putExtra(BaseConstant.API_GET_KEY, id);
         this.startService(intentService);
+    }
+
+    private void getBalOrder() {
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            mTextViewImageView.setVisibility(View.GONE);
+            mTextViewDivider.setVisibility(View.GONE);
+        } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            mTextViewImageView.setVisibility(View.VISIBLE);
+            mTextViewImageView.setText(R.string.cabinet_cart_image);
+            mTextViewDivider.setVisibility(View.VISIBLE);
+        }
+        mTextViewNameFragment.setText(R.string.order_tovar);
+        mTextViewCabinetData.setText(R.string.cabinet_tovar_name);
+        mTextViewCabinetSumma.setText(R.string.cabinet_tovar_count);
+        mTextViewCabinetSummaName.setText(R.string.cabinet_summa);
+        mBalOrderFragment = new BalOrderFragment();
+        if (getFragmentManager().getBackStackEntryCount() != 0) {
+            getFragmentManager().popBackStack();
+        }
+        getFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
+                .replace(R.id.content_frame_cabinet, mBalOrderFragment, BaseConstant.TAG_BAL_ORDER_FRAGMENT).commit();
+    }
+
+    @Override
+    public void startBalOrder(int item) {
+        Toast.makeText(this, "ID= " + item, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void BaseActivitySteToolBarTitle(String setTitle) {
+        if (toolbar != null) {
+            toolbar.setTitle(setTitle);
+            Fragment fragment = getFragmentManager().findFragmentById(R.id.content_frame_cabinet);
+            if (fragment != null) {
+                String tag = (String) fragment.getTag();
+                if (tag.equals(BaseConstant.TAG_BAL_ORDER_FRAGMENT)) {
+                    mTextViewNameFragment.setText(setTitle);
+                }
+            }
+        }
     }
 }

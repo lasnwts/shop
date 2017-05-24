@@ -34,6 +34,7 @@ import nwts.ru.autoshop.models.network.cart.CartModels;
 import nwts.ru.autoshop.services.ServiceHelper;
 import nwts.ru.autoshop.setting.BaseConstant;
 import nwts.ru.autoshop.setting.PreferenceHelper;
+import nwts.ru.autoshop.setting.ToolBarTitle;
 
 /**
  * Created by пользователь on 21.05.2017.
@@ -50,10 +51,12 @@ public class CartFragment extends Fragment {
     RecyclerView recyclerView;
     ProgressBar prgLoading;
     TextView txtAlert;
+
     private enum LayoutManagerType {
         GRID_LAYOUT_MANAGER,
         LINEAR_LAYOUT_MANAGER
     }
+
     private isCartFragment mIsCartFragment;
     // create price format
     DecimalFormat formatData = new DecimalFormat("0.00");
@@ -61,6 +64,7 @@ public class CartFragment extends Fragment {
     //
     private int lastVisibleItem;
     private int totalItemCount = 4;
+    private ToolBarTitle toolBarTitle;
 
     public CartFragment() {
         //
@@ -70,8 +74,13 @@ public class CartFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activity_context = getActivity();
-        request();;
+        if (savedInstanceState != null) {
+
+        }
+        request();
+        ;
     }
+
 
     @Nullable
     @Override
@@ -113,7 +122,7 @@ public class CartFragment extends Fragment {
                 if (mIsCartFragment == null) {
                     mIsCartFragment = (isCartFragment) activity_context;
                 }
-                if (lastVisibleItem > totalItemCount ) {
+                if (lastVisibleItem > totalItemCount) {
                     mIsCartFragment.fabCommandCart(0);
                 } else {
                     mIsCartFragment.fabCommandCart(1);
@@ -151,10 +160,18 @@ public class CartFragment extends Fragment {
 
     public interface isCartFragment {
         void startCart(int item);
+
         void fabCommandCart(int fabItem);
     }
 
-    public void movedRecyclerViewOnTop(){
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        toolBarTitle = (ToolBarTitle) getActivity();
+        toolBarTitle.BaseActivitySteToolBarTitle(getResources().getString(R.string.bottom_nav_text_cart));
+    }
+
+    public void movedRecyclerViewOnTop() {
         if (recyclerView != null && recyclerView.getLayoutManager().canScrollVertically() && recyclerView.getLayoutManager().getItemCount() > 0) {
             recyclerView.smoothScrollToPosition(0);
             // recyclerView.getLayoutManager().scrollToPosition(0);
@@ -164,7 +181,7 @@ public class CartFragment extends Fragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventOrders(CartModels event) {
         prgLoading.setVisibility(View.INVISIBLE);
-        if (event.getCartModels().isEmpty() || event.getCartModels().size() < 1){
+        if (event.getCartModels().isEmpty() || event.getCartModels().size() < 1) {
             txtAlert.setVisibility(View.VISIBLE);
         } else {
             txtAlert.setVisibility(View.INVISIBLE);

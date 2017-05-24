@@ -34,6 +34,7 @@ import nwts.ru.autoshop.models.network.OrderModels;
 import nwts.ru.autoshop.services.ServiceHelper;
 import nwts.ru.autoshop.setting.BaseConstant;
 import nwts.ru.autoshop.setting.PreferenceHelper;
+import nwts.ru.autoshop.setting.ToolBarTitle;
 import nwts.ru.autoshop.ui.CabinetBase;
 
 /**
@@ -62,6 +63,7 @@ public class OrdersFragment extends Fragment {
     //
     private int lastVisibleItem;
     private int totalItemCount = 4;
+    private ToolBarTitle toolBarTitle;
 
 
     @Override
@@ -161,7 +163,8 @@ public class OrdersFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
+        toolBarTitle = (ToolBarTitle) getActivity();
+        toolBarTitle.BaseActivitySteToolBarTitle(getResources().getString(R.string.bottom_nav_text_orders));
     }
 
     public interface isOrdersFragment {
@@ -175,4 +178,5 @@ public class OrdersFragment extends Fragment {
             // recyclerView.getLayoutManager().scrollToPosition(0);
         }
     }
+
 }

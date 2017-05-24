@@ -36,6 +36,7 @@ public class TODOApplication extends Application {
     private static String urlGetBalance;
     private static String dialogImageSourceUrl;
     private static String dialogMessageText;
+    private static int key_id;
 
 
     public boolean isValidateToken() {
@@ -245,5 +246,13 @@ public class TODOApplication extends Application {
 
     public static void setDialogMessageText(String dialogMessageText) {
         TODOApplication.dialogMessageText = dialogMessageText;
+    }
+
+    public static int getKey_id() {
+        return key_id;
+    }
+
+    public static void setKey_id(int key_id) {
+        TODOApplication.key_id = key_id;
     }
 }

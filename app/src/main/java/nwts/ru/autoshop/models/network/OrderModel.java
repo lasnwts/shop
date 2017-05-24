@@ -35,6 +35,9 @@ public class OrderModel {
     @SerializedName("Status_Name")
     @Expose
     private String Status_Name;
+    @SerializedName("Oper_ID")
+    @Expose
+    private int Oper_ID;
     @SerializedName("error")
     @Expose
     private Boolean error;
@@ -59,7 +62,7 @@ public class OrderModel {
     }
 
     public OrderModel(int order_ID, int user_ID, int statusID, long date_Operation, double summa,
-                      String status_Name, Boolean error, String message, DaoSession daoSession, OrderModelDao myDao) {
+                      String status_Name, Boolean error, String message, int Oper_ID, DaoSession daoSession, OrderModelDao myDao) {
         Order_ID = order_ID;
         User_ID = user_ID;
         StatusID = statusID;
@@ -70,6 +73,7 @@ public class OrderModel {
         this.message = message;
         this.daoSession = daoSession;
         this.myDao = myDao;
+        this.Oper_ID = Oper_ID;
     }
 
     /** Used to resolve relations */
@@ -85,9 +89,9 @@ public class OrderModel {
     public OrderModel() {
     }
 
-    @Generated(hash = 1076767349)
-    public OrderModel(Long id, int Order_ID, int User_ID, int StatusID, long Date_Operation, double Summa,
-            String Status_Name, Boolean error, String message) {
+    @Generated(hash = 179108934)
+    public OrderModel(Long id, int Order_ID, int User_ID, int StatusID, long Date_Operation, double Summa, String Status_Name,
+            int Oper_ID, Boolean error, String message) {
         this.id = id;
         this.Order_ID = Order_ID;
         this.User_ID = User_ID;
@@ -95,6 +99,7 @@ public class OrderModel {
         this.Date_Operation = Date_Operation;
         this.Summa = Summa;
         this.Status_Name = Status_Name;
+        this.Oper_ID = Oper_ID;
         this.error = error;
         this.message = message;
     }
@@ -230,4 +235,11 @@ public class OrderModel {
         this.Status_Name = Status_Name;
     }
 
+    public int getOper_ID() {
+        return Oper_ID;
+    }
+
+    public void setOper_ID(int oper_ID) {
+        Oper_ID = oper_ID;
+    }
 }

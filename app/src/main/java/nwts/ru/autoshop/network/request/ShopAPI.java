@@ -12,6 +12,7 @@ import nwts.ru.autoshop.models.network.CabinetModel;
 import nwts.ru.autoshop.models.network.OrderModel;
 import nwts.ru.autoshop.models.network.cart.CartModel;
 import nwts.ru.autoshop.models.network.cart.ErrorModel;
+import nwts.ru.autoshop.models.network.orders.BalOrderModel;
 import nwts.ru.autoshop.network.HeaderInterceptor;
 import nwts.ru.autoshop.network.HeaderLoggingInterceptor;
 import nwts.ru.autoshop.network.api.Api;
@@ -86,6 +87,11 @@ public interface ShopAPI {
     @FormUrlEncoded
     @POST(Api.GET_CABINET_ADD_BALANCE)
     Call<ErrorModel> addBalance(@Field("summa") double summa, @Field("paysys") String paySystem);
+
+    //id balance
+    @FormUrlEncoded
+    @POST(Api.GET_CABINET_BALANCE_ID)
+    Call<List<BalOrderModel>> getBalOrdersId(@Field("order_id") int orderId);
 
     //Create Login
     @Headers("Cache-Control: max-age=640000")

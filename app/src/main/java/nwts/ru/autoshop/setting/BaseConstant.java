@@ -54,6 +54,7 @@ public interface BaseConstant {
     public final static String TAG_ORDERS_FRAGMENT = "tag_orders_fragment";
     public final static String TAG_BALANCE_FRAGMENT = "tag_balance_fragment";
     public final static String TAG_CART_FRAGMENT = "tag_cart_fragment";
+    public final static String TAG_BAL_ORDER_FRAGMENT = "tag_bal_order_fragment";
 
     //EXTRA
     public final static String EX_PRICE = "price";

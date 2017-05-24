@@ -32,6 +32,7 @@ import nwts.ru.autoshop.models.network.OrderModels;
 import nwts.ru.autoshop.services.ServiceHelper;
 import nwts.ru.autoshop.setting.BaseConstant;
 import nwts.ru.autoshop.setting.PreferenceHelper;
+import nwts.ru.autoshop.setting.ToolBarTitle;
 
 /**
  * Created by пользователь on 20.05.2017.
@@ -59,7 +60,7 @@ public class BalanceFragment extends Fragment {
     //
     private int lastVisibleItem;
     private int totalItemCount = 4;
-
+    private ToolBarTitle toolBarTitle;
 
     public BalanceFragment() {
         //
@@ -131,6 +132,13 @@ public class BalanceFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        toolBarTitle = (ToolBarTitle) getActivity();
+        toolBarTitle.BaseActivitySteToolBarTitle(getResources().getString(R.string.bottom_nav_text_balance));
+    }
+
 
 
     @Override
@@ -152,11 +160,6 @@ public class BalanceFragment extends Fragment {
         super.onSaveInstanceState(outState);
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-    }
 
     public interface isBalanceFragment {
         void startBalance(int item);

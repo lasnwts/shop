@@ -64,7 +64,7 @@ public class AdapterOrders  extends RecyclerView.Adapter<AdapterOrders.ViewHolde
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                holder.mAdapterClickListener.adapterOnClickListener(mOrderModel.getOrderID());
+                holder.mAdapterClickListener.adapterOnClickListener(mOrderModel.getOper_ID());
             }
         });
 
