@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/primary_color"
+              android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/dialog_fragment_cart_processing_type_moved_title"
+        style="@android:style/TextAppearance.Medium"
+        android:text="@string/cart_processing_moved_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/padding_small"
+        android:layout_marginTop="@dimen/padding_small"
+        android:gravity="center"
+        />
+
+    <Spinner
+        android:id="@+id/dialog_fragment_cart_processing_dostavka"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:popupBackground="@color/hint"
+        android:layout_marginTop="@dimen/padding_small"
+        android:entries="@array/cart_type_moved">
+    </Spinner>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/form_border"/>
+
+
+    <TextView
+        android:id="@+id/dialog_fragment_cart_processing_address"
+        style="@android:style/TextAppearance.Medium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_marginBottom="@dimen/padding_small"
+        android:layout_marginTop="@dimen/padding_large"
+        android:gravity="center"
+        />
+
+    <RadioGroup
+        android:id="@+id/dialog_fragment_cart_processing_radiogruop"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/gradient_start"
+        android:layout_marginTop="@dimen/padding_large"
+        android:visibility="gone">
+
+        <RadioButton
+            android:id="@+id/dialog_fragment_cart_processing_address1"
+            android:layout_marginTop="@dimen/padding_medium"
+            android:text="@string/point_dostavka_addr1"
+            android:drawableRight="@drawable/moscow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/form_border"/>
+
+        <RadioButton
+            android:id="@+id/dialog_fragment_cart_processing_address2"
+            android:layout_marginTop="@dimen/padding_medium"
+            android:text="@string/point_dosavka_addr2"
+            android:drawableRight="@drawable/saintpetersburg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </RadioGroup>
+
+    <EditText
+        android:id="@+id/dialog_fragment_cart_processing_editTextMulti"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textMultiLine"
+        android:background="@color/gradient_start"
+        android:hint="@string/cart_processing_hint_adres"
+        android:visibility="gone"
+        android:lines="2"/>
+
+    <Spinner
+        android:id="@+id/dialog_fragment_cart_processing_paying"
+        android:layout_marginTop="@dimen/padding_small"
+        android:layout_marginBottom="@dimen/padding_small"
+        android:entries="@array/cart_type_paying"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </Spinner>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/form_border"/>
+
+</LinearLayout>

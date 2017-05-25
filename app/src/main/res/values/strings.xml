@@ -216,9 +216,28 @@
     <string name="paypal">PayPal</string>
     <string name="choice_pay_system">Выберите систему оплаты</string>
     <string name="button_add_balance">Пополнить</string>
+    <string name="button_cart_balance">Подтвердить</string>
     <string name="button_not_add_balance">Отказаться</string>
     <string name="order_tovar">Товары (перечень)</string>
     <string name="name_pay_sys">Система не определена</string>
     <string name="count_pay_sys">Пополнение, одна операция</string>
+    <string name="cart_processing_title">Оформление заказа</string>
+    <string name="cart_processing_moved_title">Выберите способ доставки</string>
+    <string name="cart_processing_title_input_address">Адрес доставки</string>
+    <string name="cart_processing_choice_point">Выберите пункт выдачи</string>
+    <string name="cart_processing_hint_adres">Введите адрес</string>
+    <string name="point_dostavka_addr1">Москва, ул. Образцова, 31, стр. 3</string>
+    <string name="point_dosavka_addr2">Санкт-Петербург, Петроградская набережная, 36, лит.А.</string>
+    <string name="cart_type_paying_title">Выберите вариант оплаты</string>
+
+    <string-array name="cart_type_moved">
+        <item>Доставка по почте</item>
+        <item>Самовывоз</item>
+    </string-array>
+
+    <string-array name="cart_type_paying">
+        <item>Из средств, кабинета (баланс)</item>
+        <item>Наличными курьеру, при получении</item>
+    </string-array>
 
 </resources>

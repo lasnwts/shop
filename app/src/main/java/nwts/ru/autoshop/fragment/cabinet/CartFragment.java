@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import nwts.ru.autoshop.R;
+import nwts.ru.autoshop.TODOApplication;
 import nwts.ru.autoshop.adapter.cabinet.AdapterCart;
 import nwts.ru.autoshop.adapter.interfaces.AdapterClickListener;
 import nwts.ru.autoshop.models.network.BalanceModel;
@@ -35,6 +36,8 @@ import nwts.ru.autoshop.services.ServiceHelper;
 import nwts.ru.autoshop.setting.BaseConstant;
 import nwts.ru.autoshop.setting.PreferenceHelper;
 import nwts.ru.autoshop.setting.ToolBarTitle;
+
+import static android.R.attr.x;
 
 /**
  * Created by пользователь on 21.05.2017.
@@ -188,7 +191,9 @@ public class CartFragment extends Fragment {
             mCartModels.clear();
             mCartModels.addAll(event.getCartModels());
             recyclerView.getAdapter().notifyDataSetChanged();
+            TODOApplication.setCartSumma(mCartModels.get(0).getCartSumma()); //save cart summa from all tovar in cart
         }
     }
-
 }
+
+

@@ -172,7 +172,7 @@ public class ServiceIntentGetDataMore extends IntentService {
             public void onResponse(Call<ErrorModel> call, Response<ErrorModel> response) {
                 if (response.isSuccessful()) {
                     if (response.code() == 201) {
-                        delBalanceCache(Api.GET_CABINET_BALANCE);
+                     //   delBalanceCache(Api.GET_CABINET_BALANCE);
                         Intent intentService = new Intent(getApplication(), ServiceHelper.class);
                         intentService.setAction(BaseConstant.ACTION_SERVICE_GET_BALANCE);
                         intentService.putExtra(BaseConstant.API_GET_KEY, PreferenceHelper.getInstance().getUserId());
@@ -198,7 +198,6 @@ public class ServiceIntentGetDataMore extends IntentService {
     private void getCart(final int userId) {
         ShopAPI shopApi = ShopAPI.retrofit.create(ShopAPI.class);
         final Call<List<CartModel>> call = shopApi.getCart();
-        if (System.currentTimeMillis() - getDateTimeFromGetCache(call.request().toString()) > timeLoadedFromServer) {
             call.enqueue(new Callback<List<CartModel>>() {
                 @Override
                 public void onResponse(Call<List<CartModel>> call, Response<List<CartModel>> response) {
@@ -217,23 +216,20 @@ public class ServiceIntentGetDataMore extends IntentService {
                     getCartModelDao(userId, 500);
                 }
             });
-        } else {
-            getCartModelDao(userId, 700);
-        }
     }
 
 
-    private void delBalanceCache(String get_Url) {
-        if (TODOApplication.getUrlGetBalance() == null) {
-            return;
-        }
-        Query<GetCache> mGetCache = mDaoSession.queryBuilder(GetCache.class)
-                .where(GetCacheDao.Properties.FieldGet.like(TODOApplication.getUrlGetBalance())).build();
-        mGetCacheList = mGetCache.list();
-        if (mGetCacheList != null || mGetCacheList.size() > 0) {
-            mGetCacheDao.deleteInTx(mGetCacheList);
-        }
-    }
+//    private void delBalanceCache(String get_Url) {
+//        if (TODOApplication.getUrlGetBalance() == null) {
+//            return;
+//        }
+//        Query<GetCache> mGetCache = mDaoSession.queryBuilder(GetCache.class)
+//                .where(GetCacheDao.Properties.FieldGet.like(TODOApplication.getUrlGetBalance())).build();
+//        mGetCacheList = mGetCache.list();
+//        if (mGetCacheList != null || mGetCacheList.size() > 0) {
+//            mGetCacheDao.deleteInTx(mGetCacheList);
+//        }
+//    }
 
 
     /**

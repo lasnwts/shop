@@ -50,6 +50,7 @@ import nwts.ru.autoshop.fragment.cabinet.BalanceFragment;
 import nwts.ru.autoshop.fragment.cabinet.CartFragment;
 import nwts.ru.autoshop.fragment.cabinet.OrdersFragment;
 import nwts.ru.autoshop.fragment.dialogs.DialogFragmentAddBalance;
+import nwts.ru.autoshop.fragment.dialogs.DialogFragmentCartProcessing;
 import nwts.ru.autoshop.models.network.CabinetModel;
 import nwts.ru.autoshop.models.network.CabinetModels;
 import nwts.ru.autoshop.services.ServiceHelper;
@@ -87,6 +88,7 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
     BalOrderFragment mBalOrderFragment;
     BottomNavigationView bnv;
     DialogFragmentAddBalance mDialogFragmentAddBalance;
+    DialogFragmentCartProcessing mDialogFragmentCartProcessing;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,6 +131,10 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
                     }
 
                 }
+                if (tag.equals(BaseConstant.TAG_CART_FRAGMENT)) {
+                    mDialogFragmentCartProcessing = new DialogFragmentCartProcessing();
+                    mDialogFragmentCartProcessing.show(getFragmentManager(), "dialog_cart");
+                }
             }
         });
 
@@ -167,6 +173,7 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
                 if (savedInstanceState.get(BaseConstant.TAG_CABINET).equals(BaseConstant.TAG_CART_FRAGMENT)) {
                     getCart();
                     bnv.getMenu().getItem(2).setChecked(true);
+                    showFab();
                 }
                 if (savedInstanceState.get(BaseConstant.TAG_CABINET).equals(BaseConstant.TAG_BAL_ORDER_FRAGMENT)) {
                     getBalOrder();
@@ -419,15 +426,12 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventCabinet(CabinetModels event) {
+        mCabinetModels.clear();
         mCabinetModels.addAll(event.getCabinetModels());
         mTextView.setText(preferenceHelper.getUserName());
-
         mTextViewCart.setText(getString(R.string.cabinet_rest_name));
-        //  mTextViewCart.setText(dateformat.format(mCabinetModels.get(0).getDateOperation() * 1000l));
-        mTextViewSumma.setText(formatData.format(mCabinetModels.get(0).getCartSumma()));
-        //mTextcartBalans.setText(R.string.balans_on_date);
-        //Toast.makeText(this,""+mCabinetModels.get(0).getBalanceID(), Toast.LENGTH_LONG).show();
-        // selectorFragments();
+        mTextViewSumma.setText(formatData.format(mCabinetModels.get(0).getBalance()));
+        TODOApplication.setBalSumma(mCabinetModels.get(0).getBalance());
     }
 
     @Override
@@ -566,12 +570,14 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
 
     @Override
     public void startCart(int item) {
-        //
+        Toast.makeText(this, "ID ="+item,Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void fabCommandCart(int fabItem) {
-        //
+        fabTypeComand = fabItem;
+        showFab();
+        fab.setImageResource(R.drawable.ic_action_cart_pay);
     }
 
     @Override
@@ -603,13 +609,13 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
         this.startService(intentService);
     }
 
-    //get record from Balance
-    private void getBalansRecord(int id) {
-        Intent intentService = new Intent(this, ServiceHelper.class);
-        intentService.setAction(BaseConstant.ACTION_SERVICE_GET_BALANCE_ID);
-        intentService.putExtra(BaseConstant.API_GET_KEY, id);
-        this.startService(intentService);
-    }
+//    //get record from Balance
+//    private void getBalansRecord(int id) {
+//        Intent intentService = new Intent(this, ServiceHelper.class);
+//        intentService.setAction(BaseConstant.ACTION_SERVICE_GET_BALANCE_ID);
+//        intentService.putExtra(BaseConstant.API_GET_KEY, id);
+//        this.startService(intentService);
+//    }
 
     private void getBalOrder() {
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {

@@ -179,7 +179,6 @@ public class ServiceIntentGetData extends IntentService {
     private void getBalance(final int userId) {
         ShopAPI shopApi = ShopAPI.retrofit.create(ShopAPI.class);
         final Call<List<BalanceModel>> call = shopApi.getCabinetBalance();
-        if (System.currentTimeMillis() - getDateTimeFromGetCache(call.request().toString()) > timeLoadedFromServer) {
             call.enqueue(new Callback<List<BalanceModel>>() {
                 @Override
                 public void onResponse(Call<List<BalanceModel>> call, Response<List<BalanceModel>> response) {
@@ -198,9 +197,6 @@ public class ServiceIntentGetData extends IntentService {
                     getCabinetBalance(userId,500);
                 }
             });
-        } else {
-            getCabinetBalance(userId,700);
-        }
     }
 
 
@@ -237,7 +233,6 @@ public class ServiceIntentGetData extends IntentService {
     private void getCabinet() {
         ShopAPI shopApi = ShopAPI.retrofit.create(ShopAPI.class);
         final Call<List<CabinetModel>> call = shopApi.getCabinet();
-        if (System.currentTimeMillis() - getDateTimeFromGetCache(call.request().toString()) > timeLoadedFromServer) {
             call.enqueue(new Callback<List<CabinetModel>>() {
                 @Override
                 public void onResponse(Call<List<CabinetModel>> call, Response<List<CabinetModel>> response) {
@@ -245,7 +240,6 @@ public class ServiceIntentGetData extends IntentService {
                         cabinetModels.addAll(response.body());
                         EventBus.getDefault().post(new CabinetModels(cabinetModels, 200));
                         putCabinet(cabinetModels);
-                        putGetCache(call.request().toString());
                     } else {
                         getCabinetDao(400);
                     }
@@ -256,9 +250,6 @@ public class ServiceIntentGetData extends IntentService {
                     getCabinetDao(500);
                 }
             });
-        } else {
-            getCabinetDao(700);
-        }
     }
 
 
@@ -725,5 +716,8 @@ public class ServiceIntentGetData extends IntentService {
                 where(BalanceModelDao.Properties.User_ID.eq(userId)).orderDesc(BalanceModelDao.Properties.Date_Operation).build();
         mBalanceModels = mBalanceModel.list();
         EventBus.getDefault().post(new BalanceModels(mBalanceModels, errors));
+        Intent intentService = new Intent(this, ServiceHelper.class);
+        intentService.setAction(BaseConstant.ACTION_SERVICE_GET_CABINET);
+        startService(intentService);
     }
 }

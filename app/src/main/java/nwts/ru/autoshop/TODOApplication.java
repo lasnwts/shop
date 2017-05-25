@@ -37,6 +37,8 @@ public class TODOApplication extends Application {
     private static String dialogImageSourceUrl;
     private static String dialogMessageText;
     private static int key_id;
+    private static double cartSumma; //sum all tovars in cart
+    private static double balSumma; //rest from balance cabimnet
 
 
     public boolean isValidateToken() {
@@ -254,5 +256,21 @@ public class TODOApplication extends Application {
 
     public static void setKey_id(int key_id) {
         TODOApplication.key_id = key_id;
+    }
+
+    public static double getCartSumma() {
+        return cartSumma;
+    }
+
+    public static void setCartSumma(double cartSumma) {
+        TODOApplication.cartSumma = cartSumma;
+    }
+
+    public static double getBalSumma() {
+        return balSumma;
+    }
+
+    public static void setBalSumma(double balSumma) {
+        TODOApplication.balSumma = balSumma;
     }
 }
