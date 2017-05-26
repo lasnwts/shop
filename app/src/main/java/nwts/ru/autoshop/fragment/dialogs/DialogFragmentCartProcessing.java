@@ -5,8 +5,10 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -20,6 +22,8 @@ import android.widget.Toast;
 
 import nwts.ru.autoshop.R;
 import nwts.ru.autoshop.TODOApplication;
+import nwts.ru.autoshop.services.ServiceHelper;
+import nwts.ru.autoshop.setting.BaseConstant;
 
 import static nwts.ru.autoshop.R.string.alert;
 
@@ -34,6 +38,13 @@ public class DialogFragmentCartProcessing extends DialogFragment {
     private String messageText;
     private int itemSpinnerDostavka, itemSpinnerPaying;
     private boolean isPayRestricted = false;
+    private isCartProcessing mIsCartProcessing;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        activity_context = getActivity();
+    }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -90,25 +101,51 @@ public class DialogFragmentCartProcessing extends DialogFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 //positive
-                if (spinnerDostavka.getSelectedItemId() == 0) {
-                    //if Ar Dtavka = empty
-                    if (TextUtils.isEmpty(editTextAddress.getText())) {
-                        isPayRestricted = true;
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                        builder.setTitle(R.string.show_dialog_title_addr_empty)
-                                .setMessage(R.string.show_dialog_addr_remember)
-                                .setIcon(R.drawable.remember)
-                                .setCancelable(false)
-                                .setNegativeButton(R.string.seyhow_dialog_ok,
-                                        new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int id) {
-                                                dialog.cancel();
-                                            }
-                                        });
-                        AlertDialog alertAddr = builder.create();
-                        alertAddr.show();
+                if (spinnerPaying.getSelectedItemId() == 0) {
+                    TODOApplication.setStatusID(0);
+                } else {
+                    TODOApplication.setStatusID(1);
+                }
+                //check from cart = 0
+                if (TODOApplication.getCartSumma() == 0) {
+                    isPayRestricted = true;
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setTitle(R.string.show_dialog_cart_empty_title)
+                            .setMessage(R.string.show_cart_tovar_empty)
+                            .setIcon(R.drawable.remember)
+                            .setCancelable(false)
+                            .setNegativeButton(R.string.seyhow_dialog_ok,
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            dialog.cancel();
+                                        }
+                                    });
+                    AlertDialog alertAddr = builder.create();
+                    alertAddr.show();
+                }
+
+                if (!isPayRestricted) {
+                    if (spinnerDostavka.getSelectedItemId() == 0) {
+                        //if Ar Dtavka = empty
+                        if (TextUtils.isEmpty(editTextAddress.getText())) {
+                            isPayRestricted = true;
+                            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                            builder.setTitle(R.string.show_dialog_title_addr_empty)
+                                    .setMessage(R.string.show_dialog_addr_remember)
+                                    .setIcon(R.drawable.remember)
+                                    .setCancelable(false)
+                                    .setNegativeButton(R.string.seyhow_dialog_ok,
+                                            new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int id) {
+                                                    dialog.cancel();
+                                                }
+                                            });
+                            AlertDialog alertAddr = builder.create();
+                            alertAddr.show();
+                        }
                     }
                 }
+
                 if (!isPayRestricted) {
                     //check balans if pay from cabinet
                     if (spinnerPaying.getSelectedItemId() == 0) {
@@ -126,11 +163,15 @@ public class DialogFragmentCartProcessing extends DialogFragment {
                                             });
                             AlertDialog alertBalance = builder.create();
                             alertBalance.show();
-                        } else {
-                            // this is Pay!!!!
-                            Toast.makeText(getActivity(),"Заплати",Toast.LENGTH_SHORT).show();
                         }
                     }
+                }
+                if (!isPayRestricted) {
+                    request();
+                    if (mIsCartProcessing == null) {
+                        mIsCartProcessing = (isCartProcessing) activity_context;
+                    }
+                    mIsCartProcessing.startCartProcessing();
                 }
             }
         }).setNegativeButton(R.string.button_not_add_balance, new DialogInterface.OnClickListener() {
@@ -140,5 +181,15 @@ public class DialogFragmentCartProcessing extends DialogFragment {
             }
         });
         return builder.create();
+    }
+
+    private void request() {
+        Intent intentService = new Intent(getActivity(), ServiceHelper.class);
+        intentService.setAction(BaseConstant.ACTION_SERVICE_GET_PROCESSING_ID);
+        getActivity().startService(intentService);
+    }
+
+    public interface isCartProcessing {
+        void startCartProcessing();
     }
 }

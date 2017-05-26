@@ -26,4 +26,5 @@ public interface Api {
     public String GET_CABINET_BALANCE  = "/ecommerce/apiv2/get-cabinet-balance.php";
     public String GET_CABINET_ADD_BALANCE  = "/ecommerce/apiv2/get-cabinet-add-balancer.php";
     public String GET_CABINET_BALANCE_ID  = "/ecommerce/apiv2/get-cabinet-balance-id.php";
+    public String GET_CABINET_PROCESSIN_ID  = "/ecommerce/apiv2/get-cabinet-cart-processing-id.php";
 }

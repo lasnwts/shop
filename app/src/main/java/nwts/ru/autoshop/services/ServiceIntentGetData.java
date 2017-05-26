@@ -179,77 +179,73 @@ public class ServiceIntentGetData extends IntentService {
     private void getBalance(final int userId) {
         ShopAPI shopApi = ShopAPI.retrofit.create(ShopAPI.class);
         final Call<List<BalanceModel>> call = shopApi.getCabinetBalance();
-            call.enqueue(new Callback<List<BalanceModel>>() {
-                @Override
-                public void onResponse(Call<List<BalanceModel>> call, Response<List<BalanceModel>> response) {
-                    if (response.isSuccessful()) {
-                        mBalanceModels.addAll(response.body());
-                        putGetCache(call.request().toString());
-                        TODOApplication.setUrlGetBalance(call.request().toString());
-                        putCabinetBalance(mBalanceModels, userId);
-                        getCabinetBalance(userId,200);
-                    } else {
-                        getCabinetBalance(userId,400);
-                    }
+        call.enqueue(new Callback<List<BalanceModel>>() {
+            @Override
+            public void onResponse(Call<List<BalanceModel>> call, Response<List<BalanceModel>> response) {
+                if (response.isSuccessful()) {
+                    mBalanceModels.addAll(response.body());
+                    putGetCache(call.request().toString());
+                    TODOApplication.setUrlGetBalance(call.request().toString());
+                    putCabinetBalance(mBalanceModels, userId);
+                    getCabinetBalance(userId, 200);
+                } else {
+                    getCabinetBalance(userId, 400);
                 }
-                @Override
-                public void onFailure(Call<List<BalanceModel>> call, Throwable t) {
-                    getCabinetBalance(userId,500);
-                }
-            });
-    }
+            }
 
+            @Override
+            public void onFailure(Call<List<BalanceModel>> call, Throwable t) {
+                getCabinetBalance(userId, 500);
+            }
+        });
+    }
 
 
     //get заказы
     private void getOrders(final int userId) {
         ShopAPI shopApi = ShopAPI.retrofit.create(ShopAPI.class);
         final Call<List<OrderModel>> call = shopApi.getCabinetOrders();
-        if (System.currentTimeMillis() - getDateTimeFromGetCache(call.request().toString()) > timeLoadedFromServer) {
-            call.enqueue(new Callback<List<OrderModel>>() {
-                @Override
-                public void onResponse(Call<List<OrderModel>> call, Response<List<OrderModel>> response) {
-                    if (response.isSuccessful()) {
-                        mOrderModels.addAll(response.body());
-                        putGetCache(call.request().toString());
-                        putCabinetOrders(mOrderModels, userId);
-                        //EventBus.getDefault().post(new OrderModels(mOrderModels,200));
-                        getCabinetOrdersDao(userId, 200);
-                    } else {
-                        getCabinetOrdersDao(userId, 400);
-                    }
+        call.enqueue(new Callback<List<OrderModel>>() {
+            @Override
+            public void onResponse(Call<List<OrderModel>> call, Response<List<OrderModel>> response) {
+                if (response.isSuccessful()) {
+                    mOrderModels.addAll(response.body());
+                    putGetCache(call.request().toString());
+                    putCabinetOrders(mOrderModels, userId);
+                    //EventBus.getDefault().post(new OrderModels(mOrderModels,200));
+                    getCabinetOrdersDao(userId, 200);
+                } else {
+                    getCabinetOrdersDao(userId, 400);
                 }
+            }
 
-                @Override
-                public void onFailure(Call<List<OrderModel>> call, Throwable throwable) {
-                    getCabinetOrdersDao(userId, 500);
-                }
-            });
-        } else {
-            getCabinetOrdersDao(userId, 700);
-        }
+            @Override
+            public void onFailure(Call<List<OrderModel>> call, Throwable throwable) {
+                getCabinetOrdersDao(userId, 500);
+            }
+        });
     }
 
     private void getCabinet() {
         ShopAPI shopApi = ShopAPI.retrofit.create(ShopAPI.class);
         final Call<List<CabinetModel>> call = shopApi.getCabinet();
-            call.enqueue(new Callback<List<CabinetModel>>() {
-                @Override
-                public void onResponse(Call<List<CabinetModel>> call, Response<List<CabinetModel>> response) {
-                    if (response.isSuccessful()) {
-                        cabinetModels.addAll(response.body());
-                        EventBus.getDefault().post(new CabinetModels(cabinetModels, 200));
-                        putCabinet(cabinetModels);
-                    } else {
-                        getCabinetDao(400);
-                    }
+        call.enqueue(new Callback<List<CabinetModel>>() {
+            @Override
+            public void onResponse(Call<List<CabinetModel>> call, Response<List<CabinetModel>> response) {
+                if (response.isSuccessful()) {
+                    cabinetModels.addAll(response.body());
+                    EventBus.getDefault().post(new CabinetModels(cabinetModels, 200));
+                    putCabinet(cabinetModels);
+                } else {
+                    getCabinetDao(400);
                 }
+            }
 
-                @Override
-                public void onFailure(Call<List<CabinetModel>> call, Throwable t) {
-                    getCabinetDao(500);
-                }
-            });
+            @Override
+            public void onFailure(Call<List<CabinetModel>> call, Throwable t) {
+                getCabinetDao(500);
+            }
+        });
     }
 
 
@@ -324,48 +320,36 @@ public class ServiceIntentGetData extends IntentService {
         final Call<List<ProductCategory>> call = shopApi.getProductCatalog(id_category);
         Log.d(BaseConstant.TAG, "getPoductCategory:call:" + call.request().toString());
 
-        /**
-         * Оценка времени с последнего именно такого запроса
-         */
-        if (System.currentTimeMillis() - getDateTimeFromGetCache(call.request().toString()) > timeLoadedFromServer) {
+        call.enqueue(new Callback<List<ProductCategory>>() {
 
-            call.enqueue(new Callback<List<ProductCategory>>() {
-
-                @Override
-                public void onResponse(Call<List<ProductCategory>> call, Response<List<ProductCategory>> response) {
-                    if (response.isSuccessful()) {
-                        productCategory.addAll(response.body());
-                        EventBus.getDefault().post(new ProductCategoris(productCategory, response.code()));
-                        putProductCategory(productCategory);
-                        putGetCache(call.request().toString());
-                        Log.d(BaseConstant.TAG, "Start:ServiceHelper:ServiceIntentGetData:getPoductCategory:response:size=" + productCategory.size());
-                        Log.d(BaseConstant.TAG, "Start:ServiceHelper:ServiceIntentGetData:getPoductCategory:response:tostinrg" + productCategory.toString());
-                    } else {
-                        // Обрабатываем ошибку
-                        Log.d(BaseConstant.TAG, "response.errorBody()");
-                        ResponseBody errorBody = response.errorBody();
-                        try {
-                            Log.d(BaseConstant.TAG, errorBody.string());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        getProductCategoryDao(id_category, response.code());
+            @Override
+            public void onResponse(Call<List<ProductCategory>> call, Response<List<ProductCategory>> response) {
+                if (response.isSuccessful()) {
+                    productCategory.addAll(response.body());
+                    EventBus.getDefault().post(new ProductCategoris(productCategory, response.code()));
+                    putProductCategory(productCategory);
+                    putGetCache(call.request().toString());
+                    Log.d(BaseConstant.TAG, "Start:ServiceHelper:ServiceIntentGetData:getPoductCategory:response:size=" + productCategory.size());
+                    Log.d(BaseConstant.TAG, "Start:ServiceHelper:ServiceIntentGetData:getPoductCategory:response:tostinrg" + productCategory.toString());
+                } else {
+                    // Обрабатываем ошибку
+                    Log.d(BaseConstant.TAG, "response.errorBody()");
+                    ResponseBody errorBody = response.errorBody();
+                    try {
+                        Log.d(BaseConstant.TAG, errorBody.string());
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
+                    getProductCategoryDao(id_category, response.code());
                 }
+            }
 
-                @Override
-                public void onFailure(Call<List<ProductCategory>> call, Throwable throwable) {
-                    Log.d(BaseConstant.TAG, "Что-то пошло не так");
-                    getProductCategoryDao(id_category, 501);
-                }
-            });
-
-        } else {
-            /**
-             *  Отдаем из кэша ode = 700
-             */
-            getProductCategoryDao(id_category, 700);
-        }
+            @Override
+            public void onFailure(Call<List<ProductCategory>> call, Throwable throwable) {
+                Log.d(BaseConstant.TAG, "Что-то пошло не так");
+                getProductCategoryDao(id_category, 501);
+            }
+        });
     }
 
     private void getPoductDetail(final int key_id) {
@@ -373,46 +357,35 @@ public class ServiceIntentGetData extends IntentService {
         final Call<List<ProductDetailImage>> call = shopApi.getProductDetail(key_id);
         Log.d(BaseConstant.TAG, "getPoductDetail:call:" + call.request().toString());
 
-        /**
-         * Оценка времени с последнего именно такого запроса
-         */
-        if (System.currentTimeMillis() - getDateTimeFromGetCache(call.request().toString()) > timeLoadedFromServer) {
+        call.enqueue(new Callback<List<ProductDetailImage>>() {
 
-            call.enqueue(new Callback<List<ProductDetailImage>>() {
-
-                @Override
-                public void onResponse(Call<List<ProductDetailImage>> call, Response<List<ProductDetailImage>> response) {
-                    if (response.isSuccessful()) {
-                        productDetailImages.addAll(response.body());
-                        EventBus.getDefault().post(new ProductDetailImages(productDetailImages, 200));
-                        putProductDetailImages(productDetailImages);
-                        putGetCache(call.request().toString());
-                    } else {
-                        // Обрабатываем ошибку
-                        Log.d(BaseConstant.TAG, "response.errorBody()");
-                        ResponseBody errorBody = response.errorBody();
-                        try {
-                            Log.d(BaseConstant.TAG, errorBody.string());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        getProductDetailImagesDao(key_id, response.code());
+            @Override
+            public void onResponse(Call<List<ProductDetailImage>> call, Response<List<ProductDetailImage>> response) {
+                if (response.isSuccessful()) {
+                    productDetailImages.addAll(response.body());
+                    EventBus.getDefault().post(new ProductDetailImages(productDetailImages, 200));
+                    putProductDetailImages(productDetailImages);
+                    putGetCache(call.request().toString());
+                } else {
+                    // Обрабатываем ошибку
+                    Log.d(BaseConstant.TAG, "response.errorBody()");
+                    ResponseBody errorBody = response.errorBody();
+                    try {
+                        Log.d(BaseConstant.TAG, errorBody.string());
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
+                    getProductDetailImagesDao(key_id, response.code());
                 }
+            }
 
-                @Override
-                public void onFailure(Call<List<ProductDetailImage>> call, Throwable throwable) {
-                    Log.d(BaseConstant.TAG, "Что-то пошло не так");
-                    Log.d(BaseConstant.TAG, "Что-то пошло не так:throwable:" + throwable.toString());
-                    getProductDetailImagesDao(key_id, 501);
-                }
-            });
-        } else {
-            /**
-             *  Отдаем из кэша ode = 700
-             */
-            getProductDetailImagesDao(key_id, 700);
-        }
+            @Override
+            public void onFailure(Call<List<ProductDetailImage>> call, Throwable throwable) {
+                Log.d(BaseConstant.TAG, "Что-то пошло не так");
+                Log.d(BaseConstant.TAG, "Что-то пошло не так:throwable:" + throwable.toString());
+                getProductDetailImagesDao(key_id, 501);
+            }
+        });
     }
 
     //Проверка доступности сети

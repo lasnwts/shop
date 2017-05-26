@@ -64,7 +64,7 @@ import static android.R.attr.tag;
 
 public class CabinetBase extends AppCompatActivity implements OrdersFragment.isOrdersFragment,
         BalanceFragment.isBalanceFragment, CartFragment.isCartFragment, DialogFragmentAddBalance.DialogPositiveClick,
-        BalOrderFragment.isBalOrderFragment, ToolBarTitle {
+        DialogFragmentCartProcessing.isCartProcessing,BalOrderFragment.isBalOrderFragment, ToolBarTitle {
 
     private Toolbar toolbar;
     PreferenceHelper preferenceHelper;
@@ -663,5 +663,10 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
                 }
             }
         }
+    }
+
+    @Override
+    public void startCartProcessing() {
+        getCart();
     }
 }

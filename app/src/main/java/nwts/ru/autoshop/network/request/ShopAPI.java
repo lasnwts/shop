@@ -88,6 +88,11 @@ public interface ShopAPI {
     @POST(Api.GET_CABINET_ADD_BALANCE)
     Call<ErrorModel> addBalance(@Field("summa") double summa, @Field("paysys") String paySystem);
 
+    //Post processing
+    @FormUrlEncoded
+    @POST(Api.GET_CABINET_PROCESSIN_ID)
+    Call<ErrorModel> getProcessingCart(@Field("user_id") int userID, @Field("status_id") int statusID);
+
     //id balance
     @FormUrlEncoded
     @POST(Api.GET_CABINET_BALANCE_ID)

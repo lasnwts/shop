@@ -39,6 +39,7 @@ public class TODOApplication extends Application {
     private static int key_id;
     private static double cartSumma; //sum all tovars in cart
     private static double balSumma; //rest from balance cabimnet
+    private static int statusID; //status pay 0 - from cabinet, 1 from cache
 
 
     public boolean isValidateToken() {
@@ -272,5 +273,13 @@ public class TODOApplication extends Application {
 
     public static void setBalSumma(double balSumma) {
         TODOApplication.balSumma = balSumma;
+    }
+
+    public static int getStatusID() {
+        return statusID;
+    }
+
+    public static void setStatusID(int statusID) {
+        TODOApplication.statusID = statusID;
     }
 }

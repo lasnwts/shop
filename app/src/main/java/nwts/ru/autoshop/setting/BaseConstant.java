@@ -38,6 +38,7 @@ public interface BaseConstant {
     public final String ACTION_SERVICE_GET_CART = "ru.nwts.get-cabinet-cart"; //информаиця о корзине
     public final String ACTION_SERVICE_GET_BALANCE_ADD = "ru.nwts.get-cabinet-add-balancer"; //пополнить баланс
     public final String ACTION_SERVICE_GET_BALANCE_ID = "ru.nwts.get-cabinet-balance-id";
+    public final String ACTION_SERVICE_GET_PROCESSING_ID = "ru.nwts.get-cabinet-processing-id";
 
     //URL between activities
     public final String URL_IMAGE_DOWNLOADED = "url_downloaded";

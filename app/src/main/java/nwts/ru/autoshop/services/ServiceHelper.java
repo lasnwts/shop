@@ -60,6 +60,12 @@ public class ServiceHelper extends Service {
                     //  intent1Service.putExtra(API_GET_KEY, intent.getIntArrayExtra(API_GET_KEY));
                     startService(intent1Service);
                 }
+                if (intent.getAction().equals(BaseConstant.ACTION_SERVICE_GET_PROCESSING_ID)) {
+                    Intent intent1Service = new Intent(getApplication(), ServiceIntentGetDataMore.class);
+                    intent1Service.putExtra(BaseConstant.API_PAGE, BaseConstant.ACTION_SERVICE_GET_PROCESSING_ID);
+                    intent1Service.putExtra(API_GET_KEY, PreferenceHelper.getInstance().getUserId());
+                    startService(intent1Service);
+                }
                 if (intent.getAction().equals(BaseConstant.ACTION_SERVICE_GET_ORDERS)) {
                     Log.d(BaseConstant.TAG, "Start ServiceHelper:BaseConstant.ACTION_SERVICE_GET_ORDERS..");
                     Intent intent1Service = new Intent(getApplication(), ServiceIntentGetData.class);

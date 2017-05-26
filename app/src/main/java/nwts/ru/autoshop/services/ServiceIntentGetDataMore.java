@@ -100,6 +100,11 @@ public class ServiceIntentGetDataMore extends IntentService {
                 String paySys = intent.getStringExtra(BaseConstant.API_BAL_SYS);
                 postSumBalance(key_id, sumBal, paySys);
             }
+            if (intent.getStringExtra(BaseConstant.API_PAGE).equals(BaseConstant.ACTION_SERVICE_GET_PROCESSING_ID)) {
+                int key_id = intent.getIntExtra(BaseConstant.API_GET_KEY, 0);
+                int  statusID = TODOApplication.getStatusID();
+                postProcessing(key_id, statusID);
+            }
             if (intent.getStringExtra(BaseConstant.API_PAGE).equals(BaseConstant.ACTION_SERVICE_GET_CART)) {
                 int key_id = intent.getIntExtra(BaseConstant.API_GET_KEY, 0);
                 if (mCartModels != null) {
@@ -195,6 +200,38 @@ public class ServiceIntentGetDataMore extends IntentService {
             }
         });
     }
+
+    private void postProcessing(int key_id, int statusID) {
+        ShopAPI shopApi = ShopAPI.retrofit.create(ShopAPI.class);
+        final Call<ErrorModel> call = shopApi.getProcessingCart(key_id,statusID);
+        call.enqueue(new Callback<ErrorModel>() {
+            @Override
+            public void onResponse(Call<ErrorModel> call, Response<ErrorModel> response) {
+                if (response.isSuccessful()) {
+                    if (response.code() == 201) {
+                        Intent intentService = new Intent(getApplication(), ServiceHelper.class);
+                        intentService.setAction(BaseConstant.ACTION_SERVICE_GET_CART);
+                        intentService.putExtra(BaseConstant.API_GET_KEY, PreferenceHelper.getInstance().getUserId());
+                        getApplication().startService(intentService);
+                    } else {
+                        //get error messgae
+                        setErrorMessage("Возникла непонятная ошибка:"+response.code()+" "+response.body().toString());
+                    }
+                } else {
+                    //get error message
+                    setErrorMessage("Возникла ошибка! Код ошибки:"+response.code()+"; сообщение: "+response.errorBody().toString());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ErrorModel> call, Throwable throwable) {
+                //get error message
+                setErrorMessage("Возникла сетевая ошибка. Попробуйте позже, после установления связи. Сообщение: "+throwable.toString());
+
+            }
+        });
+    }
+
 
     //get cart
     private void getCart(final int userId) {
