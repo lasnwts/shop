@@ -429,9 +429,17 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
         mCabinetModels.clear();
         mCabinetModels.addAll(event.getCabinetModels());
         mTextView.setText(preferenceHelper.getUserName());
-        mTextViewCart.setText(getString(R.string.cabinet_rest_name));
-        mTextViewSumma.setText(formatData.format(mCabinetModels.get(0).getBalance()));
+        Fragment fragment = getFragmentManager().findFragmentById(R.id.content_frame_cabinet);
+        String tag = (String) fragment.getTag();
+        if (tag.equals(BaseConstant.TAG_CART_FRAGMENT)) {
+            mTextViewCart.setText("Сумма в корзине");
+            mTextViewSumma.setText(formatData.format(mCabinetModels.get(0).getCartSumma()));
+        } else {
+            mTextViewCart.setText(getString(R.string.cabinet_rest_name));
+            mTextViewSumma.setText(formatData.format(mCabinetModels.get(0).getBalance()));
+        }
         TODOApplication.setBalSumma(mCabinetModels.get(0).getBalance());
+        TODOApplication.setCartSumma(mCabinetModels.get(0).getCartSumma());
     }
 
     @Override

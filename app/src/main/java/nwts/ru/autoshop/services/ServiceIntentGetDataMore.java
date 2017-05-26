@@ -108,7 +108,7 @@ public class ServiceIntentGetDataMore extends IntentService {
                 getCart(key_id);
             }
             if (intent.getStringExtra(BaseConstant.API_PAGE).equals(BaseConstant.ACTION_SERVICE_GET_BALANCE_ID)) {
-               // int key_id = intent.getIntExtra(BaseConstant.API_GET_KEY, 0);
+                // int key_id = intent.getIntExtra(BaseConstant.API_GET_KEY, 0);
                 int key_id = TODOApplication.getKey_id();
                 if (mBalOrderModelList != null) {
                     mBalOrderModelList.clear();
@@ -121,26 +121,26 @@ public class ServiceIntentGetDataMore extends IntentService {
     private void getBalOrderModel(final int key_id) {
         ShopAPI shopApi = ShopAPI.retrofit.create(ShopAPI.class);
         final Call<List<BalOrderModel>> call = shopApi.getBalOrdersId(key_id);
-            call.enqueue(new Callback<List<BalOrderModel>>() {
-                @Override
-                public void onResponse(Call<List<BalOrderModel>> call, Response<List<BalOrderModel>> response) {
-                    if (response.isSuccessful()) {
-                        mBalOrderModelList.clear();
-                        mBalOrderModelList.addAll(response.body());
-                        putGetCache(call.request().toString());
-                        putBalOrderModels(mBalOrderModelList, key_id);
-                        getBalOrderModels(key_id, 200);
+        call.enqueue(new Callback<List<BalOrderModel>>() {
+            @Override
+            public void onResponse(Call<List<BalOrderModel>> call, Response<List<BalOrderModel>> response) {
+                if (response.isSuccessful()) {
+                    mBalOrderModelList.clear();
+                    mBalOrderModelList.addAll(response.body());
+                    putGetCache(call.request().toString());
+                    putBalOrderModels(mBalOrderModelList, key_id);
+                    getBalOrderModels(key_id, 200);
 
-                    } else {
-                        getBalOrderModels(key_id, 400);
-                    }
+                } else {
+                    getBalOrderModels(key_id, 400);
                 }
+            }
 
-                @Override
-                public void onFailure(Call<List<BalOrderModel>> call, Throwable t) {
-                    getBalOrderModels(key_id, 500);
-                }
-            });
+            @Override
+            public void onFailure(Call<List<BalOrderModel>> call, Throwable t) {
+                getBalOrderModels(key_id, 500);
+            }
+        });
     }
 
     private void getBalOrderModels(int key_id, int errors) {
@@ -154,11 +154,11 @@ public class ServiceIntentGetDataMore extends IntentService {
         if (balOrderModels == null || balOrderModels.size() < 1) {
             return;
         } else {
-                Query<BalOrderModel> mBalOrderModelDel = mDaoSession.queryBuilder(BalOrderModel.class)
-                        .where(BalOrderModelDao.Properties.Oper_ID.eq(key_id)).build();
-                List<BalOrderModel> balOrderModelsDel = mBalOrderModelDel.list();
-                if (balOrderModelsDel != null && balOrderModelsDel.size() != 0 && !balOrderModelsDel.isEmpty()) {
-                    mBalOrderModelDao.deleteInTx(balOrderModelsDel);
+            Query<BalOrderModel> mBalOrderModelDel = mDaoSession.queryBuilder(BalOrderModel.class)
+                    .where(BalOrderModelDao.Properties.Oper_ID.eq(key_id)).build();
+            List<BalOrderModel> balOrderModelsDel = mBalOrderModelDel.list();
+            if (balOrderModelsDel != null && balOrderModelsDel.size() != 0 && !balOrderModelsDel.isEmpty()) {
+                mBalOrderModelDao.deleteInTx(balOrderModelsDel);
             }
             mBalOrderModelDao.insertInTx(balOrderModels);
         }
@@ -172,7 +172,7 @@ public class ServiceIntentGetDataMore extends IntentService {
             public void onResponse(Call<ErrorModel> call, Response<ErrorModel> response) {
                 if (response.isSuccessful()) {
                     if (response.code() == 201) {
-                     //   delBalanceCache(Api.GET_CABINET_BALANCE);
+                        //   delBalanceCache(Api.GET_CABINET_BALANCE);
                         Intent intentService = new Intent(getApplication(), ServiceHelper.class);
                         intentService.setAction(BaseConstant.ACTION_SERVICE_GET_BALANCE);
                         intentService.putExtra(BaseConstant.API_GET_KEY, PreferenceHelper.getInstance().getUserId());
@@ -180,16 +180,18 @@ public class ServiceIntentGetDataMore extends IntentService {
 
                     } else {
                         //get error messgae
+                        setErrorMessage("Возникла непонятная ошибка:"+response.code()+" "+response.body().toString());
                     }
-
                 } else {
                     //get error message
+                    setErrorMessage("Возникла ошибка! Код ошибки:"+response.code()+"; сообщение: "+response.errorBody().toString());
                 }
             }
 
             @Override
-            public void onFailure(Call<ErrorModel> call, Throwable t) {
+            public void onFailure(Call<ErrorModel> call, Throwable throwable) {
                 //get error message
+                setErrorMessage("Возникла сетевая ошибка. Попробуйте позже, после установления связи. Сообщение: "+throwable.toString());
             }
         });
     }
@@ -198,24 +200,24 @@ public class ServiceIntentGetDataMore extends IntentService {
     private void getCart(final int userId) {
         ShopAPI shopApi = ShopAPI.retrofit.create(ShopAPI.class);
         final Call<List<CartModel>> call = shopApi.getCart();
-            call.enqueue(new Callback<List<CartModel>>() {
-                @Override
-                public void onResponse(Call<List<CartModel>> call, Response<List<CartModel>> response) {
-                    if (response.isSuccessful()) {
-                        mCartModels.addAll(response.body());
-                        putGetCache(call.request().toString());
-                        putCartModelItems(mCartModels);
-                        getCartModelDao(userId, 200);
-                    } else {
-                        getCartModelDao(userId, 400);
-                    }
+        call.enqueue(new Callback<List<CartModel>>() {
+            @Override
+            public void onResponse(Call<List<CartModel>> call, Response<List<CartModel>> response) {
+                if (response.isSuccessful()) {
+                    mCartModels.addAll(response.body());
+                    putGetCache(call.request().toString());
+                    putCartModelItems(mCartModels);
+                    getCartModelDao(userId, 200);
+                } else {
+                    getCartModelDao(userId, 400);
                 }
+            }
 
-                @Override
-                public void onFailure(Call<List<CartModel>> call, Throwable throwable) {
-                    getCartModelDao(userId, 500);
-                }
-            });
+            @Override
+            public void onFailure(Call<List<CartModel>> call, Throwable throwable) {
+                getCartModelDao(userId, 500);
+            }
+        });
     }
 
 
@@ -250,10 +252,17 @@ public class ServiceIntentGetDataMore extends IntentService {
         }
     }
 
+    private void setErrorMessage(String error) {
+        EventBus.getDefault().post(new ErrorModel(true, error));
+    }
+
     private void getCartModelDao(int userId, int errorsId) {
         Query<CartModel> mCartModel = mDaoSession.queryBuilder(CartModel.class).build();
         mCartModels = mCartModel.list();
         EventBus.getDefault().post(new CartModels(mCartModels, errorsId));
+        Intent intentService = new Intent(this, ServiceHelper.class);
+        intentService.setAction(BaseConstant.ACTION_SERVICE_GET_CABINET);
+        startService(intentService);
     }
 
     /**

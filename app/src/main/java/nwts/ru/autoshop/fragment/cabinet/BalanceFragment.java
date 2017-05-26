@@ -1,13 +1,16 @@
 package nwts.ru.autoshop.fragment.cabinet;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +32,7 @@ import nwts.ru.autoshop.adapter.interfaces.AdapterClickListener;
 import nwts.ru.autoshop.models.network.BalanceModel;
 import nwts.ru.autoshop.models.network.BalanceModels;
 import nwts.ru.autoshop.models.network.OrderModels;
+import nwts.ru.autoshop.models.network.cart.ErrorModel;
 import nwts.ru.autoshop.services.ServiceHelper;
 import nwts.ru.autoshop.setting.BaseConstant;
 import nwts.ru.autoshop.setting.PreferenceHelper;
@@ -184,6 +188,30 @@ public class BalanceFragment extends Fragment {
             mBalanceModelList.addAll(event.getBalanceModels());
             recyclerView.getAdapter().notifyDataSetChanged();
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventErrorMessge(ErrorModel errorEvent) {
+        String errorMessage;
+        prgLoading.setVisibility(View.INVISIBLE);
+        if (errorEvent.getError() == null || TextUtils.isEmpty(errorEvent.getMessage())){
+            errorMessage = "Ошибка не определена.";
+        } else {
+            errorMessage = errorEvent.getMessage();
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Возникла ошибка при пополнении баланса")
+                .setMessage(errorMessage)
+                .setIcon(R.drawable.ic_error)
+                .setCancelable(false)
+                .setNegativeButton("Да, поятненько  :(",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+        AlertDialog alertBalance = builder.create();
+        alertBalance.show();
     }
 
 

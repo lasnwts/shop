@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -15,9 +16,12 @@ import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import nwts.ru.autoshop.R;
 import nwts.ru.autoshop.TODOApplication;
+
+import static nwts.ru.autoshop.R.string.alert;
 
 /**
  * Created by пользователь on 25.05.2017.
@@ -29,6 +33,7 @@ public class DialogFragmentCartProcessing extends DialogFragment {
     private String sourceURL;
     private String messageText;
     private int itemSpinnerDostavka, itemSpinnerPaying;
+    private boolean isPayRestricted = false;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -46,7 +51,7 @@ public class DialogFragmentCartProcessing extends DialogFragment {
         spinnerDostavka.setSelection(0);
         final RadioGroup radioGroup = (RadioGroup) viewMess.findViewById(R.id.dialog_fragment_cart_processing_radiogruop);
         radioGroup.clearCheck();
-        Spinner spinnerPaying = (Spinner) viewMess.findViewById(R.id.dialog_fragment_cart_processing_paying);
+        final Spinner spinnerPaying = (Spinner) viewMess.findViewById(R.id.dialog_fragment_cart_processing_paying);
         final EditText editTextAddress = (EditText) viewMess.findViewById(R.id.dialog_fragment_cart_processing_editTextMulti);
 
         //Spinner listener
@@ -82,18 +87,58 @@ public class DialogFragmentCartProcessing extends DialogFragment {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setView(viewMess).setPositiveButton(R.string.button_cart_balance, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    //positive
-                }
-
-            })
-                .setNegativeButton(R.string.button_not_add_balance, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        //negative
-                        DialogFragmentCartProcessing.this.getDialog().cancel();
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //positive
+                if (spinnerDostavka.getSelectedItemId() == 0) {
+                    //if Ar Dtavka = empty
+                    if (TextUtils.isEmpty(editTextAddress.getText())) {
+                        isPayRestricted = true;
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        builder.setTitle(R.string.show_dialog_title_addr_empty)
+                                .setMessage(R.string.show_dialog_addr_remember)
+                                .setIcon(R.drawable.remember)
+                                .setCancelable(false)
+                                .setNegativeButton(R.string.seyhow_dialog_ok,
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int id) {
+                                                dialog.cancel();
+                                            }
+                                        });
+                        AlertDialog alertAddr = builder.create();
+                        alertAddr.show();
                     }
-                });
+                }
+                if (!isPayRestricted) {
+                    //check balans if pay from cabinet
+                    if (spinnerPaying.getSelectedItemId() == 0) {
+                        if (TODOApplication.getCartSumma() > TODOApplication.getBalSumma()) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                            builder.setTitle(R.string.sow_dialog_how_titile)
+                                    .setMessage(R.string.show_dialog_message_no_money)
+                                    .setIcon(R.drawable.piggy_bank)
+                                    .setCancelable(false)
+                                    .setNegativeButton(R.string.show_dialog_ok,
+                                            new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int id) {
+                                                    dialog.cancel();
+                                                }
+                                            });
+                            AlertDialog alertBalance = builder.create();
+                            alertBalance.show();
+                        } else {
+                            // this is Pay!!!!
+                            Toast.makeText(getActivity(),"Заплати",Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+            }
+        }).setNegativeButton(R.string.button_not_add_balance, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                //negative
+                DialogFragmentCartProcessing.this.getDialog().cancel();
+            }
+        });
         return builder.create();
     }
 }
