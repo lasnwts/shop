@@ -29,11 +29,13 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import nwts.ru.autoshop.R;
 import nwts.ru.autoshop.TODOApplication;
+import nwts.ru.autoshop.fragment.dialogs.DialogFragmentCartCount;
 import nwts.ru.autoshop.models.ProductDetailImage;
 import nwts.ru.autoshop.models.ProductDetailImages;
 import nwts.ru.autoshop.services.ServiceHelper;
@@ -59,6 +61,7 @@ public class ProductDetailView extends AppCompatActivity
     private ArrayList<String> mStringArrayList;
     private String fullTextDescription = "";
     private FloatingActionButton fab, fabReview;
+    DecimalFormat formatData = new DecimalFormat("0.00");
     //
 
     @Override
@@ -89,10 +92,17 @@ public class ProductDetailView extends AppCompatActivity
         /*
         test
          */
+        /*
         productCount.setText("    20");
+        productCount.setVisibility(View.VISIBLE);
         productPrice.setText("200.00");
+        productPrice.setVisibility(View.VISIBLE);
         productRating.setText("10");
+        productRating.setVisibility(View.VISIBLE);
+
         productFullDesc.setText(R.string.productFullDesc);
+
+         */
         /*
         test
          */
@@ -180,11 +190,17 @@ public class ProductDetailView extends AppCompatActivity
             }
         });
         fab = (FloatingActionButton) findViewById(R.id.fabProductDetailCart);
+        if (TODOApplication.getDetail_quantity() < 1) {
+            fab.setVisibility(View.GONE);
+        }
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                DialogFragmentCartCount dialogFragmentCartCount = new DialogFragmentCartCount();
+                dialogFragmentCartCount.show(getFragmentManager(), null);
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+
                 //mBlankFragment.fragmentSettext(getString(R.string.frset_text));
             }
         });
@@ -296,6 +312,14 @@ public class ProductDetailView extends AppCompatActivity
         divider4.setVisibility(View.VISIBLE);
         divider5.setVisibility(View.VISIBLE);
         divider6.setVisibility(View.VISIBLE);
+        //
+        productCount.setText("Доступно: "+TODOApplication.getDetail_quantity());
+        productCount.setVisibility(View.VISIBLE);
+        productPrice.setText("Стоимость: " + formatData.format(TODOApplication.getDetail_price()) + " р.");
+        productPrice.setVisibility(View.VISIBLE);
+        productRating.setText("Рейтинг: ");
+        productRating.setVisibility(View.VISIBLE);
+        productFullDesc.setText(R.string.productFullDesc);
         //clear url
         TODOApplication.clearUrlProductDetailImages();
         mStringArrayList.clear();
@@ -331,7 +355,7 @@ public class ProductDetailView extends AppCompatActivity
                 TextSliderView textSliderView = new TextSliderView(this);
                 // initialize a SliderLayout
                 textSliderView
-                        .description("My Image View")
+                        .description(productDetailImageList.get(i).getDescription())
                         .image(GET_IMAGES + productDetailImageList.get(i).getMenu_image())
                         .setScaleType(BaseSliderView.ScaleType.CenterInside)
 //                        .setScaleType(BaseSliderView.ScaleType.Fit)

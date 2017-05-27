@@ -48,7 +48,7 @@ public class DialogFragmentCartProcessing extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        activity_context = getActivity();
+      //  activity_context = getActivity();
         sourceURL = TODOApplication.getDialogImageSourceUrl();
         messageText = TODOApplication.getDialogMessageText();
         LayoutInflater inflater = getActivity().getLayoutInflater();

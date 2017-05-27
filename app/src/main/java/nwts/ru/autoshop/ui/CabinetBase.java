@@ -50,6 +50,7 @@ import nwts.ru.autoshop.fragment.cabinet.BalanceFragment;
 import nwts.ru.autoshop.fragment.cabinet.CartFragment;
 import nwts.ru.autoshop.fragment.cabinet.OrdersFragment;
 import nwts.ru.autoshop.fragment.dialogs.DialogFragmentAddBalance;
+import nwts.ru.autoshop.fragment.dialogs.DialogFragmentCartCount;
 import nwts.ru.autoshop.fragment.dialogs.DialogFragmentCartProcessing;
 import nwts.ru.autoshop.models.network.CabinetModel;
 import nwts.ru.autoshop.models.network.CabinetModels;
