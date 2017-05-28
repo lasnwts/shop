@@ -176,7 +176,7 @@ public class ServiceIntentGetDataMore extends IntentService {
             @Override
             public void onResponse(Call<ErrorModel> call, Response<ErrorModel> response) {
                 if (response.isSuccessful()) {
-                    if (response.code() == 201) {
+                    if (response.code() == 201 || response.code() == 200) {
                         //   delBalanceCache(Api.GET_CABINET_BALANCE);
                         Intent intentService = new Intent(getApplication(), ServiceHelper.class);
                         intentService.setAction(BaseConstant.ACTION_SERVICE_GET_BALANCE);
@@ -241,6 +241,7 @@ public class ServiceIntentGetDataMore extends IntentService {
             @Override
             public void onResponse(Call<List<CartModel>> call, Response<List<CartModel>> response) {
                 if (response.isSuccessful()) {
+                    mCartModels.clear();
                     mCartModels.addAll(response.body());
                     putGetCache(call.request().toString());
                     putCartModelItems(mCartModels);

@@ -15,7 +15,14 @@ public interface BaseConstant {
 
 
     //API Constant
-    public final String API_URL = "192.168.56.1:81";
+    /*
+        Local variables
+     */
+    //public final String API_URL = "192.168.56.1:81";
+    /*
+        Remote
+     */
+    public final String API_URL = "www.nwts.ru";
     public final String API_KEY_ID = "api_id";
     public final String API_GET_KEY = "api_get_key"; //что выбирать ключ
     public final String API_BAL_SUM = "api_bul_sum";
