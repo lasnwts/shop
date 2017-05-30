@@ -16,6 +16,7 @@ import static nwts.ru.autoshop.setting.BaseConstant.ACTION_SERVICE_GET_PRODUCT_D
 import static nwts.ru.autoshop.setting.BaseConstant.ACTION_SERVICE_GET_PRODUCT_LIST;
 import static nwts.ru.autoshop.setting.BaseConstant.ACTION_SERVICE_GET_SUBCATEGORY_LIST;
 import static nwts.ru.autoshop.setting.BaseConstant.API_GET_KEY;
+import static nwts.ru.autoshop.setting.BaseConstant.API_KEY_ID;
 
 /**
  * Created by пользователь on 13.03.2017.
@@ -52,6 +53,13 @@ public class ServiceHelper extends Service {
                     Intent intent1Service = new Intent(getApplication(), ServiceIntentGetDataMore.class);
                     intent1Service.putExtra(BaseConstant.API_PAGE, BaseConstant.ACTION_SERVICE_GET_CART);
                     intent1Service.putExtra(API_GET_KEY, PreferenceHelper.getInstance().getUserId());
+                    startService(intent1Service);
+                }
+                if (intent.getAction().equals(BaseConstant.ACTION_SERVICE_GET_CART_INPUT)) {
+                    Intent intent1Service = new Intent(getApplication(), ServiceIntentGetDataMore.class);
+                    intent1Service.putExtra(BaseConstant.API_PAGE, BaseConstant.ACTION_SERVICE_GET_CART_INPUT);
+                    intent1Service.putExtra(API_GET_KEY, intent.getIntExtra(BaseConstant.API_GET_KEY, 1));
+                    intent1Service.putExtra(API_KEY_ID, intent.getIntExtra(BaseConstant.API_KEY_ID, 0));
                     startService(intent1Service);
                 }
                 if (intent.getAction().equals(BaseConstant.ACTION_SERVICE_GET_BALANCE_ID)) {

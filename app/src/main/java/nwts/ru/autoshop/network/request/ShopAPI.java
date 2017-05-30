@@ -93,6 +93,10 @@ public interface ShopAPI {
     @POST(Api.GET_CABINET_PROCESSIN_ID)
     Call<ErrorModel> getProcessingCart(@Field("user_id") int userID, @Field("status_id") int statusID);
 
+    @FormUrlEncoded
+    @POST(Api.GET_CABINET_CART_INPUT)
+    Call<List<ErrorModel>> getInputCart(@Field("user_id") int userID, @Field("product_id") int productID,@Field("quantity") int quantity);
+
     //id balance
     @FormUrlEncoded
     @POST(Api.GET_CABINET_BALANCE_ID)

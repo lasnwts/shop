@@ -1,5 +1,7 @@
 package nwts.ru.autoshop.ui;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
@@ -9,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,11 +36,14 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import nwts.ru.autoshop.BaseActivity;
 import nwts.ru.autoshop.R;
 import nwts.ru.autoshop.TODOApplication;
 import nwts.ru.autoshop.fragment.dialogs.DialogFragmentCartCount;
 import nwts.ru.autoshop.models.ProductDetailImage;
 import nwts.ru.autoshop.models.ProductDetailImages;
+import nwts.ru.autoshop.models.network.cart.ErrorModel;
+import nwts.ru.autoshop.models.network.cart.ErrorModels;
 import nwts.ru.autoshop.services.ServiceHelper;
 import nwts.ru.autoshop.setting.BaseConstant;
 import nwts.ru.autoshop.setting.PreferenceHelper;
@@ -302,6 +308,40 @@ public class ProductDetailView extends AppCompatActivity
         mDemoSlider.stopAutoCycle();
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventQuantity(ErrorModels event) {
+        if (!event.getErrorModels().get(0).getError()) {
+            productCount.setText("Доступно: " + event.getErrorModels().get(0).getCounters());
+        } else {
+            String errorMessage;
+            if (TextUtils.isEmpty(event.getErrorModels().get(0).getMessage())) {
+                errorMessage = getString(R.string.show_non_detect_error);
+            } else {
+                errorMessage = event.getErrorModels().get(0).getMessage();
+                if (errorMessage.equals(getString(R.string.show_errpr_registration_check))) {
+                    errorMessage = getString(R.string.show_error_need_login);
+                }
+            }
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Возникла ошибка: ")
+                    .setMessage(errorMessage)
+                    .setIcon(R.drawable.ic_error)
+                    .setCancelable(false)
+                    .setNegativeButton("Да, поятненько  :(",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                    if (!preferenceHelper.getBoolean(BaseConstant.errorNetworkValidation)) {
+                                        Intent loginIntent = (Intent) new Intent(ProductDetailView.this, LoginActivity.class);
+                                        startActivity(loginIntent);
+                                    }
+                                }
+                            });
+            AlertDialog alertBalance = builder.create();
+            alertBalance.show();
+        }
+    }
+
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventProductDetails(ProductDetailImages event) {
@@ -313,7 +353,7 @@ public class ProductDetailView extends AppCompatActivity
         divider5.setVisibility(View.VISIBLE);
         divider6.setVisibility(View.VISIBLE);
         //
-        productCount.setText("Доступно: "+TODOApplication.getDetail_quantity());
+        productCount.setText("Доступно: " + TODOApplication.getDetail_quantity());
         productCount.setVisibility(View.VISIBLE);
         productPrice.setText("Стоимость: " + formatData.format(TODOApplication.getDetail_price()) + " р.");
         productPrice.setVisibility(View.VISIBLE);
@@ -438,5 +478,15 @@ public class ProductDetailView extends AppCompatActivity
         intentFresco.putExtra(BaseConstant.URL_IMAGE_DOWNLOADED, url);
         startActivity(intentFresco);
     }
+
+    public void startCartInput(int item, int product_id) {
+        Toast.makeText(this, "Кол-во:" + item, Toast.LENGTH_LONG).show();
+        Intent intentService = new Intent(this, ServiceHelper.class);
+        intentService.setAction(BaseConstant.ACTION_SERVICE_GET_CART_INPUT);
+        intentService.putExtra(BaseConstant.API_GET_KEY, item);
+        intentService.putExtra(BaseConstant.API_KEY_ID, product_id);
+        startService(intentService);
+    }
+
 
 }

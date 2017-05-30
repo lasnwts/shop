@@ -65,7 +65,7 @@ import static android.R.attr.tag;
 
 public class CabinetBase extends AppCompatActivity implements OrdersFragment.isOrdersFragment,
         BalanceFragment.isBalanceFragment, CartFragment.isCartFragment, DialogFragmentAddBalance.DialogPositiveClick,
-        DialogFragmentCartProcessing.isCartProcessing,BalOrderFragment.isBalOrderFragment, ToolBarTitle {
+        DialogFragmentCartProcessing.isCartProcessing, BalOrderFragment.isBalOrderFragment, ToolBarTitle {
 
     private Toolbar toolbar;
     PreferenceHelper preferenceHelper;
@@ -133,8 +133,14 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
 
                 }
                 if (tag.equals(BaseConstant.TAG_CART_FRAGMENT)) {
-                    mDialogFragmentCartProcessing = new DialogFragmentCartProcessing();
-                    mDialogFragmentCartProcessing.show(getFragmentManager(), "dialog_cart");
+                    if (TODOApplication.getDetail_quantity() > 0) {
+                        mDialogFragmentCartProcessing = new DialogFragmentCartProcessing();
+                        mDialogFragmentCartProcessing.show(getFragmentManager(), "dialog_cart");
+                    } else {
+                        //show message что корзина пуста
+                        Snackbar.make(view, R.string.show_cart_null_message, Snackbar.LENGTH_LONG)
+                                .setAction("Action", null).show();
+                    }
                 }
             }
         });
@@ -579,7 +585,7 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
 
     @Override
     public void startCart(int item) {
-        Toast.makeText(this, "ID ="+item,Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "ID =" + item, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -670,4 +676,5 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
     public void startCartProcessing() {
         getCart();
     }
+
 }

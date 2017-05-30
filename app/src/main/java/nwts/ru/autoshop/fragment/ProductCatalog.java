@@ -66,7 +66,6 @@ public class ProductCatalog extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activity_context = getActivity();
-        request();
 //        if (savedInstanceState != null) {
 //            if (savedInstanceState.getBoolean(TAG)) {
 //                request();;
@@ -119,6 +118,7 @@ public class ProductCatalog extends Fragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventCategoryList(ProductCategoris event) {
+        productCategoryList.clear();
         productCategoryList.addAll(event.getProductCategories());
         prgLoading.setVisibility(View.INVISIBLE);
         if (event.getProductCategories().isEmpty() || event.getProductCategories().size() < 1) {
@@ -133,6 +133,7 @@ public class ProductCatalog extends Fragment {
     public void onStart() {
         super.onStart();
         EventBus.getDefault().register(this);
+        request();
     }
 
     @Override

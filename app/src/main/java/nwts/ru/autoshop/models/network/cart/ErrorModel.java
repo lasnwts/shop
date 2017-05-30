@@ -25,6 +25,10 @@ public class ErrorModel {
     @Expose
     private String message;
     /** Used to resolve relations */
+    @SerializedName("counters")
+    @Expose
+    private int counters;
+    /** Used to resolve relations */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
     /** Used for active entity operations. */
@@ -36,11 +40,18 @@ public class ErrorModel {
         this.message = message;
     }
 
-    @Generated(hash = 1443508862)
-    public ErrorModel(Long id, Boolean error, String message) {
+    public ErrorModel(Boolean error, String message, int counters) {
+        this.error = error;
+        this.message = message;
+        this.counters = counters;
+    }
+
+    @Generated(hash = 796459378)
+    public ErrorModel(Long id, Boolean error, String message, int counters) {
         this.id = id;
         this.error = error;
         this.message = message;
+        this.counters = counters;
     }
 
     @Generated(hash = 1463142780)
@@ -69,6 +80,14 @@ public class ErrorModel {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public int getCounters() {
+        return counters;
+    }
+
+    public void setCounters(int counters) {
+        this.counters = counters;
     }
 
     /**

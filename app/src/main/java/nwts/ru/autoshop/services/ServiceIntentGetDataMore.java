@@ -16,21 +16,16 @@ import nwts.ru.autoshop.databases.DataManager;
 import nwts.ru.autoshop.models.DaoSession;
 import nwts.ru.autoshop.models.GetCache;
 import nwts.ru.autoshop.models.GetCacheDao;
-import nwts.ru.autoshop.models.ProductCategory;
-import nwts.ru.autoshop.models.ProductCategoryDao;
-import nwts.ru.autoshop.models.network.BalanceModel;
-import nwts.ru.autoshop.models.network.BalanceModelDao;
-import nwts.ru.autoshop.models.network.BalanceModels;
 import nwts.ru.autoshop.models.network.CabinetModels;
 import nwts.ru.autoshop.models.network.cart.CartModel;
 import nwts.ru.autoshop.models.network.cart.CartModelDao;
 import nwts.ru.autoshop.models.network.cart.CartModels;
 import nwts.ru.autoshop.models.network.cart.ErrorModel;
 import nwts.ru.autoshop.models.network.cart.ErrorModelDao;
+import nwts.ru.autoshop.models.network.cart.ErrorModels;
 import nwts.ru.autoshop.models.network.orders.BalOrderModel;
 import nwts.ru.autoshop.models.network.orders.BalOrderModelDao;
 import nwts.ru.autoshop.models.network.orders.BalOrderModels;
-import nwts.ru.autoshop.network.api.Api;
 import nwts.ru.autoshop.network.request.ShopAPI;
 import nwts.ru.autoshop.setting.BaseConstant;
 import nwts.ru.autoshop.setting.PreferenceHelper;
@@ -55,6 +50,7 @@ public class ServiceIntentGetDataMore extends IntentService {
     private BalOrderModelDao mBalOrderModelDao;
 
     //error
+    private List<ErrorModel> mErrorModelList;
     private ErrorModel mErrorModel;
     private ErrorModelDao mErrorModelDao;
 
@@ -77,6 +73,7 @@ public class ServiceIntentGetDataMore extends IntentService {
         super.onCreate();
         mGetCacheList = new ArrayList<>();
         mCartModels = new ArrayList<>();
+        mErrorModelList = new ArrayList<>();
         mBalOrderModelList = new ArrayList<>();
         DataManager dataManager = DataManager.getInstance();
         mDaoSession = dataManager.getDaoSession();
@@ -102,7 +99,7 @@ public class ServiceIntentGetDataMore extends IntentService {
             }
             if (intent.getStringExtra(BaseConstant.API_PAGE).equals(BaseConstant.ACTION_SERVICE_GET_PROCESSING_ID)) {
                 int key_id = intent.getIntExtra(BaseConstant.API_GET_KEY, 0);
-                int  statusID = TODOApplication.getStatusID();
+                int statusID = TODOApplication.getStatusID();
                 postProcessing(key_id, statusID);
             }
             if (intent.getStringExtra(BaseConstant.API_PAGE).equals(BaseConstant.ACTION_SERVICE_GET_CART)) {
@@ -112,8 +109,15 @@ public class ServiceIntentGetDataMore extends IntentService {
                 }
                 getCart(key_id);
             }
+            if (intent.getStringExtra(BaseConstant.API_PAGE).equals(BaseConstant.ACTION_SERVICE_GET_CART_INPUT)) {
+                int key_id =  PreferenceHelper.getInstance().getUserId();
+                if (mErrorModelList != null) {
+                    mErrorModelList.clear();
+                }
+                postCartInput(key_id, intent.getIntExtra(BaseConstant.API_KEY_ID, 0),
+                        intent.getIntExtra(BaseConstant.API_GET_KEY, 1));
+            }
             if (intent.getStringExtra(BaseConstant.API_PAGE).equals(BaseConstant.ACTION_SERVICE_GET_BALANCE_ID)) {
-                // int key_id = intent.getIntExtra(BaseConstant.API_GET_KEY, 0);
                 int key_id = TODOApplication.getKey_id();
                 if (mBalOrderModelList != null) {
                     mBalOrderModelList.clear();
@@ -185,25 +189,58 @@ public class ServiceIntentGetDataMore extends IntentService {
 
                     } else {
                         //get error messgae
-                        setErrorMessage("Возникла непонятная ошибка:"+response.code()+" "+response.body().toString());
+                        setErrorMessage("Возникла непонятная ошибка:" + response.code() + " " + response.body().toString());
                     }
                 } else {
                     //get error message
-                    setErrorMessage("Возникла ошибка! Код ошибки:"+response.code()+"; сообщение: "+response.errorBody().toString());
+                    setErrorMessage("Возникла ошибка! Код ошибки:" + response.code() + "; сообщение: " + response.errorBody().toString());
                 }
             }
 
             @Override
             public void onFailure(Call<ErrorModel> call, Throwable throwable) {
                 //get error message
-                setErrorMessage("Возникла сетевая ошибка. Попробуйте позже, после установления связи. Сообщение: "+throwable.toString());
+                setErrorMessage("Возникла сетевая ошибка. Попробуйте позже, после установления связи. Сообщение: " + throwable.toString());
             }
         });
     }
 
+    private void postCartInput(int userID, int productID, int quantiy) {
+        ShopAPI shopApi = ShopAPI.retrofit.create(ShopAPI.class);
+        final Call<List<ErrorModel>> call = shopApi.getInputCart(userID, productID, quantiy);
+        call.enqueue(new Callback<List<ErrorModel>>() {
+            @Override
+            public void onResponse(Call<List<ErrorModel>> call, Response<List<ErrorModel>> response) {
+                if (response.isSuccessful()) {
+                    //
+                    mErrorModelList.clear();
+                    mErrorModelList.addAll(response.body());
+                    //
+                    Intent intentService = new Intent(getApplicationContext(), ServiceHelper.class);
+                    intentService.setAction(BaseConstant.ACTION_SERVICE_GET_PRODUCT_LIST);
+                    intentService.putExtra(BaseConstant.API_GET_KEY, TODOApplication.getCategory_Id());
+                    startService(intentService);
+                    EventBus.getDefault().post ( new ErrorModels(mErrorModelList,200));
+                } else {
+                    //get error messgae
+                    setErrorMessage("Возникла непонятная ошибка:" + response.code() + " " + response.body().toString());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<ErrorModel>> call, Throwable throwable) {
+                //get error message
+                setErrorMessage("Возникла сетевая ошибка. Попробуйте позже, после установления связи. Сообщение: " + throwable.toString());
+                Log.d("Service"+ServiceIntentGetDataMore.class.getName(),"Error: "+throwable.toString());
+            }
+
+        });
+    }
+
+
     private void postProcessing(int key_id, int statusID) {
         ShopAPI shopApi = ShopAPI.retrofit.create(ShopAPI.class);
-        final Call<ErrorModel> call = shopApi.getProcessingCart(key_id,statusID);
+        final Call<ErrorModel> call = shopApi.getProcessingCart(key_id, statusID);
         call.enqueue(new Callback<ErrorModel>() {
             @Override
             public void onResponse(Call<ErrorModel> call, Response<ErrorModel> response) {
@@ -215,19 +252,18 @@ public class ServiceIntentGetDataMore extends IntentService {
                         getApplication().startService(intentService);
                     } else {
                         //get error messgae
-                        setErrorMessage("Возникла непонятная ошибка:"+response.code()+" "+response.body().toString());
+                        setErrorMessage("Возникла непонятная ошибка:" + response.code() + " " + response.body().toString());
                     }
                 } else {
                     //get error message
-                    setErrorMessage("Возникла ошибка! Код ошибки:"+response.code()+"; сообщение: "+response.errorBody().toString());
+                    setErrorMessage("Возникла ошибка! Код ошибки:" + response.code() + "; сообщение: " + response.errorBody().toString());
                 }
             }
 
             @Override
             public void onFailure(Call<ErrorModel> call, Throwable throwable) {
                 //get error message
-                setErrorMessage("Возникла сетевая ошибка. Попробуйте позже, после установления связи. Сообщение: "+throwable.toString());
-
+                setErrorMessage("Возникла сетевая ошибка. Попробуйте позже, после установления связи. Сообщение: " + throwable.toString());
             }
         });
     }
