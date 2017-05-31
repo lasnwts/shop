@@ -69,14 +69,28 @@
                             android:layout_margin="8dp"
                             android:onClick="onClickImageDetailView"/>
 
-                        <TextView
-                            android:id="@+id/productDetailRating"
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:gravity="right"
-                            android:textColor="@android:color/black"
-                            android:visibility="gone"
-                            android:textStyle="bold"/>
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/productDetailRating"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:layout_marginTop="@dimen/padding_ex_large"
+                                android:textColor="@android:color/black"
+                                android:textStyle="bold"/>
+
+                            <ImageView
+                                android:id="@+id/productDetailRatingImage"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"
+                                android:src="@drawable/rating0"/>
+
+                        </LinearLayout>
 
                     </LinearLayout>
 
@@ -107,7 +121,6 @@
                             android:layout_weight="1"
                             android:gravity="left"
                             android:textColor="@android:color/black"
-                            android:visibility="gone"
                             android:textStyle="bold"/>
 
                         <TextView
@@ -123,7 +136,6 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="right"
-                            android:visibility="gone"
                             android:textColor="@android:color/black"
                             android:textStyle="bold"/>
 
@@ -265,8 +277,8 @@
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fabProductDetailCart"
-        android:layout_height="wrap_content"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:src="@mipmap/ic_cart_shop"
         app:backgroundTint="@color/primary_color"
@@ -275,8 +287,8 @@
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fabProductDetailReviews"
-        android:layout_height="wrap_content"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:src="@mipmap/ic_review"
         app:backgroundTint="@color/primary_color"

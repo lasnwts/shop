@@ -243,7 +243,7 @@
     <string name="show_errpr_registration_check">Invalid username or password</string>
     <string name="show_non_detect_error">Ошибка не определена.</string>
     <string name="show_error_need_login">Необходимо зарегистрироваться! Для этого вернитеось в основное меню и выберите \n Кабинет!</string>
-    <string name="show_title_toolbal_cooment">Отзывы, рейтинг</string>
+    <string name="show_title_toolbal_cooment">Оценка:</string>
 
     <string-array name="cart_type_moved">
         <item>Доставка по почте</item>
