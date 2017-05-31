@@ -64,6 +64,29 @@ public class AdapterProductCatalog extends RecyclerView.Adapter<AdapterProductCa
         holder.nameTextView.setText(productCategory.getMenu_name());
         holder.priceTextView.setText(context.getResources().getString(R.string.price_name) + ": " + formatData.format(productCategory.getPrice()));
         holder.quantityTextView.setText(context.getResources().getString(R.string.quantity_name) + ": " + productCategory.getQuantity());
+        switch (productCategory.getRating()){
+            case 0:
+                holder.ratingImage.setImageResource(R.drawable.rating0);
+                break;
+            case 1:
+                holder.ratingImage.setImageResource(R.drawable.rating1);
+                break;
+            case 2:
+                holder.ratingImage.setImageResource(R.drawable.rating2);
+                break;
+            case 3:
+                holder.ratingImage.setImageResource(R.drawable.rating3);
+                break;
+            case 4:
+                holder.ratingImage.setImageResource(R.drawable.rating4);
+                break;
+            case 5:
+                holder.ratingImage.setImageResource(R.drawable.ratingbase);
+                break;
+            default:
+                holder.ratingImage.setImageResource(R.drawable.rating0);
+                break;
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             holder.itemView.setBackground(background);
         }
@@ -83,6 +106,7 @@ public class AdapterProductCatalog extends RecyclerView.Adapter<AdapterProductCa
                 TODOApplication.setDetail_price(productCategory.getPrice());
                 TODOApplication.setDetail_quantity(productCategory.getQuantity());
                 TODOApplication.setUrl_Image(productCategory.getMenu_image());
+                TODOApplication.setDetail_rating(productCategory.getRating());
                 holder.mAdapterClickListener.adapterOnClickListener(productCategory.getProduct_ID());
             }
         });
@@ -148,6 +172,7 @@ public class AdapterProductCatalog extends RecyclerView.Adapter<AdapterProductCa
         ImageView flowerImageView;
         TextView priceTextView;
         TextView quantityTextView;
+        ImageView ratingImage;
         AdapterClickListener mAdapterClickListener;
 
         public ViewHolder(View itemView, AdapterClickListener adapterClickListener) {
@@ -156,6 +181,7 @@ public class AdapterProductCatalog extends RecyclerView.Adapter<AdapterProductCa
             flowerImageView = (ImageView) itemView.findViewById(R.id.imgItemProductCatalog);
             priceTextView = (TextView) itemView.findViewById(R.id.txtPriceProductCatalog);
             quantityTextView = (TextView) itemView.findViewById(R.id.txtQuantityProductCatalog);
+            ratingImage = (ImageView) itemView.findViewById(R.id.product_catalog_rating_imageview);
             mAdapterClickListener = adapterClickListener;
         }
     }

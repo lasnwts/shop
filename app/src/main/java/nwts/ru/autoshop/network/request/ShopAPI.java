@@ -10,6 +10,7 @@ import nwts.ru.autoshop.models.authority.UserModel;
 import nwts.ru.autoshop.models.network.BalanceModel;
 import nwts.ru.autoshop.models.network.CabinetModel;
 import nwts.ru.autoshop.models.network.OrderModel;
+import nwts.ru.autoshop.models.network.ProductComment;
 import nwts.ru.autoshop.models.network.cart.CartModel;
 import nwts.ru.autoshop.models.network.cart.ErrorModel;
 import nwts.ru.autoshop.models.network.orders.BalOrderModel;
@@ -125,6 +126,9 @@ public interface ShopAPI {
 
     @GET(Api.GET_PRODUCT_LIST)
     Call<List<SubCategoryItem>> getProductList(@Query("category_id") int id_category);
+
+    @GET(Api.GET_PRODUCT_COMMENT_ID)
+    Call<List<ProductComment>> getComments(@Query("category_id") int product_id);
 
     @GET(Api.GET_PRODUCT_DETAIL)
     Call<List<ProductDetailImage>> getProductDetail(@Query("category_id") int id_category);

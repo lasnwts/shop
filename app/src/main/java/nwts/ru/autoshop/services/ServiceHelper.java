@@ -8,6 +8,7 @@ import android.util.Log;
 
 import org.greenrobot.eventbus.EventBus;
 
+import nwts.ru.autoshop.TODOApplication;
 import nwts.ru.autoshop.setting.BaseConstant;
 import nwts.ru.autoshop.setting.PreferenceHelper;
 
@@ -53,6 +54,12 @@ public class ServiceHelper extends Service {
                     Intent intent1Service = new Intent(getApplication(), ServiceIntentGetDataMore.class);
                     intent1Service.putExtra(BaseConstant.API_PAGE, BaseConstant.ACTION_SERVICE_GET_CART);
                     intent1Service.putExtra(API_GET_KEY, PreferenceHelper.getInstance().getUserId());
+                    startService(intent1Service);
+                }
+                if (intent.getAction().equals(BaseConstant.ACTION_SERVICE_GET_COMMENTS_ID)) {
+                    Intent intent1Service = new Intent(getApplication(), ServiceIntentGetDataMore.class);
+                    intent1Service.putExtra(BaseConstant.API_PAGE, BaseConstant.ACTION_SERVICE_GET_COMMENTS_ID);
+                    intent1Service.putExtra(API_GET_KEY, TODOApplication.getDetail_product_Id());
                     startService(intent1Service);
                 }
                 if (intent.getAction().equals(BaseConstant.ACTION_SERVICE_GET_CART_INPUT)) {

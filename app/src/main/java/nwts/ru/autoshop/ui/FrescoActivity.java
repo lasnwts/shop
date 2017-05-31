@@ -104,7 +104,7 @@ public class FrescoActivity extends AppCompatActivity {
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return "Page " + (position + 1);
+            return "Фото " + (position + 1);
         }
     }
 }

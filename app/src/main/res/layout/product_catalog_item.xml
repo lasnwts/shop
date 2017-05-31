@@ -16,6 +16,31 @@
         android:padding="10dp">
 
         <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:text="@string/name_product_catalog_rating"
+                style="@android:style/TextAppearance.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/app_bar_height"
+                android:textColor="@android:color/black"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/product_catalog_rating_imageview"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:gravity="bottom"
+                android:layout_gravity="right"
+                android:src="@drawable/rating0"/>
+
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -55,6 +80,7 @@
                 android:textColor="@android:color/black"
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 style="@android:style/TextAppearance.Small" />
+
 
             <TextView
                 android:id="@+id/txtPriceProductCatalog"

@@ -9,10 +9,6 @@
     tools:context="nwts.ru.autoshop.ui.ScrollingReviewActivity"
     tools:showIn="@layout/activity_scrolling_review">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
-        android:text="@string/large_text"/>
+    <include layout="@layout/product_catalog"/>
 
 </android.support.v4.widget.NestedScrollView>

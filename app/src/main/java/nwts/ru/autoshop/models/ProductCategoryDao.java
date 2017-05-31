@@ -32,6 +32,7 @@ public class ProductCategoryDao extends AbstractDao<ProductCategory, Long> {
         public final static Property Product_ID = new Property(7, int.class, "Product_ID", false, "PRODUCT__ID");
         public final static Property SubCategory_ID = new Property(8, int.class, "SubCategory_ID", false, "SUB_CATEGORY__ID");
         public final static Property Quantity = new Property(9, int.class, "Quantity", false, "QUANTITY");
+        public final static Property Rating = new Property(10, int.class, "Rating", false, "RATING");
     }
 
     private DaoSession daoSession;
@@ -59,7 +60,8 @@ public class ProductCategoryDao extends AbstractDao<ProductCategory, Long> {
                 "\"CATEGORY__ID\" INTEGER NOT NULL ," + // 6: Category_ID
                 "\"PRODUCT__ID\" INTEGER NOT NULL ," + // 7: Product_ID
                 "\"SUB_CATEGORY__ID\" INTEGER NOT NULL ," + // 8: SubCategory_ID
-                "\"QUANTITY\" INTEGER NOT NULL );"); // 9: Quantity
+                "\"QUANTITY\" INTEGER NOT NULL ," + // 9: Quantity
+                "\"RATING\" INTEGER NOT NULL );"); // 10: Rating
     }
 
     /** Drops the underlying database table. */
@@ -97,6 +99,7 @@ public class ProductCategoryDao extends AbstractDao<ProductCategory, Long> {
         stmt.bindLong(8, entity.getProduct_ID());
         stmt.bindLong(9, entity.getSubCategory_ID());
         stmt.bindLong(10, entity.getQuantity());
+        stmt.bindLong(11, entity.getRating());
     }
 
     @Override
@@ -128,6 +131,7 @@ public class ProductCategoryDao extends AbstractDao<ProductCategory, Long> {
         stmt.bindLong(8, entity.getProduct_ID());
         stmt.bindLong(9, entity.getSubCategory_ID());
         stmt.bindLong(10, entity.getQuantity());
+        stmt.bindLong(11, entity.getRating());
     }
 
     @Override
@@ -153,7 +157,8 @@ public class ProductCategoryDao extends AbstractDao<ProductCategory, Long> {
             cursor.getInt(offset + 6), // Category_ID
             cursor.getInt(offset + 7), // Product_ID
             cursor.getInt(offset + 8), // SubCategory_ID
-            cursor.getInt(offset + 9) // Quantity
+            cursor.getInt(offset + 9), // Quantity
+            cursor.getInt(offset + 10) // Rating
         );
         return entity;
     }
@@ -170,6 +175,7 @@ public class ProductCategoryDao extends AbstractDao<ProductCategory, Long> {
         entity.setProduct_ID(cursor.getInt(offset + 7));
         entity.setSubCategory_ID(cursor.getInt(offset + 8));
         entity.setQuantity(cursor.getInt(offset + 9));
+        entity.setRating(cursor.getInt(offset + 10));
      }
     
     @Override

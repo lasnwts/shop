@@ -49,6 +49,7 @@ public interface BaseConstant {
     public final String ACTION_SERVICE_GET_BALANCE_ID = "ru.nwts.get-cabinet-balance-id";
     public final String ACTION_SERVICE_GET_PROCESSING_ID = "ru.nwts.get-cabinet-processing-id"; //обработка в корзине
     public final String ACTION_SERVICE_GET_CART_INPUT = "ru.nwts.get-cabinet-cart-input-tovar"; //товар в корзину
+    public final String ACTION_SERVICE_GET_COMMENTS_ID = "ru.nwts.get-data-by-comments_id"; //получить отзывы о продукте
 
     //URL between activities
     public final String URL_IMAGE_DOWNLOADED = "url_downloaded";

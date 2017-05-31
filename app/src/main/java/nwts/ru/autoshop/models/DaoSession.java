@@ -17,6 +17,7 @@ import nwts.ru.autoshop.models.network.cart.CartModelBay;
 import nwts.ru.autoshop.models.network.cart.ErrorModel;
 import nwts.ru.autoshop.models.network.OrderModel;
 import nwts.ru.autoshop.models.network.orders.BalOrderModel;
+import nwts.ru.autoshop.models.network.ProductComment;
 import nwts.ru.autoshop.models.ProductCategory;
 import nwts.ru.autoshop.models.ProductDetailImage;
 import nwts.ru.autoshop.models.SubCategoryItem;
@@ -30,6 +31,7 @@ import nwts.ru.autoshop.models.network.cart.CartModelBayDao;
 import nwts.ru.autoshop.models.network.cart.ErrorModelDao;
 import nwts.ru.autoshop.models.network.OrderModelDao;
 import nwts.ru.autoshop.models.network.orders.BalOrderModelDao;
+import nwts.ru.autoshop.models.network.ProductCommentDao;
 import nwts.ru.autoshop.models.ProductCategoryDao;
 import nwts.ru.autoshop.models.ProductDetailImageDao;
 import nwts.ru.autoshop.models.SubCategoryItemDao;
@@ -52,6 +54,7 @@ public class DaoSession extends AbstractDaoSession {
     private final DaoConfig errorModelDaoConfig;
     private final DaoConfig orderModelDaoConfig;
     private final DaoConfig balOrderModelDaoConfig;
+    private final DaoConfig productCommentDaoConfig;
     private final DaoConfig productCategoryDaoConfig;
     private final DaoConfig productDetailImageDaoConfig;
     private final DaoConfig subCategoryItemDaoConfig;
@@ -65,6 +68,7 @@ public class DaoSession extends AbstractDaoSession {
     private final ErrorModelDao errorModelDao;
     private final OrderModelDao orderModelDao;
     private final BalOrderModelDao balOrderModelDao;
+    private final ProductCommentDao productCommentDao;
     private final ProductCategoryDao productCategoryDao;
     private final ProductDetailImageDao productDetailImageDao;
     private final SubCategoryItemDao subCategoryItemDao;
@@ -100,6 +104,9 @@ public class DaoSession extends AbstractDaoSession {
         balOrderModelDaoConfig = daoConfigMap.get(BalOrderModelDao.class).clone();
         balOrderModelDaoConfig.initIdentityScope(type);
 
+        productCommentDaoConfig = daoConfigMap.get(ProductCommentDao.class).clone();
+        productCommentDaoConfig.initIdentityScope(type);
+
         productCategoryDaoConfig = daoConfigMap.get(ProductCategoryDao.class).clone();
         productCategoryDaoConfig.initIdentityScope(type);
 
@@ -118,6 +125,7 @@ public class DaoSession extends AbstractDaoSession {
         errorModelDao = new ErrorModelDao(errorModelDaoConfig, this);
         orderModelDao = new OrderModelDao(orderModelDaoConfig, this);
         balOrderModelDao = new BalOrderModelDao(balOrderModelDaoConfig, this);
+        productCommentDao = new ProductCommentDao(productCommentDaoConfig, this);
         productCategoryDao = new ProductCategoryDao(productCategoryDaoConfig, this);
         productDetailImageDao = new ProductDetailImageDao(productDetailImageDaoConfig, this);
         subCategoryItemDao = new SubCategoryItemDao(subCategoryItemDaoConfig, this);
@@ -131,6 +139,7 @@ public class DaoSession extends AbstractDaoSession {
         registerDao(ErrorModel.class, errorModelDao);
         registerDao(OrderModel.class, orderModelDao);
         registerDao(BalOrderModel.class, balOrderModelDao);
+        registerDao(ProductComment.class, productCommentDao);
         registerDao(ProductCategory.class, productCategoryDao);
         registerDao(ProductDetailImage.class, productDetailImageDao);
         registerDao(SubCategoryItem.class, subCategoryItemDao);
@@ -146,6 +155,7 @@ public class DaoSession extends AbstractDaoSession {
         errorModelDaoConfig.clearIdentityScope();
         orderModelDaoConfig.clearIdentityScope();
         balOrderModelDaoConfig.clearIdentityScope();
+        productCommentDaoConfig.clearIdentityScope();
         productCategoryDaoConfig.clearIdentityScope();
         productDetailImageDaoConfig.clearIdentityScope();
         subCategoryItemDaoConfig.clearIdentityScope();
@@ -185,6 +195,10 @@ public class DaoSession extends AbstractDaoSession {
 
     public BalOrderModelDao getBalOrderModelDao() {
         return balOrderModelDao;
+    }
+
+    public ProductCommentDao getProductCommentDao() {
+        return productCommentDao;
     }
 
     public ProductCategoryDao getProductCategoryDao() {

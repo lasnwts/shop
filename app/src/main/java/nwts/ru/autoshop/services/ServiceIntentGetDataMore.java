@@ -17,6 +17,8 @@ import nwts.ru.autoshop.models.DaoSession;
 import nwts.ru.autoshop.models.GetCache;
 import nwts.ru.autoshop.models.GetCacheDao;
 import nwts.ru.autoshop.models.network.CabinetModels;
+import nwts.ru.autoshop.models.network.ProductComment;
+import nwts.ru.autoshop.models.network.ProductCommentDao;
 import nwts.ru.autoshop.models.network.cart.CartModel;
 import nwts.ru.autoshop.models.network.cart.CartModelDao;
 import nwts.ru.autoshop.models.network.cart.CartModels;
@@ -26,6 +28,7 @@ import nwts.ru.autoshop.models.network.cart.ErrorModels;
 import nwts.ru.autoshop.models.network.orders.BalOrderModel;
 import nwts.ru.autoshop.models.network.orders.BalOrderModelDao;
 import nwts.ru.autoshop.models.network.orders.BalOrderModels;
+import nwts.ru.autoshop.models.network.orders.ProductComments;
 import nwts.ru.autoshop.network.request.ShopAPI;
 import nwts.ru.autoshop.setting.BaseConstant;
 import nwts.ru.autoshop.setting.PreferenceHelper;
@@ -43,6 +46,11 @@ public class ServiceIntentGetDataMore extends IntentService {
     private List<CartModel> mCartModels;
     private CabinetModels mCabinetModelsList;
     private CartModelDao mCartModelDao;
+
+    //Comments
+    private List<ProductComment> mProductCommentList;
+    private ProductComments mProductComments;
+    private ProductCommentDao mProductCommentDao;
 
     //Bal order id
     private List<BalOrderModel> mBalOrderModelList;
@@ -75,6 +83,7 @@ public class ServiceIntentGetDataMore extends IntentService {
         mCartModels = new ArrayList<>();
         mErrorModelList = new ArrayList<>();
         mBalOrderModelList = new ArrayList<>();
+        mProductCommentList = new ArrayList<>();
         DataManager dataManager = DataManager.getInstance();
         mDaoSession = dataManager.getDaoSession();
         if (mDaoSession == null) {
@@ -85,6 +94,7 @@ public class ServiceIntentGetDataMore extends IntentService {
             mCartModelDao = mDaoSession.getCartModelDao();
             mErrorModelDao = mDaoSession.getErrorModelDao();
             mBalOrderModelDao = mDaoSession.getBalOrderModelDao();
+            mProductCommentDao = mDaoSession.getProductCommentDao();
         }
     }
 
@@ -102,6 +112,10 @@ public class ServiceIntentGetDataMore extends IntentService {
                 int statusID = TODOApplication.getStatusID();
                 postProcessing(key_id, statusID);
             }
+            if (intent.getStringExtra(BaseConstant.API_PAGE).equals(BaseConstant.ACTION_SERVICE_GET_COMMENTS_ID)) {
+                int key_id = intent.getIntExtra(BaseConstant.API_GET_KEY, 0);
+                getComments(key_id);
+            }
             if (intent.getStringExtra(BaseConstant.API_PAGE).equals(BaseConstant.ACTION_SERVICE_GET_CART)) {
                 int key_id = intent.getIntExtra(BaseConstant.API_GET_KEY, 0);
                 if (mCartModels != null) {
@@ -110,7 +124,7 @@ public class ServiceIntentGetDataMore extends IntentService {
                 getCart(key_id);
             }
             if (intent.getStringExtra(BaseConstant.API_PAGE).equals(BaseConstant.ACTION_SERVICE_GET_CART_INPUT)) {
-                int key_id =  PreferenceHelper.getInstance().getUserId();
+                int key_id = PreferenceHelper.getInstance().getUserId();
                 if (mErrorModelList != null) {
                     mErrorModelList.clear();
                 }
@@ -125,6 +139,29 @@ public class ServiceIntentGetDataMore extends IntentService {
                 getBalOrderModel(key_id);
             }
         }
+    }
+
+    private void getComments(final int key_id) {
+        ShopAPI shopApi = ShopAPI.retrofit.create(ShopAPI.class);
+        final Call<List<ProductComment>> call = shopApi.getComments(key_id);
+        call.enqueue(new Callback<List<ProductComment>>() {
+            @Override
+            public void onResponse(Call<List<ProductComment>> call, Response<List<ProductComment>> response) {
+                if (response.isSuccessful()) {
+                    mProductCommentList.clear();
+                    mProductCommentList.addAll(response.body());
+                    putProductComments(mProductCommentList, key_id);
+                    getProductComments(key_id, 200);
+                } else {
+                    getProductComments(key_id, 400);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<ProductComment>> call, Throwable t) {
+                getProductComments(key_id, 500);
+            }
+        });
     }
 
     private void getBalOrderModel(final int key_id) {
@@ -152,11 +189,32 @@ public class ServiceIntentGetDataMore extends IntentService {
         });
     }
 
+    private void getProductComments(int key_id, int errors) {
+        Query<ProductComment> qProductCommentList = mDaoSession.queryBuilder(ProductComment.class)
+                .where(ProductCommentDao.Properties.Product_ID.eq(key_id)).build();
+        List<ProductComment> mProductCommentsOut = qProductCommentList.list();
+        EventBus.getDefault().post(new ProductComments(mProductCommentsOut, errors));
+    }
+
     private void getBalOrderModels(int key_id, int errors) {
         Query<BalOrderModel> balOrderModels = mDaoSession.queryBuilder(BalOrderModel.class).
                 where(BalOrderModelDao.Properties.Oper_ID.eq(key_id)).build();
         List<BalOrderModel> balOrderModels1 = balOrderModels.list();
         EventBus.getDefault().post(new BalOrderModels(balOrderModels1, errors));
+    }
+
+    private void putProductComments(List<ProductComment> productComments, int key_id) {
+        if (productComments == null || productComments.size() < 1) {
+            return;
+        } else {
+            Query<ProductComment> qProductCommentDel = mDaoSession.queryBuilder(ProductComment.class)
+                    .where(ProductCommentDao.Properties.Product_ID.eq(key_id)).build();
+            List<ProductComment> mProductCommentsDel = qProductCommentDel.list();
+            if (mProductCommentsDel != null && mProductCommentsDel.size() != 0 && !mProductCommentsDel.isEmpty()) {
+                mProductCommentDao.deleteInTx(mProductCommentsDel);
+            }
+            mProductCommentDao.insertOrReplaceInTx(productComments);
+        }
     }
 
     private void putBalOrderModels(List<BalOrderModel> balOrderModels, int key_id) {
@@ -220,7 +278,7 @@ public class ServiceIntentGetDataMore extends IntentService {
                     intentService.setAction(BaseConstant.ACTION_SERVICE_GET_PRODUCT_LIST);
                     intentService.putExtra(BaseConstant.API_GET_KEY, TODOApplication.getCategory_Id());
                     startService(intentService);
-                    EventBus.getDefault().post ( new ErrorModels(mErrorModelList,200));
+                    EventBus.getDefault().post(new ErrorModels(mErrorModelList, 200));
                 } else {
                     //get error messgae
                     setErrorMessage("Возникла непонятная ошибка:" + response.code() + " " + response.body().toString());
@@ -231,7 +289,7 @@ public class ServiceIntentGetDataMore extends IntentService {
             public void onFailure(Call<List<ErrorModel>> call, Throwable throwable) {
                 //get error message
                 setErrorMessage("Возникла сетевая ошибка. Попробуйте позже, после установления связи. Сообщение: " + throwable.toString());
-                Log.d("Service"+ServiceIntentGetDataMore.class.getName(),"Error: "+throwable.toString());
+                Log.d("Service" + ServiceIntentGetDataMore.class.getName(), "Error: " + throwable.toString());
             }
 
         });

@@ -40,6 +40,7 @@ public class TODOApplication extends Application {
     private static double cartSumma; //sum all tovars in cart
     private static double balSumma; //rest from balance cabimnet
     private static int statusID; //status pay 0 - from cabinet, 1 from cache
+    private static int detail_rating; //rating from product
 
 
     public boolean isValidateToken() {
@@ -281,5 +282,13 @@ public class TODOApplication extends Application {
 
     public static void setStatusID(int statusID) {
         TODOApplication.statusID = statusID;
+    }
+
+    public static int getDetail_rating() {
+        return detail_rating;
+    }
+
+    public static void setDetail_rating(int detail_rating) {
+        TODOApplication.detail_rating = detail_rating;
     }
 }

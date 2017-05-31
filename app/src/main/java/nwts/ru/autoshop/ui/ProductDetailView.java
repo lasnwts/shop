@@ -60,7 +60,7 @@ public class ProductDetailView extends AppCompatActivity
     ProgressBar prgLoading;
     TextView productName, productDesc, productFullDesc, productRating, productPrice, productCount;
     TextView divider1, divider2, divider3, divider4, divider5, divider6;
-    ImageView productImage;
+    ImageView productImage, ratingImage;
     private String URL_KEY_STATE = "url_key_state";
     private SliderLayout mDemoSlider;
     private int mDemoSliderCounts = 0; //кол-во images
@@ -113,6 +113,7 @@ public class ProductDetailView extends AppCompatActivity
         test
          */
         productImage = (ImageView) findViewById(R.id.productDetailImage);
+        ratingImage = (ImageView) findViewById(R.id.productDetailRatingImage);
 
         PreferenceHelper.getInstance().init(getApplicationContext());
         preferenceHelper = PreferenceHelper.getInstance();
@@ -360,6 +361,7 @@ public class ProductDetailView extends AppCompatActivity
         productRating.setText("Рейтинг: ");
         productRating.setVisibility(View.VISIBLE);
         productFullDesc.setText(R.string.productFullDesc);
+        ratingImage.setVisibility(View.VISIBLE);
         //clear url
         TODOApplication.clearUrlProductDetailImages();
         mStringArrayList.clear();
@@ -375,6 +377,31 @@ public class ProductDetailView extends AppCompatActivity
         if (TODOApplication.getUrl_Image() != null) {
             getImageRequest(TODOApplication.getUrl_Image());
         }
+        //rating
+        switch (TODOApplication.getDetail_rating()){
+            case 0:
+                ratingImage.setImageResource(R.drawable.rating0);
+                break;
+            case 1:
+                ratingImage.setImageResource(R.drawable.rating1);
+                break;
+            case 2:
+                ratingImage.setImageResource(R.drawable.rating2);
+                break;
+            case 3:
+                ratingImage.setImageResource(R.drawable.rating3);
+                break;
+            case 4:
+                ratingImage.setImageResource(R.drawable.rating4);
+                break;
+            case 5:
+                ratingImage.setImageResource(R.drawable.ratingbase);
+                break;
+            default:
+                ratingImage.setImageResource(R.drawable.rating0);
+                break;
+        }
+        //
         productDetailImageList.clear();
         productDetailImageList.addAll(event.getProductDetailImages());
         Log.d(BaseConstant.TAG, "ProductDetailView:onEventProductDetails:run");

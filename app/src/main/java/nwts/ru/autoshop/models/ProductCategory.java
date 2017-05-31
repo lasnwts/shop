@@ -24,14 +24,16 @@ public class ProductCategory {
     private int Product_ID;
     private int SubCategory_ID;
     private int Quantity;
+    private int Rating;
+
+    /** Used to resolve relations */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
 
     /** Used for active entity operations. */
     @Generated(hash = 2047590669)
     private transient ProductCategoryDao myDao;
 
-    /** Used to resolve relations */
-    @Generated(hash = 2040040024)
-    private transient DaoSession daoSession;
 
 //    // create price format
 //    DecimalFormat formatData = new DecimalFormat("#.##");
@@ -47,7 +49,7 @@ public class ProductCategory {
     }
 
     public ProductCategory(int menu_ID, String menu_name, double price, String description,
-                           String menu_image, int category_ID, int product_ID, int subCategory_ID, int quantity) {
+                           String menu_image, int category_ID, int product_ID, int subCategory_ID, int quantity, int rating) {
         Menu_ID = menu_ID;
         Menu_name = menu_name;
         Price = price;
@@ -57,11 +59,12 @@ public class ProductCategory {
         Product_ID = product_ID;
         SubCategory_ID = subCategory_ID;
         Quantity = quantity;
+        Rating = rating;
     }
 
-    @Generated(hash = 1957459494)
-    public ProductCategory(Long id, int Menu_ID, String Menu_name, double Price, String Description,
-            String Menu_image, int Category_ID, int Product_ID, int SubCategory_ID, int Quantity) {
+    @Generated(hash = 1514271340)
+    public ProductCategory(Long id, int Menu_ID, String Menu_name, double Price, String Description, String Menu_image,
+            int Category_ID, int Product_ID, int SubCategory_ID, int Quantity, int Rating) {
         this.id = id;
         this.Menu_ID = Menu_ID;
         this.Menu_name = Menu_name;
@@ -72,47 +75,107 @@ public class ProductCategory {
         this.Product_ID = Product_ID;
         this.SubCategory_ID = SubCategory_ID;
         this.Quantity = Quantity;
+        this.Rating = Rating;
     }
 
-    public String getDescription() {
-        return Description;
+    public Long getId() {
+        return id;
     }
 
-    public int getCategory_ID() {
-        return Category_ID;
-    }
-
-    public int getProduct_ID() {
-        return Product_ID;
-    }
-
-    public int getSubCategory_ID() {
-        return SubCategory_ID;
-    }
-
-    public int getQuantity() {
-        return Quantity;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public int getMenu_ID() {
         return Menu_ID;
     }
 
+    public void setMenu_ID(int menu_ID) {
+        Menu_ID = menu_ID;
+    }
+
     public String getMenu_name() {
         return Menu_name;
+    }
+
+    public void setMenu_name(String menu_name) {
+        Menu_name = menu_name;
     }
 
     public double getPrice() {
         return Price;
     }
 
+    public void setPrice(double price) {
+        Price = price;
+    }
+
+    public String getDescription() {
+        return Description;
+    }
+
+    public void setDescription(String description) {
+        Description = description;
+    }
+
     public String getMenu_image() {
         return Menu_image;
     }
 
-    @Override
-    public String toString() {
-        return super.toString();
+    public void setMenu_image(String menu_image) {
+        Menu_image = menu_image;
+    }
+
+    public int getCategory_ID() {
+        return Category_ID;
+    }
+
+    public void setCategory_ID(int category_ID) {
+        Category_ID = category_ID;
+    }
+
+    public int getProduct_ID() {
+        return Product_ID;
+    }
+
+    public void setProduct_ID(int product_ID) {
+        Product_ID = product_ID;
+    }
+
+    public int getSubCategory_ID() {
+        return SubCategory_ID;
+    }
+
+    public void setSubCategory_ID(int subCategory_ID) {
+        SubCategory_ID = subCategory_ID;
+    }
+
+    public int getQuantity() {
+        return Quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        Quantity = quantity;
+    }
+
+    public int getRating() {
+        return Rating;
+    }
+
+    public void setRating(int rating) {
+        Rating = rating;
+    }
+
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 128553479)
+    public void delete() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.delete(this);
     }
 
     /**
@@ -139,66 +202,10 @@ public class ProductCategory {
         myDao.update(this);
     }
 
-    /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
-     * Entity must attached to an entity context.
-     */
-    @Generated(hash = 128553479)
-    public void delete() {
-        if (myDao == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        myDao.delete(this);
-    }
-
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 306233638)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getProductCategoryDao() : null;
-    }
-
-    public void setQuantity(int Quantity) {
-        this.Quantity = Quantity;
-    }
-
-    public void setSubCategory_ID(int SubCategory_ID) {
-        this.SubCategory_ID = SubCategory_ID;
-    }
-
-    public void setProduct_ID(int Product_ID) {
-        this.Product_ID = Product_ID;
-    }
-
-    public void setCategory_ID(int Category_ID) {
-        this.Category_ID = Category_ID;
-    }
-
-    public void setMenu_image(String Menu_image) {
-        this.Menu_image = Menu_image;
-    }
-
-    public void setDescription(String Description) {
-        this.Description = Description;
-    }
-
-    public void setPrice(double Price) {
-        this.Price = Price;
-    }
-
-    public void setMenu_name(String Menu_name) {
-        this.Menu_name = Menu_name;
-    }
-
-    public void setMenu_ID(int Menu_ID) {
-        this.Menu_ID = Menu_ID;
-    }
-
-    public Long getId() {
-        return this.id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 }
