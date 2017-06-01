@@ -246,6 +246,9 @@
     <string name="show_title_toolbal_cooment">Оценка:</string>
     <string name="name_product_catalog_rating">Рейтинг :</string>
     <string name="comment_without_message">Без сообщения..</string>
+    <string name="comment_show_rating">Оценка:</string>
+    <string name="show_min_comments">свернуть отзыв...</string>
+    <string name="show_max_comments">читать полностью...</string>
 
     <string-array name="cart_type_moved">
         <item>Доставка по почте</item>
@@ -255,6 +258,15 @@
     <string-array name="cart_type_paying">
         <item>Из средств, кабинета (баланс)</item>
         <item>Наличными курьеру, при получении</item>
+    </string-array>
+
+    <string-array name="product_quality">
+        <item>0 - без оценки</item>
+        <item>1 - очень плохо</item>
+        <item>2 - плохо</item>
+        <item>3 - неплохо</item>
+        <item>4 - хорошо</item>
+        <item>5 - отлично</item>
     </string-array>
 
 </resources>

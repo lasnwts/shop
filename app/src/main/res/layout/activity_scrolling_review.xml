@@ -22,26 +22,25 @@
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
             app:contentScrim="?attr/colorPrimary"
-            app:expandedTitleMarginStart="48dp"
             app:expandedTitleMarginEnd="64dp"
+            app:expandedTitleMarginStart="48dp"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <RelativeLayout
-                android:fitsSystemWindows="true"
-                app:layout_collapseMode="parallax"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:fitsSystemWindows="true"
+                app:layout_collapseMode="parallax">
 
 
                 <ImageView
                     android:id="@+id/imageView_scrollactivity_comment"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="18dp"
-                    android:layout_marginStart="18dp"
+                    android:layout_marginLeft="@dimen/padding_ex_large"
+                    android:layout_marginRight="@dimen/padding_ex_large"
+                    android:layout_marginTop="@dimen/padding_large"
+                    android:scaleType="centerCrop"
                     app:srcCompat="@drawable/asimo"/>
 
             </RelativeLayout>
@@ -51,16 +50,21 @@
                 android:id="@+id/toolbar_scroll"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:layout_collapseMode="pin"
-                android:minHeight="?attr/actionBarSize"
                 android:background="@color/primary_color"
+                android:minHeight="?attr/actionBarSize"
                 android:titleTextAppearance="@color/text_and_icon_color"
+                app:layout_collapseMode="pin"
                 app:popupTheme="@style/AppTheme.PopupOverlay"/>
 
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_scrolling_review"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        <include layout="@layout/product_catalog"/>
+    </LinearLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
@@ -69,15 +73,16 @@
         android:layout_margin="@dimen/fab_margin"
         app:layout_anchor="@id/app_bar"
         app:layout_anchorGravity="bottom|end"
-        app:srcCompat="@android:drawable/ic_dialog_email"/>
+        app:backgroundTint="@color/primary_color"
+        app:srcCompat="@drawable/ic_action_plus_white"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_up"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/fab_margin"
         android:layout_gravity="end|bottom"
-        android:visibility="gone"
-        app:srcCompat="@android:drawable/ic_dialog_email"/>
+        android:layout_margin="@dimen/fab_margin"
+        app:backgroundTint="@color/primary_color"
+        app:srcCompat="@drawable/ic_fab_action_top"/>
 
 </android.support.design.widget.CoordinatorLayout>

@@ -47,7 +47,6 @@
         android:id="@+id/dialog_fragment_cart_processing_dostavka"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:popupBackground="@color/hint"
         android:layout_marginTop="@dimen/padding_medium"
         android:entries="@array/cart_type_moved">
     </Spinner>
