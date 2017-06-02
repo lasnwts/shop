@@ -164,6 +164,13 @@ public class ServiceIntentGetData extends IntentService {
                 }
                 getPoductCategory(key_id);
             }
+            if (intent.getStringExtra(BaseConstant.API_PAGE).equals(BaseConstant.ACTION_SERVICE_GET_PRODUCT_DETAIL_ID)) {
+                int key_id = intent.getIntExtra(BaseConstant.API_GET_KEY, 0); //product_id
+                if (productCategory != null) {
+                    productCategory.clear();
+                }
+                getPoductID(key_id);
+            }
             if (intent.getStringExtra(BaseConstant.API_PAGE).equals(BaseConstant.ACTION_SERVICE_GET_PRODUCT_DETAIL)) {
                 int key_id = intent.getIntExtra(BaseConstant.API_GET_KEY, 0);
                 Log.d(BaseConstant.TAG, "Start:ServiceHelper:ServiceIntentGetData:: BaseConstant.API_GET_KEY =" + key_id);
@@ -334,6 +341,38 @@ public class ServiceIntentGetData extends IntentService {
                 } else {
                     // Обрабатываем ошибку
                     Log.d(BaseConstant.TAG, "response.errorBody()");
+                    ResponseBody errorBody = response.errorBody();
+                    try {
+                        Log.d(BaseConstant.TAG, errorBody.string());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    getProductCategoryDao(id_category, response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<ProductCategory>> call, Throwable throwable) {
+                Log.d(BaseConstant.TAG, "Что-то пошло не так");
+                getProductCategoryDao(id_category, 501);
+            }
+        });
+    }
+
+    private void getPoductID(final int id_category) {
+        ShopAPI shopApi = ShopAPI.retrofit.create(ShopAPI.class);
+        final Call<List<ProductCategory>> call = shopApi.getProductDetailID(id_category);
+        Log.d(BaseConstant.TAG, "getPoductCategory:call:" + call.request().toString());
+        call.enqueue(new Callback<List<ProductCategory>>() {
+
+            @Override
+            public void onResponse(Call<List<ProductCategory>> call, Response<List<ProductCategory>> response) {
+                if (response.isSuccessful()) {
+                    productCategory.addAll(response.body());
+                    EventBus.getDefault().post(new ProductCategoris(productCategory, response.code()));
+                    putProductCategory(productCategory);
+                } else {
+                    // Обрабатываем ошибку
                     ResponseBody errorBody = response.errorBody();
                     try {
                         Log.d(BaseConstant.TAG, errorBody.string());

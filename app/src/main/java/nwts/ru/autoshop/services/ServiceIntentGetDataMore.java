@@ -3,6 +3,7 @@ package nwts.ru.autoshop.services;
 import android.app.IntentService;
 import android.content.Intent;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 
 import org.greenrobot.eventbus.EventBus;
@@ -115,6 +116,13 @@ public class ServiceIntentGetDataMore extends IntentService {
             if (intent.getStringExtra(BaseConstant.API_PAGE).equals(BaseConstant.ACTION_SERVICE_GET_COMMENTS_ID)) {
                 int key_id = intent.getIntExtra(BaseConstant.API_GET_KEY, 0);
                 getComments(key_id);
+            }
+            if (intent.getStringExtra(BaseConstant.API_PAGE).equals(BaseConstant.ACTION_SERVICE_ADD_COMMENTS)) {
+                int key_id = intent.getIntExtra(BaseConstant.API_GET_KEY, 0);
+                int rating = intent.getIntExtra(BaseConstant.API_RATING, 0);
+                int productID = intent.getIntExtra(BaseConstant.API_PRODUCT_ID, 0);
+                String messages = intent.getStringExtra(BaseConstant.API_COOMENT);
+                putComments(key_id, rating, productID, messages);
             }
             if (intent.getStringExtra(BaseConstant.API_PAGE).equals(BaseConstant.ACTION_SERVICE_GET_CART)) {
                 int key_id = intent.getIntExtra(BaseConstant.API_GET_KEY, 0);
@@ -230,6 +238,46 @@ public class ServiceIntentGetDataMore extends IntentService {
             mBalOrderModelDao.insertInTx(balOrderModels);
         }
     }
+
+
+    //add cooment
+    private void putComments(int keyId, int rating, int productID, String messages) {
+        ShopAPI shopApi = ShopAPI.retrofit.create(ShopAPI.class);
+        final Call<List<ErrorModel>> call = shopApi.addComment(keyId, productID, rating, messages);
+        Log.d(ServiceIntentGetDataMore.class.getCanonicalName(), call.toString());
+        call.enqueue(new Callback<List<ErrorModel>>() {
+            @Override
+            public void onResponse(Call<List<ErrorModel>> call, Response<List<ErrorModel>> response) {
+                if (response.isSuccessful()) {
+                    if (response.code() == 201 || response.code() == 200) {
+                        if (response.body().get(0).getMessage() != null && !TextUtils.isEmpty(response.body().get(0).getMessage())) {
+                            try {
+                                TODOApplication.setDetail_rating(Integer.parseInt(response.body().get(0).getMessage()));
+                            } catch (NumberFormatException e) {
+                            }
+                            //
+                        }
+                        Intent intentService = new Intent(getApplication(), ServiceHelper.class);
+                        intentService.setAction(BaseConstant.ACTION_SERVICE_GET_COMMENTS_ID);
+                        startService(intentService);
+                    } else {
+                        //get error messgae
+                        setErrorMessage("Возникла непонятная ошибка:" + response.code() + " " + response.body().toString());
+                    }
+                } else {
+                    //get error message
+                    setErrorMessage("Возникла ошибка! Код ошибки:" + response.code() + "; сообщение: " + response.errorBody().toString());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<ErrorModel>> call, Throwable throwable) {
+                //get error message
+                setErrorMessage("Возникла сетевая ошибка. Попробуйте позже, после установления связи. Сообщение: " + throwable.toString());
+            }
+        });
+    }
+
 
     private void postSumBalance(int key_id, double sumBal, String paySys) {
         ShopAPI shopApi = ShopAPI.retrofit.create(ShopAPI.class);

@@ -236,7 +236,9 @@ public class ProductDetailView extends AppCompatActivity
             if (TODOApplication.getDetail_description() != null && TODOApplication.getDetail_description().length() > 150) {
                 productDesc.setText(Html.fromHtml(TODOApplication.getDetail_description().substring(0, 150)) + "...");
             } else {
-                productDesc.setText(Html.fromHtml(TODOApplication.getDetail_description()));
+                if (TODOApplication.getDetail_description() != null) {
+                    productDesc.setText(Html.fromHtml(TODOApplication.getDetail_description()));
+                }
             }
             productFullDesc.setTypeface(null, Typeface.BOLD);
             productFullDesc.setTextColor(getResources().getColor(R.color.primary_dark));
@@ -378,7 +380,7 @@ public class ProductDetailView extends AppCompatActivity
             getImageRequest(TODOApplication.getUrl_Image());
         }
         //rating
-        switch (TODOApplication.getDetail_rating()){
+        switch (TODOApplication.getDetail_rating()) {
             case 0:
                 ratingImage.setImageResource(R.drawable.rating0);
                 break;

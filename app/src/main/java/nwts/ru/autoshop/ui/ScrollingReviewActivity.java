@@ -1,5 +1,7 @@
 package nwts.ru.autoshop.ui;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
@@ -8,11 +10,10 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -30,13 +31,13 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.List;
 
-import nwts.ru.autoshop.BaseActivity;
 import nwts.ru.autoshop.R;
 import nwts.ru.autoshop.TODOApplication;
 import nwts.ru.autoshop.adapter.AdapterComment;
 import nwts.ru.autoshop.adapter.interfaces.AdapterClickListener;
 import nwts.ru.autoshop.fragment.dialogs.DialogFragmentAddComment;
 import nwts.ru.autoshop.models.network.ProductComment;
+import nwts.ru.autoshop.models.network.cart.ErrorModels;
 import nwts.ru.autoshop.models.network.orders.ProductComments;
 import nwts.ru.autoshop.network.ValidateToken;
 import nwts.ru.autoshop.services.ServiceHelper;
@@ -54,7 +55,8 @@ import static nwts.ru.autoshop.network.api.Api.GET_IMAGES;
  * Сначала у меня он был в разметке content_scrolling_review.xml где recyclerView был в объекте NestedScrollView.
  */
 
-public class ScrollingReviewActivity extends AppCompatActivity {
+public class ScrollingReviewActivity extends AppCompatActivity
+        implements DialogFragmentAddComment.isDialogFragmentAddComment {
 
     private Toolbar toolbar;
     private PreferenceHelper preferenceHelper;
@@ -131,20 +133,18 @@ public class ScrollingReviewActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
                 if (!TODOApplication.getInstance().isValidateToken()) {
                     if (validateToken.getValidateToken()) {
                         TODOApplication.getInstance().setValidateToken(true);
                     } else {
-                        if (!preferenceHelper.getBoolean(BaseConstant.errorNetworkValidation)) {
-                            Intent loginIntent = (Intent) new Intent(ScrollingReviewActivity.this, LoginActivity.class);
-                            startActivity(loginIntent);
-                        } else {
-                            Snackbar.make(view, "Для добавления отзыва необходимо зарегистрироваться.", Snackbar.LENGTH_LONG)
-                                    .setAction("Action", null).show();
-                            Toast.makeText(ScrollingReviewActivity.this, "Для добавления отзыва необходимо зарегистрироваться.", Toast.LENGTH_LONG).show();
-                        }
+                        Snackbar.make(view, R.string.fab_action_title_register, Snackbar.LENGTH_LONG)
+                                .setAction(R.string.fab_action_register, new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Intent loginIntent = (Intent) new Intent(ScrollingReviewActivity.this, LoginActivity.class);
+                                        startActivity(loginIntent);
+                                    }
+                                }).show();
                     }
                 } else {
                     mDialogFragmentAddComment = new DialogFragmentAddComment();
@@ -329,6 +329,40 @@ fab
             // layoutManager.scrollToPosition(0); // тоже возможно
             mRecyclerView.smoothScrollToPosition(0);
         }
+    }
+
+    @Override
+    public void startCartProcessing(int rating, String messageComment) {
+        //new comment
+        Intent intentService = new Intent(this, ServiceHelper.class);
+        intentService.setAction(BaseConstant.ACTION_SERVICE_ADD_COMMENTS);
+        intentService.putExtra(BaseConstant.API_RATING, rating);
+        intentService.putExtra(BaseConstant.API_COOMENT, messageComment);
+        startService(intentService);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventErrorMessge(ErrorModels errorEvent) {
+        String errorMessage;
+        prgLoading.setVisibility(View.INVISIBLE);
+        if (errorEvent.getErrorModels().get(0).getError() == null || TextUtils.isEmpty(errorEvent.getErrorModels().get(0).getMessage())){
+            errorMessage = "Ошибка не определена.";
+        } else {
+            errorMessage = errorEvent.getErrorModels().get(0).getMessage();
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(ScrollingReviewActivity.this);
+        builder.setTitle("Возникла ошибка при доавлении отзыва")
+                .setMessage(errorMessage)
+                .setIcon(R.drawable.ic_error)
+                .setCancelable(false)
+                .setNegativeButton("Да, поятненько  :(",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+        AlertDialog alertBalance = builder.create();
+        alertBalance.show();
     }
 
 

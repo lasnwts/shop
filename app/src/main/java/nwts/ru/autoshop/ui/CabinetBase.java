@@ -1,7 +1,9 @@
 package nwts.ru.autoshop.ui;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Point;
@@ -52,6 +54,8 @@ import nwts.ru.autoshop.fragment.cabinet.OrdersFragment;
 import nwts.ru.autoshop.fragment.dialogs.DialogFragmentAddBalance;
 import nwts.ru.autoshop.fragment.dialogs.DialogFragmentCartCount;
 import nwts.ru.autoshop.fragment.dialogs.DialogFragmentCartProcessing;
+import nwts.ru.autoshop.models.ProductCategoris;
+import nwts.ru.autoshop.models.ProductCategory;
 import nwts.ru.autoshop.models.network.CabinetModel;
 import nwts.ru.autoshop.models.network.CabinetModels;
 import nwts.ru.autoshop.services.ServiceHelper;
@@ -61,6 +65,8 @@ import nwts.ru.autoshop.setting.ToolBarTitle;
 
 import static android.R.attr.fragment;
 import static android.R.attr.tag;
+import static nwts.ru.autoshop.R.id.prgLoading;
+import static nwts.ru.autoshop.R.id.txtAlert;
 
 
 public class CabinetBase extends AppCompatActivity implements OrdersFragment.isOrdersFragment,
@@ -90,6 +96,7 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
     BottomNavigationView bnv;
     DialogFragmentAddBalance mDialogFragmentAddBalance;
     DialogFragmentCartProcessing mDialogFragmentCartProcessing;
+    List<ProductCategory> productCategoryList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -586,6 +593,7 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
     @Override
     public void startCart(int item) {
         Toast.makeText(this, "ID =" + item, Toast.LENGTH_SHORT).show();
+        startProductDetailView(item);
     }
 
     @Override
@@ -655,6 +663,8 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
 
     @Override
     public void startBalOrder(int item) {
+        //Тут можно сделдать переход на сайт платежа...
+        //Это не продукт
         Toast.makeText(this, "ID= " + item, Toast.LENGTH_SHORT).show();
     }
 
@@ -675,6 +685,53 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
     @Override
     public void startCartProcessing() {
         getCart();
+    }
+
+    public void startProductDetailView(int item) {
+        //Подготовка
+        TODOApplication.setProductDetail_Id(item);
+        Intent intentService = new Intent(this, ServiceHelper.class);
+        intentService.setAction(BaseConstant.ACTION_SERVICE_GET_PRODUCT_LIST);
+        intentService.putExtra(BaseConstant.API_GET_KEY, item); //продукт id
+        startService(intentService);
+
+
+        Intent intentProductDetail = new Intent(this, ProductDetailView.class);
+        this.startActivity(intentProductDetail);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventCategoryList(ProductCategoris event) {
+        productCategoryList.clear();
+        productCategoryList.addAll(event.getProductCategories());
+        if (event.getProductCategories().isEmpty() || event.getProductCategories().size() < 1) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(CabinetBase.this);
+            builder.setTitle(R.string.show_error_detail)
+                    .setMessage(R.string.show_error_message_detail)
+                    .setIcon(R.drawable.ic_error)
+                    .setCancelable(false)
+                    .setNegativeButton("Да, поятненько  :(",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
+                            });
+            AlertDialog alertBalance = builder.create();
+            alertBalance.show();
+        } else {
+            TODOApplication.setDetail_category_Id(productCategoryList.get(0).getCategory_ID());
+            TODOApplication.setDetail_product_Id(productCategoryList.get(0).getProduct_ID());
+            TODOApplication.setDetail_subcategory_Id(productCategoryList.get(0).getSubCategory_ID());
+            TODOApplication.setDetail_description(productCategoryList.get(0).getDescription());
+            TODOApplication.setDetail_productName(productCategoryList.get(0).getMenu_name());
+            TODOApplication.setDetail_price(productCategoryList.get(0).getPrice());
+            TODOApplication.setDetail_quantity(productCategoryList.get(0).getQuantity());
+            TODOApplication.setUrl_Image(productCategoryList.get(0).getMenu_image());
+            TODOApplication.setDetail_rating(productCategoryList.get(0).getRating());
+            //
+            Intent intentProductDetail = new Intent(this, ProductDetailView.class);
+            this.startActivity(intentProductDetail);
+        }
     }
 
 }

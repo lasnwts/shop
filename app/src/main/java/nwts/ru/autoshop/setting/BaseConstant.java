@@ -29,6 +29,9 @@ public interface BaseConstant {
     public final String API_GET_KEY = "api_get_key"; //что выбирать ключ
     public final String API_BAL_SUM = "api_bul_sum";
     public final String API_BAL_SYS = "api_bul_sys";
+    public final String API_RATING = "api_rate_sys";
+    public final String API_PRODUCT_ID = "api_product_sys";
+    public final String API_COOMENT = "api_comment_sys";
 
 
     public final String API_PAGE = "api_page"; //какую страницу выбрать
@@ -41,6 +44,7 @@ public interface BaseConstant {
     public final String ACTION_SERVICE_GET_SUBCATEGORY_LIST = "ru.nwts.get_subcategory_list";
     public final String ACTION_SERVICE_GET_PRODUCT_LIST = "ru.nwts.get_product_list"; //каталог проуктов из одной категории
     public final String ACTION_SERVICE_GET_PRODUCT_DETAIL = "ru.nwts.get_product_detail"; //детализация продукта
+    public final String ACTION_SERVICE_GET_PRODUCT_DETAIL_ID = "ru.nwts.get_product_detail_id"; //детализация продукта по id
     public final String ACTION_SERVICE_GET_CABINET = "ru.nwts.get-cabinet-data"; //информаиця о кабинете
     public final String ACTION_SERVICE_GET_ORDERS = "ru.nwts.get-cabinet-orders"; //информаиця о заказах
     public final String ACTION_SERVICE_GET_BALANCE = "ru.nwts.get-cabinet-balance"; //информаиця о балансе
@@ -50,7 +54,7 @@ public interface BaseConstant {
     public final String ACTION_SERVICE_GET_PROCESSING_ID = "ru.nwts.get-cabinet-processing-id"; //обработка в корзине
     public final String ACTION_SERVICE_GET_CART_INPUT = "ru.nwts.get-cabinet-cart-input-tovar"; //товар в корзину
     public final String ACTION_SERVICE_GET_COMMENTS_ID = "ru.nwts.get-data-by-comments_id"; //получить отзывы о продукте
-
+    public final String ACTION_SERVICE_ADD_COMMENTS = "ru.nwts.add-comment-to-tovar"; //add comments to tovar
     //URL between activities
     public final String URL_IMAGE_DOWNLOADED = "url_downloaded";
     public final String URL_IMAGE_COUNTS = "url_images_count";

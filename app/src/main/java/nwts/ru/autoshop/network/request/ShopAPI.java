@@ -109,6 +109,11 @@ public interface ShopAPI {
     @POST(Api.GET_CREATE_LOGIN)
     Call<AccessCreateUser> createUser(@Field("username") String userEmail, @Field("password") String userPassword, @Field("name") String userName);
 
+    //add comments
+    @FormUrlEncoded()
+    @POST(Api.GET_PRODUCT_ADD_COMMENT_ID)
+    Call<List<ErrorModel>>  addComment(@Field("user_id") int userId, @Field("product_id") int productID,@Field("rating") int rating, @Field("messages") String messages);
+
     //Login get token
     @Headers("Cache-Control: max-age=640000")
     @FormUrlEncoded
@@ -120,6 +125,9 @@ public interface ShopAPI {
 
     @GET(Api.GET_PRODUCT_CATEGORY)
     Call<List<ProductCategory>> getProductCatalog(@Query("category_id") int id_category);
+
+    @GET(Api.GET_PRODUCT_BY_ID)
+    Call<List<ProductCategory>> getProductDetailID(@Query("category_id") int productID);
 
     @GET(Api.GET_PRODUCT_SUBCATEGORY)
     Call<List<SubCategoryItem>> getSubCatalog(@Query("category_id") int id_category);

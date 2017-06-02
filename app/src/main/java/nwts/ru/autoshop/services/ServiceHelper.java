@@ -12,12 +12,15 @@ import nwts.ru.autoshop.TODOApplication;
 import nwts.ru.autoshop.setting.BaseConstant;
 import nwts.ru.autoshop.setting.PreferenceHelper;
 
+import static android.R.attr.rating;
 import static nwts.ru.autoshop.setting.BaseConstant.ACTION_SERVICE_GET_CATEGORY_LIST;
 import static nwts.ru.autoshop.setting.BaseConstant.ACTION_SERVICE_GET_PRODUCT_DETAIL;
+import static nwts.ru.autoshop.setting.BaseConstant.ACTION_SERVICE_GET_PRODUCT_DETAIL_ID;
 import static nwts.ru.autoshop.setting.BaseConstant.ACTION_SERVICE_GET_PRODUCT_LIST;
 import static nwts.ru.autoshop.setting.BaseConstant.ACTION_SERVICE_GET_SUBCATEGORY_LIST;
 import static nwts.ru.autoshop.setting.BaseConstant.API_GET_KEY;
 import static nwts.ru.autoshop.setting.BaseConstant.API_KEY_ID;
+import static nwts.ru.autoshop.setting.BaseConstant.API_RATING;
 
 /**
  * Created by пользователь on 13.03.2017.
@@ -54,6 +57,15 @@ public class ServiceHelper extends Service {
                     Intent intent1Service = new Intent(getApplication(), ServiceIntentGetDataMore.class);
                     intent1Service.putExtra(BaseConstant.API_PAGE, BaseConstant.ACTION_SERVICE_GET_CART);
                     intent1Service.putExtra(API_GET_KEY, PreferenceHelper.getInstance().getUserId());
+                    startService(intent1Service);
+                }
+                if (intent.getAction().equals(BaseConstant.ACTION_SERVICE_ADD_COMMENTS)) {
+                    Intent intent1Service = new Intent(getApplication(), ServiceIntentGetDataMore.class);
+                    intent1Service.putExtra(BaseConstant.API_PAGE, BaseConstant.ACTION_SERVICE_ADD_COMMENTS);
+                    intent1Service.putExtra(API_GET_KEY, PreferenceHelper.getInstance().getUserId());
+                    intent1Service.putExtra(API_RATING, intent.getIntExtra(BaseConstant.API_RATING,0));
+                    intent1Service.putExtra(BaseConstant.API_COOMENT, intent.getStringExtra(BaseConstant.API_COOMENT));
+                    intent1Service.putExtra(BaseConstant.API_PRODUCT_ID, TODOApplication.getDetail_product_Id());
                     startService(intent1Service);
                 }
                 if (intent.getAction().equals(BaseConstant.ACTION_SERVICE_GET_COMMENTS_ID)) {
@@ -132,6 +144,13 @@ public class ServiceHelper extends Service {
                     Log.d(BaseConstant.TAG, "Start ServiceHelper:BaseConstant.ACTION_SERVICE_GET_PRODUCT_LIST:key_id :" + key_id);
                     Intent intent1Service = new Intent(getApplication(), ServiceIntentGetData.class);
                     intent1Service.putExtra(BaseConstant.API_PAGE, BaseConstant.ACTION_SERVICE_GET_PRODUCT_DETAIL);
+                    intent1Service.putExtra(API_GET_KEY, key_id);
+                    startService(intent1Service);
+                }
+                if (intent.getAction().equals(ACTION_SERVICE_GET_PRODUCT_DETAIL_ID)) {
+                    int key_id = intent.getIntExtra(API_GET_KEY, 2);
+                    Intent intent1Service = new Intent(getApplication(), ServiceIntentGetData.class);
+                    intent1Service.putExtra(BaseConstant.API_PAGE, BaseConstant.ACTION_SERVICE_GET_PRODUCT_DETAIL_ID);
                     intent1Service.putExtra(API_GET_KEY, key_id);
                     startService(intent1Service);
                 }

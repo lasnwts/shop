@@ -6,8 +6,10 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Spinner;
 
 import nwts.ru.autoshop.R;
@@ -24,6 +26,7 @@ public class DialogFragmentAddComment extends DialogFragment {
     private int rating;
     private String messageText;
     private Spinner mSpinner;
+    private EditText mEditText;
     private isDialogFragmentAddComment mIsDialogFragmentAddComment;
     PreferenceHelper preferenceHelper;
 
@@ -43,12 +46,22 @@ public class DialogFragmentAddComment extends DialogFragment {
         viewMess.setBackgroundResource(R.color.primary_color);
         mSpinner = (Spinner) viewMess.findViewById(R.id.dialog_fragment_add_comment_spinner);
         mSpinner.setSelection(0);
+        mEditText = (EditText) viewMess.findViewById(R.id.dialog_fragment_add_comment_ediutext);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setView(viewMess).setPositiveButton("Добавить", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
+                if (mIsDialogFragmentAddComment== null) {
+                    mIsDialogFragmentAddComment = (isDialogFragmentAddComment) activity_context;
+                }
+                if (mEditText.getText() == null || TextUtils.isEmpty(mEditText.getText())){
+                    messageText = " без сообщения..";
+                } else {
+                    messageText = mEditText.getText().toString().trim();
+                }
+                mIsDialogFragmentAddComment.startCartProcessing((int) mSpinner.getSelectedItemId(), messageText );
+                //   mIsDialogFragmentAddComment(editText.getText().toString(), paySystems);
             }
         }).setNegativeButton("Отказаться", new DialogInterface.OnClickListener() {
             @Override

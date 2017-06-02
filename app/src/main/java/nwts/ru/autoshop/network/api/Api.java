@@ -29,4 +29,6 @@ public interface Api {
     public String GET_CABINET_PROCESSIN_ID  = "/ecommerce/apiv2/get-cabinet-cart-processing-id.php";
     public String GET_CABINET_CART_INPUT = "/ecommerce/apiv2/get-cabinet-cart-input-tovar.php";
     public String GET_PRODUCT_COMMENT_ID = "/ecommerce/apiv2/get-data-by-comments_id.php";
+    public String GET_PRODUCT_ADD_COMMENT_ID = "/ecommerce/apiv2/add-comment-to-tovar.php";
+    public String GET_PRODUCT_BY_ID = "ecommerce/apiv2/get-data-by-product-id.php?accesskey=12345";
 }

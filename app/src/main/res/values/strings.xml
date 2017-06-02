@@ -249,6 +249,10 @@
     <string name="comment_show_rating">Оценка:</string>
     <string name="show_min_comments">свернуть отзыв...</string>
     <string name="show_max_comments">читать полностью...</string>
+    <string name="fab_action_register">Регистрация</string>
+    <string name="fab_action_title_register">Необходимо зарегистрироваться.</string>
+    <string name="show_error_detail">Возникла ошибка при попытке открыть карточку товара</string>
+    <string name="show_error_message_detail">Карточка тоавара недоступна</string>
 
     <string-array name="cart_type_moved">
         <item>Доставка по почте</item>
