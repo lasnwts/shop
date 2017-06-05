@@ -107,12 +107,12 @@ public class CartFragment extends Fragment {
                     }
                 }, new AdatpterLongClickListener() {
             @Override
-            public void adatpterLongClickListener(int item) {
+            public void adatpterLongClickListener(int item, double summa, int quantity) {
                 //удалдение здесь
                 if (mIsCartFragment == null) {
                     mIsCartFragment = (isCartFragment) activity_context;
                 }
-                mIsCartFragment.delCartPosition(item);
+                mIsCartFragment.delCartPosition(item, summa, quantity);
             }
         } );
 
@@ -173,7 +173,7 @@ public class CartFragment extends Fragment {
 
     public interface isCartFragment {
         void startCart(int item);
-        void delCartPosition (int item);
+        void delCartPosition (int item, double summa, int counts);
         void fabCommandCart(int fabItem);
     }
 

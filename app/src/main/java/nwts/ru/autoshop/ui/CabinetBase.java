@@ -610,16 +610,32 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
     }
 
     @Override
-    public void delCartPosition(int item) {
-        Toast.makeText(this," Надо удалить товар из корзины ="+item,Toast.LENGTH_SHORT).show();
-        /*
-        Intent intent1Service = new Intent(getApplication(), ServiceIntentGetDataMore.class);
-        intent1Service.putExtra(BaseConstant.API_PAGE, BaseConstant.ACTION_SERVICE_DEL_CART);
-        intent1Service.putExtra(BaseConstant.API_QUANTITY, intent.getIntExtra(BaseConstant.API_QUANTITY, 0));
-        intent1Service.putExtra(BaseConstant.API_PRODUCT_ID, intent.getIntExtra(BaseConstant.API_PRODUCT_ID, 0));
-        intent1Service.putExtra(BaseConstant.API_BAL_SYS, intent.getIntExtra(BaseConstant.API_BAL_SYS, 0));
-        startService(intent1Service);
-        */
+    public void delCartPosition(final int item, final double summa, final int quantity) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(CabinetBase.this);
+        builder.setTitle(R.string.show_question_title)
+                .setMessage(R.string.show_question_what)
+                .setIcon(R.drawable.ic_error)
+                .setCancelable(false)
+                .setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intentService = new Intent(CabinetBase.this, ServiceHelper.class);
+                        intentService.setAction(BaseConstant.ACTION_SERVICE_DEL_CART);
+                        intentService.putExtra(BaseConstant.API_QUANTITY,quantity);
+                        intentService.putExtra(BaseConstant.API_PRODUCT_ID,item);
+                        intentService.putExtra(BaseConstant.API_BAL_SYS,summa);
+                        startService(intentService);
+                    }
+                })
+                .setNegativeButton("Нет",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+        AlertDialog alertBalance = builder.create();
+        alertBalance.show();
     }
 
     @Override
@@ -658,13 +674,6 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
         this.startService(intentService);
     }
 
-//    //get record from Balance
-//    private void getBalansRecord(int id) {
-//        Intent intentService = new Intent(this, ServiceHelper.class);
-//        intentService.setAction(BaseConstant.ACTION_SERVICE_GET_BALANCE_ID);
-//        intentService.putExtra(BaseConstant.API_GET_KEY, id);
-//        this.startService(intentService);
-//    }
 
     private void getBalOrder() {
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {

@@ -131,7 +131,7 @@ public class ServiceIntentGetDataMore extends IntentService {
                 int key_id = intent.getIntExtra(BaseConstant.API_GET_KEY, 0);
                 int quantityID = intent.getIntExtra(BaseConstant.API_QUANTITY, 0);
                 int productID = intent.getIntExtra(BaseConstant.API_PRODUCT_ID, 0);
-                double summaDel = intent.getIntExtra(BaseConstant.API_BAL_SYS, 0);
+                double summaDel = intent.getDoubleExtra(BaseConstant.API_BAL_SYS, 0);
                 delProductFromCart(productID, summaDel, quantityID);
             }
             if (intent.getStringExtra(BaseConstant.API_PAGE).equals(BaseConstant.ACTION_SERVICE_GET_CART)) {

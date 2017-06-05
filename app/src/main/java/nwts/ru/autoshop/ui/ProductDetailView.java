@@ -205,8 +205,8 @@ public class ProductDetailView extends AppCompatActivity
             public void onClick(View view) {
                 DialogFragmentCartCount dialogFragmentCartCount = new DialogFragmentCartCount();
                 dialogFragmentCartCount.show(getFragmentManager(), null);
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
 
                 //mBlankFragment.fragmentSettext(getString(R.string.frset_text));
             }

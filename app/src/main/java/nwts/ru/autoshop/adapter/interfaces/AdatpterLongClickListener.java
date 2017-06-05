@@ -5,5 +5,11 @@ package nwts.ru.autoshop.adapter.interfaces;
  */
 
 public interface AdatpterLongClickListener {
-    public void adatpterLongClickListener(int item);
+    /*
+    item        -   Product_ID
+    summa       -   сумма в корзине по позиции
+    quantity    -   количетсво в корзине
+     */
+    public void adatpterLongClickListener(int item, double summa, int quantity);
+
 }

@@ -253,6 +253,8 @@
     <string name="fab_action_title_register">Необходимо зарегистрироваться.</string>
     <string name="show_error_detail">Возникла ошибка при попытке открыть карточку товара</string>
     <string name="show_error_message_detail">Карточка тоавара недоступна</string>
+    <string name="show_question_title">Вопрос ?</string>
+    <string name="show_question_what">Вы уверены, что хотите удалить из корзины?</string>
 
     <string-array name="cart_type_moved">
         <item>Доставка по почте</item>
