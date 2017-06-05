@@ -114,6 +114,11 @@ public interface ShopAPI {
     @POST(Api.GET_PRODUCT_ADD_COMMENT_ID)
     Call<List<ErrorModel>>  addComment(@Field("user_id") int userId, @Field("product_id") int productID,@Field("rating") int rating, @Field("messages") String messages);
 
+    //del from cart
+    @FormUrlEncoded
+    @POST(Api.GET_PRODUCT_DEL_BY_CART_ID)
+    Call<List<ErrorModel>> getDeleteFromCart(@Field("product_id") int productID, @Field("summa_del") double summaDel, @Field("quantity_del") int quantityDel);
+
     //Login get token
     @Headers("Cache-Control: max-age=640000")
     @FormUrlEncoded

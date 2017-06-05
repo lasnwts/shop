@@ -31,4 +31,5 @@ public interface Api {
     public String GET_PRODUCT_COMMENT_ID = "/ecommerce/apiv2/get-data-by-comments_id.php";
     public String GET_PRODUCT_ADD_COMMENT_ID = "/ecommerce/apiv2/add-comment-to-tovar.php";
     public String GET_PRODUCT_BY_ID = "ecommerce/apiv2/get-data-by-product-id.php?accesskey=12345";
+    public String GET_PRODUCT_DEL_BY_CART_ID = "ecommerce/apiv2/get-data-by-delete-product-from-cart.php";
 }

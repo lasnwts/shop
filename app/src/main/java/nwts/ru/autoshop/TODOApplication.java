@@ -41,6 +41,7 @@ public class TODOApplication extends Application {
     private static double balSumma; //rest from balance cabimnet
     private static int statusID; //status pay 0 - from cabinet, 1 from cache
     private static int detail_rating; //rating from product
+    private static int cabinmet_form; //0 - хзаказы, 1 - корзина
 
 
     public boolean isValidateToken() {
@@ -290,5 +291,13 @@ public class TODOApplication extends Application {
 
     public static void setDetail_rating(int detail_rating) {
         TODOApplication.detail_rating = detail_rating;
+    }
+
+    public static int getCabinmet_form() {
+        return cabinmet_form;
+    }
+
+    public static void setCabinmet_form(int cabinmet_form) {
+        TODOApplication.cabinmet_form = cabinmet_form;
     }
 }

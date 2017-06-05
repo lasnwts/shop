@@ -27,6 +27,7 @@ import nwts.ru.autoshop.R;
 import nwts.ru.autoshop.TODOApplication;
 import nwts.ru.autoshop.adapter.cabinet.AdapterCart;
 import nwts.ru.autoshop.adapter.interfaces.AdapterClickListener;
+import nwts.ru.autoshop.adapter.interfaces.AdatpterLongClickListener;
 import nwts.ru.autoshop.models.network.BalanceModel;
 import nwts.ru.autoshop.models.network.BalanceModels;
 import nwts.ru.autoshop.models.network.CabinetModels;
@@ -78,10 +79,9 @@ public class CartFragment extends Fragment {
         super.onCreate(savedInstanceState);
         activity_context = getActivity();
         if (savedInstanceState != null) {
-
+//
         }
         request();
-        ;
     }
 
 
@@ -96,7 +96,7 @@ public class CartFragment extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
         prgLoading = (ProgressBar) view.findViewById(R.id.prgLoadingCabinet);
         txtAlert = (TextView) view.findViewById(R.id.txtAlertCabinet);
-        AdapterCart adapterCart = new AdapterCart(mCartModels, activity_context,
+        AdapterCart adapterCart = new AdapterCart ( mCartModels, activity_context,
                 new AdapterClickListener() {
                     @Override
                     public void adapterOnClickListener(int item) {
@@ -105,7 +105,17 @@ public class CartFragment extends Fragment {
                         }
                         mIsCartFragment.startCart(item);
                     }
-                });
+                }, new AdatpterLongClickListener() {
+            @Override
+            public void adatpterLongClickListener(int item) {
+                //удалдение здесь
+                if (mIsCartFragment == null) {
+                    mIsCartFragment = (isCartFragment) activity_context;
+                }
+                mIsCartFragment.delCartPosition(item);
+            }
+        } );
+
         recyclerView.setAdapter(adapterCart);
         final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
         //
@@ -163,7 +173,7 @@ public class CartFragment extends Fragment {
 
     public interface isCartFragment {
         void startCart(int item);
-
+        void delCartPosition (int item);
         void fabCommandCart(int fabItem);
     }
 

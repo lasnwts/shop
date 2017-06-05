@@ -34,7 +34,7 @@
     <string name="menu_product">Товары</string>
     <string name="menu_cart">Корзина</string>
     <string name="menu_checkout">Заказы</string>
-    <string name="menu_profile">Информация</string>
+    <string name="menu_profile">О магазине</string>
     <string name="alert">Отсуствует связь с интернетом!</string>
     <string name="alert_category">Данные не получены</string>
 

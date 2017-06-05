@@ -25,6 +25,7 @@ import java.util.List;
 
 import nwts.ru.autoshop.R;
 import nwts.ru.autoshop.adapter.interfaces.AdapterClickListener;
+import nwts.ru.autoshop.adapter.interfaces.AdatpterLongClickListener;
 import nwts.ru.autoshop.databases.DataManager;
 import nwts.ru.autoshop.models.network.cart.CartModel;
 
@@ -42,6 +43,7 @@ public class AdapterCart extends RecyclerView.Adapter<AdapterCart.ViewHolder> {
     private Activity activity;
     private Drawable background;
     private AdapterClickListener mAdapterClickListener;
+    private AdatpterLongClickListener mAdatpterLongClickListener;
     List<CartModel> mCartModels;
     DecimalFormat formatData = new DecimalFormat("0.00");
     SimpleDateFormat dateformat = new SimpleDateFormat("dd.MM.yyyy");
@@ -51,9 +53,11 @@ public class AdapterCart extends RecyclerView.Adapter<AdapterCart.ViewHolder> {
     //display width in dp
     double density;*/
 
-    public AdapterCart(List<CartModel> cartModels, Activity activity, AdapterClickListener adapterClickListener) {
+    public AdapterCart(List<CartModel> cartModels, Activity activity, AdapterClickListener adapterClickListener,
+                       AdatpterLongClickListener adatpterLongClickListener) {
         this.activity = activity;
         mAdapterClickListener = adapterClickListener;
+        mAdatpterLongClickListener = adatpterLongClickListener;
         mCartModels = cartModels;
         //     dm = activity.getResources().getDisplayMetrics();
 
@@ -72,7 +76,7 @@ public class AdapterCart extends RecyclerView.Adapter<AdapterCart.ViewHolder> {
 //        }
         view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_element_cart, parent, false);
-        return new ViewHolder(view, mAdapterClickListener);
+        return new ViewHolder(view, mAdapterClickListener, mAdatpterLongClickListener);
     }
 
     @Override
@@ -99,6 +103,13 @@ public class AdapterCart extends RecyclerView.Adapter<AdapterCart.ViewHolder> {
                 holder.mAdapterClickListener.adapterOnClickListener(cartModel.getTovar_ID());
             }
         });
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                holder.mAdatpterLongClickListener.adatpterLongClickListener( cartModel.getTovar_ID());
+                return true;
+             }
+        });
     }
 
 
@@ -115,8 +126,9 @@ public class AdapterCart extends RecyclerView.Adapter<AdapterCart.ViewHolder> {
         ImageView mImageView;
         //        TextView divider1, divider2;
         AdapterClickListener mAdapterClickListener;
+        AdatpterLongClickListener mAdatpterLongClickListener;
 
-        public ViewHolder(View itemView, AdapterClickListener adapterClickListener) {
+        public ViewHolder(View itemView, AdapterClickListener adapterClickListener, AdatpterLongClickListener adatpterLongClickListener) {
             super(itemView);
             txtDate = (TextView) itemView.findViewById(txt_cart_name);
             txtSumma = (TextView) itemView.findViewById(R.id.txt_cart_count);
@@ -128,6 +140,7 @@ public class AdapterCart extends RecyclerView.Adapter<AdapterCart.ViewHolder> {
 //                divider1.setHeight(txtDate.getHeight());
 //            }
             mAdapterClickListener = adapterClickListener;
+            mAdatpterLongClickListener = adatpterLongClickListener;
         }
     }
 

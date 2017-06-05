@@ -90,9 +90,9 @@ public class BaseActivity extends AppCompatActivity implements HomeMenu.OnLinkIt
         PrimaryDrawerItem[] primaryDrawerItems = new PrimaryDrawerItem[menu_items_Drawer.length];
 
         int[] drawableId = new int[]{R.drawable.ic_view_list_white_18dp,
-                R.drawable.ic_add_box_white_18dp, R.drawable.ic_mail_white_18dp,
-                R.drawable.ic_location_disabled_white_18dp, R.drawable.ic_account_circle_black_24dp,
-                R.drawable.ic_android_white_18dp, R.drawable.ic_settings_applications_white_18dp,
+                R.drawable.ic_product_menu, R.drawable.ic_cart_shop_web,
+                R.drawable.ic_account_circle_black_24dp,  R.drawable.ic_mail_white_18dp,
+                R.drawable.ic_shop_about, R.drawable.ic_android_white_18dp,
                 R.drawable.ic_settings_applications_white_18dp};
 
 
@@ -150,29 +150,12 @@ public class BaseActivity extends AppCompatActivity implements HomeMenu.OnLinkIt
                                         //    editNameDialogFragment.show(manager, "fragment_edit_name");
                                         break;
                                     case 3:
-                                        //    Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                                        //   shareIntent.setType("text/plain");
-                                        //    shareIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.subject));
-                                        //    shareIntent.putExtra(Intent.EXTRA_TEXT, putEmailAndFireBasePathtoClient());
-                                        //    startActivity(Intent.createChooser(shareIntent, getString(R.string.share_to)));
+                                        //Корзина
+                                        getShopPage(3);
                                         break;
                                     case 4:
-                                        if (!TODOApplication.getInstance().isValidateToken()){
-                                            if (validateToken.getValidateToken()) {
-                                                TODOApplication.getInstance().setValidateToken(true);
-                                            } else {
-                                                if (!preferenceHelper.getBoolean(BaseConstant.errorNetworkValidation)) {
-                                                    Intent loginIntent = (Intent) new Intent(BaseActivity.this, LoginActivity.class);
-                                                    startActivity(loginIntent);
-                                                } else {
-                                                    Toast.makeText(BaseActivity.this, "Войти в кабинет невозможно, отсутствует связь с сервером.", Toast.LENGTH_LONG).show();
-                                                }
-                                            }
-                                        } else {
-                                           // Toast.makeText(BaseActivity.this,"Token "+PreferenceHelper.getInstance().getAuthToken()+" is Valid.",Toast.LENGTH_LONG).show();
-                                            Intent cabinetIntent = (Intent) new Intent(BaseActivity.this, CabinetBase.class);
-                                            startActivity(cabinetIntent);
-                                        }
+                                        //кабинет
+                                        getShopPage(4);
                                         break;
                                     case 5: //масштабировать
                                         //   setScale();
@@ -344,6 +327,46 @@ public class BaseActivity extends AppCompatActivity implements HomeMenu.OnLinkIt
                 fragmentManager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
                         .replace(R.id.content_frame, category, BaseConstant.TAG_CATEGORY_FRAGMENT).commit();
                 break;
+            case 3:
+                //Корзина
+                if (!TODOApplication.getInstance().isValidateToken()){
+                    if (validateToken.getValidateToken()) {
+                        TODOApplication.getInstance().setValidateToken(true);
+                    } else {
+                        if (!preferenceHelper.getBoolean(BaseConstant.errorNetworkValidation)) {
+                            Intent loginIntent = (Intent) new Intent(BaseActivity.this, LoginActivity.class);
+                            startActivity(loginIntent);
+                        } else {
+                            Toast.makeText(BaseActivity.this, "Открыть корзину невозможно, отсутствует связь с сервером.", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                } else {
+                    // Toast.makeText(BaseActivity.this,"Token "+PreferenceHelper.getInstance().getAuthToken()+" is Valid.",Toast.LENGTH_LONG).show();
+                    TODOApplication.setCabinmet_form(1);
+                    Intent cabinetIntent = (Intent) new Intent(BaseActivity.this, CabinetBase.class);
+                    startActivity(cabinetIntent);
+                }
+                break;
+            case 4:
+                //кабинет
+                if (!TODOApplication.getInstance().isValidateToken()){
+                    if (validateToken.getValidateToken()) {
+                        TODOApplication.getInstance().setValidateToken(true);
+                    } else {
+                        if (!preferenceHelper.getBoolean(BaseConstant.errorNetworkValidation)) {
+                            Intent loginIntent = (Intent) new Intent(BaseActivity.this, LoginActivity.class);
+                            startActivity(loginIntent);
+                        } else {
+                            Toast.makeText(BaseActivity.this, "Войти в кабинет невозможно, отсутствует связь с сервером.", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                } else {
+                    // Toast.makeText(BaseActivity.this,"Token "+PreferenceHelper.getInstance().getAuthToken()+" is Valid.",Toast.LENGTH_LONG).show();
+                    TODOApplication.setCabinmet_form(0);
+                    Intent cabinetIntent = (Intent) new Intent(BaseActivity.this, CabinetBase.class);
+                    startActivity(cabinetIntent);
+                }
+                break;
             case 7: //information
                 Intent intentInformation = new Intent(this, Information.class);
                 overridePendingTransition(R.anim.open_main, R.anim.close_next);
@@ -419,10 +442,13 @@ public class BaseActivity extends AppCompatActivity implements HomeMenu.OnLinkIt
                 getShopPage(1);
                 break;
             case 1:
+                getShopPage(3);
                 break;
             case 2:
+                getShopPage(4);
                 break;
             case 3:
+                getShopPage(7);
                 break;
             default:
                 break;

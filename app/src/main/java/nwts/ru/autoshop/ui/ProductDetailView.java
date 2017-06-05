@@ -347,6 +347,30 @@ public class ProductDetailView extends AppCompatActivity
 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventErrorMessge(ErrorModel errorEvent) {
+        String errorMessage;
+        prgLoading.setVisibility(View.INVISIBLE);
+        if (errorEvent.getError() == null || TextUtils.isEmpty(errorEvent.getMessage())){
+            errorMessage = "Ошибка не определена.";
+        } else {
+            errorMessage = errorEvent.getMessage();
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(ProductDetailView.this);
+        builder.setTitle("Возникла ошибка при добавлении в корзину")
+                .setMessage(errorMessage)
+                .setIcon(R.drawable.ic_error)
+                .setCancelable(false)
+                .setNegativeButton("Да, поятненько  :(",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+        AlertDialog alertBalance = builder.create();
+        alertBalance.show();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventProductDetails(ProductDetailImages event) {
         prgLoading.setVisibility(View.INVISIBLE);
         divider1.setVisibility(View.VISIBLE);

@@ -29,6 +29,7 @@ import nwts.ru.autoshop.models.ProductCategoryDao;
 import nwts.ru.autoshop.models.ProductDetailImage;
 import nwts.ru.autoshop.models.ProductDetailImageDao;
 import nwts.ru.autoshop.models.ProductDetailImages;
+import nwts.ru.autoshop.models.ProductDetails;
 import nwts.ru.autoshop.models.SubCategoryItemDao;
 import nwts.ru.autoshop.models.network.BalanceModel;
 import nwts.ru.autoshop.models.network.BalanceModelDao;
@@ -369,8 +370,8 @@ public class ServiceIntentGetData extends IntentService {
             public void onResponse(Call<List<ProductCategory>> call, Response<List<ProductCategory>> response) {
                 if (response.isSuccessful()) {
                     productCategory.addAll(response.body());
-                    EventBus.getDefault().post(new ProductCategoris(productCategory, response.code()));
-                    putProductCategory(productCategory);
+                    putProductID(productCategory);
+                    getProductIDDao(id_category, 200);
                 } else {
                     // Обрабатываем ошибку
                     ResponseBody errorBody = response.errorBody();
@@ -379,14 +380,14 @@ public class ServiceIntentGetData extends IntentService {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    getProductCategoryDao(id_category, response.code());
+                    getProductIDDao(id_category, response.code());
                 }
             }
 
             @Override
             public void onFailure(Call<List<ProductCategory>> call, Throwable throwable) {
                 Log.d(BaseConstant.TAG, "Что-то пошло не так");
-                getProductCategoryDao(id_category, 501);
+                getProductIDDao(id_category, 501);
             }
         });
     }
@@ -582,6 +583,24 @@ public class ServiceIntentGetData extends IntentService {
         }
     }
 
+
+    private void putProductID(List<ProductCategory> productCategory) {
+        if (productCategory == null || productCategory.size() < 1) {
+            return;
+        } else {
+            for (int i = 0; i < productCategory.size(); i++) {
+                Query<ProductCategory> mProductCategoryQuery = mDaoSession.queryBuilder(ProductCategory.class)
+                        .where(ProductCategoryDao.Properties.Menu_ID.eq(productCategory.get(i).getMenu_ID())).build();
+                List<ProductCategory> productCategoryList = mProductCategoryQuery.list();
+                if (productCategoryList != null && productCategoryList.size() != 0 && !productCategoryList.isEmpty()) {
+                    mProductCategoryDao.deleteInTx(productCategoryList);
+                }
+            }
+            mProductCategoryDao.insertOrReplaceInTx(productCategory);
+        }
+    }
+
+
     /**
      * Выборка каталога продуктов
      * productCategoryId -ID подкатегории продуктов
@@ -595,6 +614,12 @@ public class ServiceIntentGetData extends IntentService {
         EventBus.getDefault().post(new ProductCategoris(productCategory, errorsId));
     }
 
+    private void getProductIDDao(int productId, int errorsId) {
+        Query<ProductCategory> mProducts = mDaoSession.queryBuilder(ProductCategory.class)
+                .where(ProductCategoryDao.Properties.Product_ID.eq(productId)).build();
+        productCategory = mProducts.list();
+        EventBus.getDefault().post(new ProductDetails(productCategory, errorsId));
+    }
 
     /**
      * Вставка и удаление из кэша старых записей подкатегорий

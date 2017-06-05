@@ -37,6 +37,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static android.R.attr.rating;
+
 /**
  * Created by пользователь on 19.05.2017.
  */
@@ -62,6 +64,7 @@ public class ServiceIntentGetDataMore extends IntentService {
     private List<ErrorModel> mErrorModelList;
     private ErrorModel mErrorModel;
     private ErrorModelDao mErrorModelDao;
+
 
     private DaoSession mDaoSession;
     List<GetCache> mGetCacheList;
@@ -124,6 +127,13 @@ public class ServiceIntentGetDataMore extends IntentService {
                 String messages = intent.getStringExtra(BaseConstant.API_COOMENT);
                 putComments(key_id, rating, productID, messages);
             }
+            if (intent.getStringExtra(BaseConstant.API_PAGE).equals(BaseConstant.ACTION_SERVICE_DEL_CART)) {
+                int key_id = intent.getIntExtra(BaseConstant.API_GET_KEY, 0);
+                int quantityID = intent.getIntExtra(BaseConstant.API_QUANTITY, 0);
+                int productID = intent.getIntExtra(BaseConstant.API_PRODUCT_ID, 0);
+                double summaDel = intent.getIntExtra(BaseConstant.API_BAL_SYS, 0);
+                delProductFromCart(productID, summaDel, quantityID);
+            }
             if (intent.getStringExtra(BaseConstant.API_PAGE).equals(BaseConstant.ACTION_SERVICE_GET_CART)) {
                 int key_id = intent.getIntExtra(BaseConstant.API_GET_KEY, 0);
                 if (mCartModels != null) {
@@ -148,6 +158,7 @@ public class ServiceIntentGetDataMore extends IntentService {
             }
         }
     }
+
 
     private void getComments(final int key_id) {
         ShopAPI shopApi = ShopAPI.retrofit.create(ShopAPI.class);
@@ -240,6 +251,29 @@ public class ServiceIntentGetDataMore extends IntentService {
     }
 
 
+    //delete from carts
+    private void delProductFromCart(int productID, double summaDel, int quantityID) {
+        ShopAPI shopApi = ShopAPI.retrofit.create(ShopAPI.class);
+        final Call<List<ErrorModel>> call = shopApi.getDeleteFromCart(productID, summaDel, quantityID);
+        call.enqueue(new Callback<List<ErrorModel>>() {
+            @Override
+            public void onResponse(Call<List<ErrorModel>> call, Response<List<ErrorModel>> response) {
+                if (response.isSuccessful()) {
+                    Intent intentService = new Intent(getApplication(), ServiceHelper.class);
+                    intentService.setAction(BaseConstant.ACTION_SERVICE_GET_CART);
+                    intentService.putExtra(BaseConstant.API_GET_KEY, PreferenceHelper.getInstance().getUserId());
+                    startService(intentService);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<ErrorModel>> call, Throwable throwable) {
+                setErrorMessagList("Возникла сетевая ошибка. Попробуйте позже, после установления связи. Сообщение: " + throwable.toString());
+            }
+        });
+    }
+
+
     //add cooment
     private void putComments(int keyId, int rating, int productID, String messages) {
         ShopAPI shopApi = ShopAPI.retrofit.create(ShopAPI.class);
@@ -262,18 +296,18 @@ public class ServiceIntentGetDataMore extends IntentService {
                         startService(intentService);
                     } else {
                         //get error messgae
-                        setErrorMessage("Возникла непонятная ошибка:" + response.code() + " " + response.body().toString());
+                        setErrorMessagList("Возникла непонятная ошибка:" + response.code() + " " + response.body().toString());
                     }
                 } else {
                     //get error message
-                    setErrorMessage("Возникла ошибка! Код ошибки:" + response.code() + "; сообщение: " + response.errorBody().toString());
+                    setErrorMessagList("Возникла ошибка! Код ошибки:" + response.code() + "; сообщение: " + response.errorBody().toString());
                 }
             }
 
             @Override
             public void onFailure(Call<List<ErrorModel>> call, Throwable throwable) {
                 //get error message
-                setErrorMessage("Возникла сетевая ошибка. Попробуйте позже, после установления связи. Сообщение: " + throwable.toString());
+                setErrorMessagList("Возникла сетевая ошибка. Попробуйте позже, после установления связи. Сообщение: " + throwable.toString());
             }
         });
     }
@@ -434,6 +468,14 @@ public class ServiceIntentGetDataMore extends IntentService {
 
     private void setErrorMessage(String error) {
         EventBus.getDefault().post(new ErrorModel(true, error));
+    }
+
+    private void setErrorMessagList(String error) {
+        if (mErrorModelList != null || !mErrorModelList.isEmpty()) {
+            mErrorModelList.clear();
+        }
+        mErrorModelList.add(new ErrorModel(true, error));
+        EventBus.getDefault().post(new ErrorModels(mErrorModelList, 501));
     }
 
     private void getCartModelDao(int userId, int errorsId) {

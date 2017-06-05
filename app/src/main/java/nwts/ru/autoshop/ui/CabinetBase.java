@@ -56,9 +56,11 @@ import nwts.ru.autoshop.fragment.dialogs.DialogFragmentCartCount;
 import nwts.ru.autoshop.fragment.dialogs.DialogFragmentCartProcessing;
 import nwts.ru.autoshop.models.ProductCategoris;
 import nwts.ru.autoshop.models.ProductCategory;
+import nwts.ru.autoshop.models.ProductDetails;
 import nwts.ru.autoshop.models.network.CabinetModel;
 import nwts.ru.autoshop.models.network.CabinetModels;
 import nwts.ru.autoshop.services.ServiceHelper;
+import nwts.ru.autoshop.services.ServiceIntentGetDataMore;
 import nwts.ru.autoshop.setting.BaseConstant;
 import nwts.ru.autoshop.setting.PreferenceHelper;
 import nwts.ru.autoshop.setting.ToolBarTitle;
@@ -140,7 +142,7 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
 
                 }
                 if (tag.equals(BaseConstant.TAG_CART_FRAGMENT)) {
-                    if (TODOApplication.getDetail_quantity() > 0) {
+                    if (TODOApplication.getCartSumma() > 0) {
                         mDialogFragmentCartProcessing = new DialogFragmentCartProcessing();
                         mDialogFragmentCartProcessing.show(getFragmentManager(), "dialog_cart");
                     } else {
@@ -200,6 +202,15 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
         } else {
             getOrders();
         }
+
+
+        //Если нужна корзина
+        if (TODOApplication.getCabinmet_form() == 1) {
+            getCart();
+            bnv.getMenu().getItem(2).setChecked(true);
+            showFab();
+        }
+
     }
 
     private void getOrders() {
@@ -592,8 +603,23 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
 
     @Override
     public void startCart(int item) {
-        Toast.makeText(this, "ID =" + item, Toast.LENGTH_SHORT).show();
-        startProductDetailView(item);
+        //  Toast.makeText(this, "ID =" + item, Toast.LENGTH_SHORT).show();
+        if (item != 0) {
+            startProductDetailView(item);
+        }
+    }
+
+    @Override
+    public void delCartPosition(int item) {
+        Toast.makeText(this," Надо удалить товар из корзины ="+item,Toast.LENGTH_SHORT).show();
+        /*
+        Intent intent1Service = new Intent(getApplication(), ServiceIntentGetDataMore.class);
+        intent1Service.putExtra(BaseConstant.API_PAGE, BaseConstant.ACTION_SERVICE_DEL_CART);
+        intent1Service.putExtra(BaseConstant.API_QUANTITY, intent.getIntExtra(BaseConstant.API_QUANTITY, 0));
+        intent1Service.putExtra(BaseConstant.API_PRODUCT_ID, intent.getIntExtra(BaseConstant.API_PRODUCT_ID, 0));
+        intent1Service.putExtra(BaseConstant.API_BAL_SYS, intent.getIntExtra(BaseConstant.API_BAL_SYS, 0));
+        startService(intent1Service);
+        */
     }
 
     @Override
@@ -665,7 +691,10 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
     public void startBalOrder(int item) {
         //Тут можно сделдать переход на сайт платежа...
         //Это не продукт
-        Toast.makeText(this, "ID= " + item, Toast.LENGTH_SHORT).show();
+        // Toast.makeText(this, "ID= " + item, Toast.LENGTH_SHORT).show();
+        if (item != 0) {
+            startProductDetailView(item);
+        }
     }
 
     @Override
@@ -691,19 +720,17 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
         //Подготовка
         TODOApplication.setProductDetail_Id(item);
         Intent intentService = new Intent(this, ServiceHelper.class);
-        intentService.setAction(BaseConstant.ACTION_SERVICE_GET_PRODUCT_LIST);
+        intentService.setAction(BaseConstant.ACTION_SERVICE_GET_PRODUCT_DETAIL_ID);
         intentService.putExtra(BaseConstant.API_GET_KEY, item); //продукт id
         startService(intentService);
 
-
-        Intent intentProductDetail = new Intent(this, ProductDetailView.class);
-        this.startActivity(intentProductDetail);
+//
+//        Intent intentProductDetail = new Intent(this, ProductDetailView.class);
+//        this.startActivity(intentProductDetail);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEventCategoryList(ProductCategoris event) {
-        productCategoryList.clear();
-        productCategoryList.addAll(event.getProductCategories());
+    public void onEventCategoryList(ProductDetails event) {
         if (event.getProductCategories().isEmpty() || event.getProductCategories().size() < 1) {
             AlertDialog.Builder builder = new AlertDialog.Builder(CabinetBase.this);
             builder.setTitle(R.string.show_error_detail)
@@ -719,15 +746,15 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
             AlertDialog alertBalance = builder.create();
             alertBalance.show();
         } else {
-            TODOApplication.setDetail_category_Id(productCategoryList.get(0).getCategory_ID());
-            TODOApplication.setDetail_product_Id(productCategoryList.get(0).getProduct_ID());
-            TODOApplication.setDetail_subcategory_Id(productCategoryList.get(0).getSubCategory_ID());
-            TODOApplication.setDetail_description(productCategoryList.get(0).getDescription());
-            TODOApplication.setDetail_productName(productCategoryList.get(0).getMenu_name());
-            TODOApplication.setDetail_price(productCategoryList.get(0).getPrice());
-            TODOApplication.setDetail_quantity(productCategoryList.get(0).getQuantity());
-            TODOApplication.setUrl_Image(productCategoryList.get(0).getMenu_image());
-            TODOApplication.setDetail_rating(productCategoryList.get(0).getRating());
+            TODOApplication.setDetail_category_Id(event.getProductCategories().get(0).getCategory_ID());
+            TODOApplication.setDetail_product_Id(event.getProductCategories().get(0).getProduct_ID());
+            TODOApplication.setDetail_subcategory_Id(event.getProductCategories().get(0).getSubCategory_ID());
+            TODOApplication.setDetail_description(event.getProductCategories().get(0).getDescription());
+            TODOApplication.setDetail_productName(event.getProductCategories().get(0).getMenu_name());
+            TODOApplication.setDetail_price(event.getProductCategories().get(0).getPrice());
+            TODOApplication.setDetail_quantity(event.getProductCategories().get(0).getQuantity());
+            TODOApplication.setUrl_Image(event.getProductCategories().get(0).getMenu_image());
+            TODOApplication.setDetail_rating(event.getProductCategories().get(0).getRating());
             //
             Intent intentProductDetail = new Intent(this, ProductDetailView.class);
             this.startActivity(intentProductDetail);
