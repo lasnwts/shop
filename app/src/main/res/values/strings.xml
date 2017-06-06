@@ -4,6 +4,7 @@
     <string name="action_settings">Settings</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="don_t_show_splash">Don\'t show splash</string>
+    <string name="refresh_data">Обновить</string>
     <string name="hello_blank_fragment">Splash Fragment</string>
     <string name="no_data_available">No data</string>
 
@@ -16,19 +17,15 @@
         <item>Товары</item>
         <item>Корзина</item>
         <item>Кабинет</item>
-        <item>Контакты</item>
         <item>О магазине</item>
         <item>О приложении</item>
-        <item>Контакты</item>
     </string-array>
 
     <string-array name="menu_cabinet_items">
         <item>Корзина</item>
         <item>Заказы</item>
         <item>Баланс</item>
-        <item>Доставка</item>
-        <item>Контакты</item>
-        <item>Выйти</item>
+        <item>О магазине</item>
     </string-array>
 
     <string name="menu_product">Товары</string>

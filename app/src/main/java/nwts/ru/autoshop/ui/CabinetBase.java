@@ -302,11 +302,10 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
         menu_items_Drawer = getResources().getStringArray(R.array.menu_cabinet_items);
         PrimaryDrawerItem[] primaryDrawerItems = new PrimaryDrawerItem[menu_items_Drawer.length];
 
-        int[] drawableId = new int[]{R.drawable.ic_view_list_white_18dp,
-                R.drawable.ic_add_box_white_18dp, R.drawable.ic_mail_white_18dp,
-                R.drawable.ic_location_disabled_white_18dp, R.drawable.ic_account_circle_black_24dp,
-                R.drawable.ic_android_white_18dp, R.drawable.ic_settings_applications_white_18dp,
-                R.drawable.ic_settings_applications_white_18dp};
+        int[] drawableId = new int[]{R.drawable.ic_cart_shop_web,
+                R.drawable.ic_orders,
+                R.drawable.ic_balance,
+                R.drawable.ic_shop_about};
 
         for (int i = 0; i < menu_items_Drawer.length; i++) {
             primaryDrawerItems[i] = new PrimaryDrawerItem()
@@ -352,26 +351,24 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
 
                                 switch (selectedDrawerItem) {
                                     case 1:
-
+                                        getCart();
+                                        bnv.getMenu().getItem(2).setChecked(true);
+                                        showFab();
                                         break;
                                     case 2:
-
-
+                                        getOrders();
+                                        bnv.getMenu().getItem(0).setChecked(true);
                                         break;
                                     case 3:
-
+                                        getBalance();
+                                        bnv.getMenu().getItem(1).setChecked(true);
                                         break;
                                     case 4:
-
-                                        break;
-                                    case 5:
-
-                                        break;
-                                    case 6: //About
-
+                                        Intent intentInformation = new Intent(CabinetBase.this, Information.class);
+                                        overridePendingTransition(R.anim.open_main, R.anim.close_next);
+                                        startActivity(intentInformation);
                                         break;
                                     default:
-
                                         break;
                                 }
 
@@ -404,7 +401,7 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_base, menu);
+        getMenuInflater().inflate(R.menu.menu_cabinet, menu);
         MenuItem splashItem = menu.findItem(R.id.action_splash);
         splashItem.setChecked(preferenceHelper.getBoolean(BaseConstant.SPLASH_IS_INVISIBLE));
         return true;
@@ -414,10 +411,15 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
+            case R.id.action_refresh:
+                refresh_func();
+                break;
             case R.id.action_splash:
                 item.setChecked(!item.isChecked());
                 PreferenceHelper.getInstance().putBoolean(BaseConstant.SPLASH_IS_INVISIBLE, item.isChecked());
                 return true;
+            default:
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -497,10 +499,10 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
                 getOrders();
             }
             if (tag.equals(BaseConstant.TAG_BALANCE_FRAGMENT)) {
-                //      getOrders();
+                getBalance();
             }
             if (tag.equals(BaseConstant.TAG_CART_FRAGMENT)) {
-                //       getOrders();
+                getCart();
             }
         }
     }
@@ -622,9 +624,9 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
                     public void onClick(DialogInterface dialog, int which) {
                         Intent intentService = new Intent(CabinetBase.this, ServiceHelper.class);
                         intentService.setAction(BaseConstant.ACTION_SERVICE_DEL_CART);
-                        intentService.putExtra(BaseConstant.API_QUANTITY,quantity);
-                        intentService.putExtra(BaseConstant.API_PRODUCT_ID,item);
-                        intentService.putExtra(BaseConstant.API_BAL_SYS,summa);
+                        intentService.putExtra(BaseConstant.API_QUANTITY, quantity);
+                        intentService.putExtra(BaseConstant.API_PRODUCT_ID, item);
+                        intentService.putExtra(BaseConstant.API_BAL_SYS, summa);
                         startService(intentService);
                     }
                 })
@@ -767,6 +769,34 @@ public class CabinetBase extends AppCompatActivity implements OrdersFragment.isO
             //
             Intent intentProductDetail = new Intent(this, ProductDetailView.class);
             this.startActivity(intentProductDetail);
+        }
+    }
+
+    //Refresh
+    private void refresh_func() {
+        Fragment fragment = getFragmentManager().findFragmentById(R.id.content_frame_cabinet);
+        if (fragment.getTag() != null) {
+            if (fragment.getTag().equals(BaseConstant.TAG_ORDERS_FRAGMENT)) {
+                getOrders();
+                bnv.getMenu().getItem(0).setChecked(true);
+            }
+            if (fragment.getTag().equals(BaseConstant.TAG_BALANCE_FRAGMENT)) {
+                getBalance();
+                bnv.getMenu().getItem(1).setChecked(true);
+
+            }
+            if (fragment.getTag().equals(BaseConstant.TAG_CART_FRAGMENT)) {
+                getCart();
+                bnv.getMenu().getItem(2).setChecked(true);
+                showFab();
+            }
+            if (fragment.getTag().equals(BaseConstant.TAG_BAL_ORDER_FRAGMENT)) {
+                getBalOrder();
+                hideFab();
+                // bnv.getMenu().getItem(2).setChecked(true);
+            }
+        } else {
+            getOrders();
         }
     }
 

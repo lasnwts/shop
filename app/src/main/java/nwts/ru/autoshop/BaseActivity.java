@@ -91,9 +91,8 @@ public class BaseActivity extends AppCompatActivity implements HomeMenu.OnLinkIt
 
         int[] drawableId = new int[]{R.drawable.ic_view_list_white_18dp,
                 R.drawable.ic_product_menu, R.drawable.ic_cart_shop_web,
-                R.drawable.ic_account_circle_black_24dp,  R.drawable.ic_mail_white_18dp,
-                R.drawable.ic_shop_about, R.drawable.ic_android_white_18dp,
-                R.drawable.ic_settings_applications_white_18dp};
+                R.drawable.ic_account_circle_black_24dp,
+                R.drawable.ic_shop_about, R.drawable.ic_android_white_18dp};
 
 
         for (int i = 0; i < menu_items_Drawer.length; i++) {
@@ -158,14 +157,11 @@ public class BaseActivity extends AppCompatActivity implements HomeMenu.OnLinkIt
                                         getShopPage(4);
                                         break;
                                     case 5: //масштабировать
-                                        //   setScale();
-                                        break;
-                                    case 6: //About
                                         //    showAbout();
                                         //testView();
                                         getShopPage(7);
                                         break;
-                                    case 7: //About
+                                    case 6: //About
                                         //   showSettings();
                                         getShopPage(8);
                                         // testView2();
