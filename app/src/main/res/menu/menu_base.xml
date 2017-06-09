@@ -1,11 +1,20 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context="ru.nwts.ecomexample.BaseActivity">
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:sabd="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context="ru.nwts.ecomexample.BaseActivity">
     <item
         android:id="@+id/action_splash"
+        android:checkable="true"
         android:orderInCategory="100"
         android:title="@string/don_t_show_splash"
-        android:checkable="true"
-        app:showAsAction="never" />
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/action_search"
+        android:icon="@drawable/ic_action_search_new"
+        android:title="@string/app_name"
+        sabd:actionViewClass="android.support.v7.widget.SearchView"
+        sabd:showAsAction="always"/>
+
 </menu>

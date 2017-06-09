@@ -270,7 +270,7 @@ public class ProductDetailView extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_base, menu);
+        getMenuInflater().inflate(R.menu.menu_alone, menu);
         MenuItem splashItem = menu.findItem(R.id.action_splash);
         splashItem.setChecked(preferenceHelper.getBoolean(BaseConstant.SPLASH_IS_INVISIBLE));
         return true;

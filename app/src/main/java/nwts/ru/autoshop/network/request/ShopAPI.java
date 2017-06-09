@@ -11,6 +11,7 @@ import nwts.ru.autoshop.models.network.BalanceModel;
 import nwts.ru.autoshop.models.network.CabinetModel;
 import nwts.ru.autoshop.models.network.OrderModel;
 import nwts.ru.autoshop.models.network.ProductComment;
+import nwts.ru.autoshop.models.network.ProductSearch;
 import nwts.ru.autoshop.models.network.cart.CartModel;
 import nwts.ru.autoshop.models.network.cart.ErrorModel;
 import nwts.ru.autoshop.models.network.orders.BalOrderModel;
@@ -82,6 +83,10 @@ public interface ShopAPI {
     //get Balance
     @GET(Api.GET_CABINET_CART)
     Call<List<CartModel>> getCart();
+
+    //search
+    @GET(Api.GET_PRODUCT_CATEGORY_BY_NAME)
+    Call<List<ProductSearch>> getProductSearch(@Query("category_id") String nameProduct);
 
     //add balance
     @Headers("Cache-Control: max-age=640000")

@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 
 import com.mikepenz.materialdrawer.AccountHeader;
@@ -16,15 +17,30 @@ import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
 import android.os.Bundle;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import nwts.ru.autoshop.databases.DataManager;
+import nwts.ru.autoshop.models.DaoSession;
+import nwts.ru.autoshop.models.network.ProductSearch;
+import nwts.ru.autoshop.models.network.ProductSearchDao;
 import nwts.ru.autoshop.network.ValidateToken;
+import nwts.ru.autoshop.network.request.ShopAPI;
 import nwts.ru.autoshop.ui.About;
 import nwts.ru.autoshop.fragment.HomeMenu;
 import nwts.ru.autoshop.fragment.ProductCatalog;
@@ -39,10 +55,14 @@ import nwts.ru.autoshop.setting.BaseConstant;
 import nwts.ru.autoshop.setting.PreferenceHelper;
 import nwts.ru.autoshop.ui.LoginActivity;
 import nwts.ru.autoshop.ui.ProductDetailView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class BaseActivity extends AppCompatActivity implements HomeMenu.OnLinkItemSelectedListener,
-        ToolBarTitle, Category.iCategoty, SubCatalog.iSubCatalog, ProductCatalog.iProductCatalog {
+        ToolBarTitle, Category.iCategoty, SubCatalog.iSubCatalog, ProductCatalog.iProductCatalog,
+        SearchView.OnQueryTextListener, MenuItemCompat.OnActionExpandListener {
 
     /*
     Variables
@@ -62,6 +82,19 @@ public class BaseActivity extends AppCompatActivity implements HomeMenu.OnLinkIt
     ValidateToken validateToken;
 
     ProductCatalog productCatalogFragment;
+    //search
+    SearchView mSearchView;
+    private ListView mListView;
+    ArrayAdapter<String> adapter = null;
+    private ProductSearch mProductSearch;
+    private List<ProductSearch> mProductSearchList;
+    private ProductSearchDao mProductSearchDao;
+    private final String BUNDLE_KEY_SEARCH = "BUNDLE_KEY_SEARCH";
+    private String searchQuery;
+    private boolean mSubmitQuery = false;
+    private DaoSession mDaoSession;
+    //
+    private FrameLayout mFrameLayout;
 
 
     /*
@@ -72,6 +105,7 @@ public class BaseActivity extends AppCompatActivity implements HomeMenu.OnLinkIt
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
+
 
         PreferenceHelper.getInstance().init(getApplicationContext());
         preferenceHelper = PreferenceHelper.getInstance();
@@ -196,7 +230,47 @@ public class BaseActivity extends AppCompatActivity implements HomeMenu.OnLinkIt
 //            Toast.makeText(MainActivity.this, getString(R.string.no_internet), Toast.LENGTH_SHORT).show();
 //        }
 
+        //set net validation
+        PreferenceHelper.getInstance().putBoolean(BaseConstant.errorNetworkValidation, false);
+        validateToken = ValidateToken.getInstance();
+        if (!TODOApplication.getInstance().isValidateToken()) {
+            if (validateToken.getValidateToken()) {
+                TODOApplication.getInstance().setValidateToken(true);
+            }
+        }
+
+        DataManager dataManager = DataManager.getInstance();
+        mDaoSession = dataManager.getDaoSession();
+        if (mDaoSession != null) {
+            mProductSearchDao = mDaoSession.getProductSearchDao();
+        }
+        if (mProductSearchList == null) {
+            mProductSearchList = new ArrayList<>();
+        }
+        delGreenDaoSearchResult();
+
+        mFrameLayout = (FrameLayout) findViewById(R.id.content_frame);
+        mListView = (ListView) findViewById(R.id.listView);
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(BaseActivity.this, "Item position: " + position + " ; id : " + id, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), ((TextView) view).getText(),
+                        Toast.LENGTH_SHORT).show();
+                mSearchView.setQuery(((TextView) view).getText(), false);
+                mSearchView.clearFocus();
+                mListView.setVisibility(View.GONE);
+
+            }
+        });
+
         if (savedInstanceState != null) {
+
+            if (savedInstanceState.getString(BUNDLE_KEY_SEARCH) != null && !TextUtils.isEmpty(savedInstanceState.getString(BUNDLE_KEY_SEARCH))) {
+                // mSearchView.setQuery((CharSequence) savedInstanceState.getString(BUNDLE_KEY_SEARCH), false);
+                searchQuery = savedInstanceState.getString(BUNDLE_KEY_SEARCH);
+            }
+
             if (!savedInstanceState.getBoolean(TAG_LIFE_MAIN_ACTIVITY)) {
                 getShopPage(0);
                 runSplash();
@@ -206,14 +280,52 @@ public class BaseActivity extends AppCompatActivity implements HomeMenu.OnLinkIt
             runSplash();
         }
 
-        //set net validation
-        PreferenceHelper.getInstance().putBoolean(BaseConstant.errorNetworkValidation,false);
-        validateToken = ValidateToken.getInstance();
-        if (!TODOApplication.getInstance().isValidateToken()){
-            if (validateToken.getValidateToken()) {
-                TODOApplication.getInstance().setValidateToken(true);
-            }
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+
+        //test saved state
+        if (searchQuery != null && !TextUtils.isEmpty(searchQuery)) {
+            mSearchView.onActionViewExpanded();
+            mSearchView.setQuery(searchQuery, true);
+            mSearchView.clearFocus();
         }
+        return super.onPrepareOptionsMenu(menu);
+
+    }
+
+    private List<ProductSearch> getCursorGreen() {
+
+        org.greenrobot.greendao.query.Query<ProductSearch> mPSearch = mDaoSession.queryBuilder(ProductSearch.class).build();
+        List<ProductSearch> mProductList = mPSearch.list();
+        if (mProductList == null || mProductList.size() < 1) {
+            return null;
+        } else {
+            return mProductList;
+        }
+    }
+
+    private void putProductSearchInDoa(List<ProductSearch> productSearchList) {
+        if (productSearchList == null || productSearchList.size() < 1) {
+            return;
+        } else {
+            mProductSearchDao.deleteAll();
+            mProductSearchDao.insertOrReplaceInTx(productSearchList);
+        }
+    }
+
+    private void fillListView2(List<ProductSearch> mProductListSearch) {
+        List<String> searchList = new ArrayList<String>();
+        for (int i = 0; i < mProductListSearch.size(); i++) {
+            searchList.add(mProductListSearch.get(i).getMenu_name());
+        }
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,
+                searchList);
+    }
+
+    private void delGreenDaoSearchResult() {
+        mProductSearchDao.deleteAll();
     }
 
     private void setToolbarAndSelectedDrawerItem(String title, int selectedDrawerItem) {
@@ -227,6 +339,21 @@ public class BaseActivity extends AppCompatActivity implements HomeMenu.OnLinkIt
         getMenuInflater().inflate(R.menu.menu_base, menu);
         MenuItem splashItem = menu.findItem(R.id.action_splash);
         splashItem.setChecked(preferenceHelper.getBoolean(BaseConstant.SPLASH_IS_INVISIBLE));
+        //searchView
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        mSearchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        mSearchView.setQueryHint("Поиск");
+        mSearchView.setOnQueryTextListener(this);
+        //
+        if (searchItem != null) {
+            MenuItemCompat.setOnActionExpandListener(searchItem, BaseActivity.this);
+            MenuItemCompat.setActionView(searchItem, mSearchView);
+        }
+
+        mListView.setAdapter(adapter);
+        mListView.setTextFilterEnabled(true);
+        mSearchView.setSubmitButtonEnabled(true);
+        mSearchView.setIconifiedByDefault(true);
         return true;
     }
 
@@ -271,6 +398,10 @@ public class BaseActivity extends AppCompatActivity implements HomeMenu.OnLinkIt
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putBoolean(TAG_LIFE_MAIN_ACTIVITY, true);
+        if (mSearchView != null && mSearchView.getQuery().toString() != null &&
+                !TextUtils.isEmpty(mSearchView.getQuery().toString())) {
+            outState.putString(BUNDLE_KEY_SEARCH, (String) mSearchView.getQuery().toString());
+        }
         super.onSaveInstanceState(outState);
     }
 
@@ -325,7 +456,7 @@ public class BaseActivity extends AppCompatActivity implements HomeMenu.OnLinkIt
                 break;
             case 3:
                 //Корзина
-                if (!TODOApplication.getInstance().isValidateToken()){
+                if (!TODOApplication.getInstance().isValidateToken()) {
                     if (validateToken.getValidateToken()) {
                         TODOApplication.getInstance().setValidateToken(true);
                     } else {
@@ -345,7 +476,7 @@ public class BaseActivity extends AppCompatActivity implements HomeMenu.OnLinkIt
                 break;
             case 4:
                 //кабинет
-                if (!TODOApplication.getInstance().isValidateToken()){
+                if (!TODOApplication.getInstance().isValidateToken()) {
                     if (validateToken.getValidateToken()) {
                         TODOApplication.getInstance().setValidateToken(true);
                     } else {
@@ -398,34 +529,39 @@ public class BaseActivity extends AppCompatActivity implements HomeMenu.OnLinkIt
     @Override
     public void onBackPressed() {
         Log.d(BaseConstant.TAG, "onBackPressed:TODOApplication:Category_Id:" + TODOApplication.getCategory_Id());
-        Fragment fr = getFragmentManager().findFragmentById(R.id.content_frame);
-        if (fr != null) {
-            if (fr.getTag() != null) {
-                if (fr.getTag().equals(BaseConstant.TAG_CATEGORY_FRAGMENT)) {
-                    clearFRagmentBackStack();
-                    getShopPage(0);
-                } else {
-                    //TAG1
-                    if (fr.getTag().equals(BaseConstant.TAG_SUBCATEGORY_FRAGMENT)) {
+        if (!mSearchView.isIconified()) {
+            mSearchView.setIconified(true);
+            mSearchView.setIconified(true);
+        } else {
+            Fragment fr = getFragmentManager().findFragmentById(R.id.content_frame);
+            if (fr != null) {
+                if (fr.getTag() != null) {
+                    if (fr.getTag().equals(BaseConstant.TAG_CATEGORY_FRAGMENT)) {
                         clearFRagmentBackStack();
-                        getShopPage(1);
+                        getShopPage(0);
                     } else {
-                        //TAG2
-                        if (fr.getTag().equals(BaseConstant.TAG_PRODUCT_CATALOG_FRAGMENT)) {
+                        //TAG1
+                        if (fr.getTag().equals(BaseConstant.TAG_SUBCATEGORY_FRAGMENT)) {
                             clearFRagmentBackStack();
-                            getShopPage(20);
+                            getShopPage(1);
                         } else {
-                            super.onBackPressed();
+                            //TAG2
+                            if (fr.getTag().equals(BaseConstant.TAG_PRODUCT_CATALOG_FRAGMENT)) {
+                                clearFRagmentBackStack();
+                                getShopPage(20);
+                            } else {
+                                super.onBackPressed();
+                            }
+                            //TAG2
                         }
-                        //TAG2
+                        //TAG1
                     }
-                    //TAG1
+                } else {
+                    super.onBackPressed();
                 }
             } else {
                 super.onBackPressed();
             }
-        } else {
-            super.onBackPressed();
         }
     }
 
@@ -465,7 +601,8 @@ public class BaseActivity extends AppCompatActivity implements HomeMenu.OnLinkIt
     @Override
     public void startSubCategory(int item) {
         //Передаем в ServiceHelper апрос на данные
-        TODOApplication.setSubCategory_Id(item);;
+        TODOApplication.setSubCategory_Id(item);
+        ;
 //        Intent intentService = new Intent(this, ServiceHelper.class);
 //        intentService.setAction(BaseConstant.ACTION_SERVICE_GET_SUBCATEGORY_LIST);
 //        intentService.putExtra(BaseConstant.API_GET_KEY, item);
@@ -508,5 +645,97 @@ public class BaseActivity extends AppCompatActivity implements HomeMenu.OnLinkIt
 //        this.startService(intentService);
         Intent intentProductDetail = new Intent(this, ProductDetailView.class);
         this.startActivity(intentProductDetail);
+    }
+
+    @Override
+    public boolean onMenuItemActionExpand(MenuItem item) {
+        mListView.setVisibility(View.VISIBLE);
+      //  mRecyclerView.setVisibility(View.GONE);
+        mFrameLayout.setVisibility(View.GONE);
+        return true;
+    }
+
+    @Override
+    public boolean onMenuItemActionCollapse(MenuItem item) {
+        mListView.setVisibility(View.GONE);
+        mFrameLayout.setVisibility(View.VISIBLE);
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        requestSearchProduct(query);
+
+        mSearchView.setIconified(false);
+
+        mSearchView.clearFocus();
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+
+        if (TextUtils.isEmpty(newText)){
+            mListView.setVisibility(View.GONE);
+            mFrameLayout.setVisibility(View.VISIBLE);
+        } else {
+            mListView.setVisibility(View.VISIBLE);
+            mFrameLayout.setVisibility(View.GONE);
+        }
+//
+//        if (mRecyclerView.getVisibility()==View.VISIBLE){
+//            mRecyclerView.setVisibility(View.GONE);
+//        }
+
+//        if (mFrameLayout.getVisibility()==View.VISIBLE){
+//            mFrameLayout.setVisibility(View.GONE);
+//        }
+
+        if (getCursorGreen() != null) {
+
+            if (getCursorGreen().size() < 4) {
+                requestSearchProduct(newText);
+            }
+
+        } else {
+            requestSearchProduct(newText);
+        }
+
+        if (TextUtils.isEmpty(newText)) {
+            mListView.clearTextFilter();
+        } else {
+            mListView.setFilterText(newText.toString());
+
+        }
+        return true;
+    }
+
+    /**
+     * Метод конечно тоже следовало бы вынести в сервис, по аналогии с остальными заапросами,
+     * но я поленился :))  - поскольку и так запрос Retrofit'a:  call.enqueue выполняется сам
+     * по себе в отдельном потоке в виде сервиса..
+     */
+    private void requestSearchProduct(String nameProduct) {
+        ShopAPI shopApi = ShopAPI.retrofit.create(ShopAPI.class);
+        final Call<List<ProductSearch>> call = shopApi.getProductSearch(nameProduct);
+        call.enqueue(new Callback<List<ProductSearch>>() {
+            @Override
+            public void onResponse(Call<List<ProductSearch>> call, Response<List<ProductSearch>> response) {
+                if (response.isSuccessful()) {
+                    mProductSearchList.clear();
+                    mProductSearchList.addAll(response.body());
+                    putProductSearchInDoa(mProductSearchList);
+                    fillListView2(getCursorGreen());
+                    mListView.setAdapter(adapter);
+                    mListView.setTextFilterEnabled(true);
+                    adapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<ProductSearch>> call, Throwable throwable) {
+                // Log.d(MainActivity.class.getCanonicalName(), "Error request:" + throwable.toString());
+            }
+        });
     }
 }
