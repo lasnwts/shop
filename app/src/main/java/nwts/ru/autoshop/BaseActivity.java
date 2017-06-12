@@ -548,7 +548,11 @@ public class BaseActivity extends AppCompatActivity implements HomeMenu.OnLinkIt
                             //TAG2
                             if (fr.getTag().equals(BaseConstant.TAG_PRODUCT_CATALOG_FRAGMENT)) {
                                 clearFRagmentBackStack();
-                                getShopPage(20);
+                                if (TODOApplication.getSubCategory_Id()==0){
+                                    getShopPage(0);
+                                } else {
+                                    getShopPage(20);
+                                }
                             } else {
                                 super.onBackPressed();
                             }
