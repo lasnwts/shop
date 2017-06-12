@@ -92,7 +92,12 @@ public class ServiceHelper extends Service {
                 if (intent.getAction().equals(BaseConstant.ACTION_SERVICE_GET_BALANCE_ID)) {
                     Intent intent1Service = new Intent(getApplication(), ServiceIntentGetDataMore.class);
                     intent1Service.putExtra(BaseConstant.API_PAGE, BaseConstant.ACTION_SERVICE_GET_BALANCE_ID);
-                    //  intent1Service.putExtra(API_GET_KEY, intent.getIntArrayExtra(API_GET_KEY));
+                    startService(intent1Service);
+                }
+                if (intent.getAction().equals(BaseConstant.ACTION_SERVICE_GET_FIND_PRODUCT)) {
+                    Intent intent1Service = new Intent(getApplication(), ServiceIntentGetData.class);
+                    intent1Service.putExtra(BaseConstant.API_PAGE, BaseConstant.ACTION_SERVICE_GET_FIND_PRODUCT);
+                    intent1Service.putExtra(API_GET_KEY, intent.getStringExtra(API_GET_KEY));
                     startService(intent1Service);
                 }
                 if (intent.getAction().equals(BaseConstant.ACTION_SERVICE_GET_PROCESSING_ID)) {

@@ -33,4 +33,5 @@ public interface Api {
     public String GET_PRODUCT_BY_ID = "ecommerce/apiv2/get-data-by-product-id.php?accesskey=12345";
     public String GET_PRODUCT_DEL_BY_CART_ID = "ecommerce/apiv2/get-data-by-delete-product-from-cart.php";
     public String GET_PRODUCT_CATEGORY_BY_NAME = "/ecommerce/apiv2/get-data-by-productlist-name.php?accesskey=12345";
+    public String GET_PRODUCT_CATEGORY_BY_FIND_NAME = "/ecommerce/apiv2/get-data-by-product-catalog-name.php?accesskey=12345";
 }

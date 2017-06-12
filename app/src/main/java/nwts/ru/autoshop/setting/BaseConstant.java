@@ -57,6 +57,7 @@ public interface BaseConstant {
     public final String ACTION_SERVICE_GET_COMMENTS_ID = "ru.nwts.get-data-by-comments_id"; //получить отзывы о продукте
     public final String ACTION_SERVICE_ADD_COMMENTS = "ru.nwts.add-comment-to-tovar"; //add comments to tovar
     public final String ACTION_SERVICE_DEL_CART = "ru.nwts.get-data-by-delete-product-from-cart"; //del tovar from cart
+    public final String ACTION_SERVICE_GET_FIND_PRODUCT = "ru.nwts.get-data-by-productlist-name"; //find catalog by name
     //URL between activities
     public final String URL_IMAGE_DOWNLOADED = "url_downloaded";
     public final String URL_IMAGE_COUNTS = "url_images_count";

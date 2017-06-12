@@ -42,6 +42,7 @@ public class TODOApplication extends Application {
     private static int statusID; //status pay 0 - from cabinet, 1 from cache
     private static int detail_rating; //rating from product
     private static int cabinmet_form; //0 - хзаказы, 1 - корзина
+    private static String keyWord; //наименование товара
 
 
     public boolean isValidateToken() {
@@ -299,5 +300,13 @@ public class TODOApplication extends Application {
 
     public static void setCabinmet_form(int cabinmet_form) {
         TODOApplication.cabinmet_form = cabinmet_form;
+    }
+
+    public static String getKeyWord() {
+        return keyWord;
+    }
+
+    public static void setKeyWord(String keyWord) {
+        TODOApplication.keyWord = keyWord;
     }
 }

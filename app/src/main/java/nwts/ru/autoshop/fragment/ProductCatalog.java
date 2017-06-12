@@ -32,7 +32,7 @@ import nwts.ru.autoshop.setting.BaseConstant;
 import nwts.ru.autoshop.setting.ToolBarTitle;
 
 /**
- *  Фрагмент показа списка товаров (3-ий уровень)
+ * Фрагмент показа списка товаров (3-ий уровень)
  * Created by пользователь on 22.03.2017.
  */
 
@@ -48,10 +48,12 @@ public class ProductCatalog extends Fragment {
     RecyclerView recyclerView;
     private static final int SPAN_COUNT = 1;
     protected RecyclerView.LayoutManager layoutManager;
+
     private enum LayoutManagerType {
         GRID_LAYOUT_MANAGER,
         LINEAR_LAYOUT_MANAGER
     }
+
     protected LayoutManagerType mCurrentLayoutManagerType;
     private Activity activity_context;
     private ToolBarTitle toolBarTitle;
@@ -77,15 +79,22 @@ public class ProductCatalog extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        toolBarTitle = (ToolBarTitle)getActivity();
+        toolBarTitle = (ToolBarTitle) getActivity();
         toolBarTitle.BaseActivitySteToolBarTitle(getResources().getString(R.string.toolbar_main_product_catalog));
     }
 
-    private void request(){
-        Intent intentService = new Intent(getActivity(), ServiceHelper.class);
-        intentService.setAction(BaseConstant.ACTION_SERVICE_GET_PRODUCT_LIST);
-        intentService.putExtra(BaseConstant.API_GET_KEY, TODOApplication.getCategory_Id());
-        getActivity().startService(intentService);
+    private void request() {
+        if (TODOApplication.getKeyWord() == null) {
+            Intent intentService = new Intent(getActivity(), ServiceHelper.class);
+            intentService.setAction(BaseConstant.ACTION_SERVICE_GET_PRODUCT_LIST);
+            intentService.putExtra(BaseConstant.API_GET_KEY, TODOApplication.getCategory_Id());
+            getActivity().startService(intentService);
+        } else {
+            Intent intentService = new Intent(getActivity(), ServiceHelper.class);
+            intentService.setAction(BaseConstant.ACTION_SERVICE_GET_FIND_PRODUCT);
+            intentService.putExtra(BaseConstant.API_GET_KEY, TODOApplication.getKeyWord());
+            getActivity().startService(intentService);
+        }
     }
 
     @Override
@@ -142,7 +151,7 @@ public class ProductCatalog extends Fragment {
         EventBus.getDefault().unregister(this);
     }
 
-    public interface iProductCatalog{
+    public interface iProductCatalog {
         void startProductDetailView(int item);
     }
 }

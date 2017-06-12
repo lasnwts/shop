@@ -165,6 +165,14 @@ public class ServiceIntentGetData extends IntentService {
                 }
                 getPoductCategory(key_id);
             }
+            if (intent.getStringExtra(BaseConstant.API_PAGE).equals(BaseConstant.ACTION_SERVICE_GET_FIND_PRODUCT)) {
+                String key_word = intent.getStringExtra(BaseConstant.API_GET_KEY);
+
+                if (productCategory != null) {
+                    productCategory.clear();
+                }
+                getPoductCategoryFind(key_word);
+            }
             if (intent.getStringExtra(BaseConstant.API_PAGE).equals(BaseConstant.ACTION_SERVICE_GET_PRODUCT_DETAIL_ID)) {
                 int key_id = intent.getIntExtra(BaseConstant.API_GET_KEY, 0); //product_id
                 if (productCategory != null) {
@@ -333,6 +341,7 @@ public class ServiceIntentGetData extends IntentService {
             @Override
             public void onResponse(Call<List<ProductCategory>> call, Response<List<ProductCategory>> response) {
                 if (response.isSuccessful()) {
+                    productCategory.clear();
                     productCategory.addAll(response.body());
                     EventBus.getDefault().post(new ProductCategoris(productCategory, response.code()));
                     putProductCategory(productCategory);
@@ -356,6 +365,30 @@ public class ServiceIntentGetData extends IntentService {
             public void onFailure(Call<List<ProductCategory>> call, Throwable throwable) {
                 Log.d(BaseConstant.TAG, "Что-то пошло не так");
                 getProductCategoryDao(id_category, 501);
+            }
+        });
+    }
+
+    private void getPoductCategoryFind(final String key_word) {
+        ShopAPI shopApi = ShopAPI.retrofit.create(ShopAPI.class);
+        final Call<List<ProductCategory>> call = shopApi.getProductCatalogFindByName(key_word);
+        call.enqueue(new Callback<List<ProductCategory>>() {
+            @Override
+            public void onResponse(Call<List<ProductCategory>> call, Response<List<ProductCategory>> response) {
+                if (response.isSuccessful()) {
+                    productCategory.clear();
+                    productCategory.addAll(response.body());
+                    putProductCategoryByName(productCategory, key_word);
+                    putGetCache(call.request().toString());
+                    getProductCategoryDaoByName(key_word, response.code());
+                } else {
+                    getProductCategoryDaoByName(key_word, response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<ProductCategory>> call, Throwable throwable) {
+                getProductCategoryDaoByName(key_word, 501);
             }
         });
     }
@@ -574,8 +607,6 @@ public class ServiceIntentGetData extends IntentService {
                         .where(ProductCategoryDao.Properties.Menu_ID.eq(productCategory.get(i).getMenu_ID())).build();
                 List<ProductCategory> productCategoryList = mProductCategoryQuery.list();
                 if (productCategoryList != null && productCategoryList.size() != 0 && !productCategoryList.isEmpty()) {
-//                    ProductCategory mProductCategoryDelete = productCategoryList.get(0);
-//                    mProductCategoryDao.delete(mProductCategoryDelete);
                     mProductCategoryDao.deleteInTx(productCategoryList);
                 }
             }
@@ -600,6 +631,18 @@ public class ServiceIntentGetData extends IntentService {
         }
     }
 
+    private void putProductCategoryByName(List<ProductCategory> productCategory, String key_word) {
+        if (productCategory == null || productCategory.size() < 1) {
+            return;
+        } else {
+            Query<ProductCategory> mProducts = mDaoSession.queryBuilder(ProductCategory.class)
+                    .where(ProductCategoryDao.Properties.Menu_name.like("%" + key_word + "%")).build();
+            List<ProductCategory> productCategoryList = mProducts.list();
+            mProductCategoryDao.deleteInTx(productCategoryList);
+            mProductCategoryDao.insertOrReplaceInTx(productCategory);
+        }
+    }
+
 
     /**
      * Выборка каталога продуктов
@@ -612,6 +655,18 @@ public class ServiceIntentGetData extends IntentService {
         Log.d("MyLogs", "QueryBuilder<NewPerson> pers:" + mProducts.toString());
         productCategory = mProducts.list();
         EventBus.getDefault().post(new ProductCategoris(productCategory, errorsId));
+    }
+
+    /**
+     * Выборка каталога продуктов
+     * key_word -Word слово из под подкатегории продуктов
+     * errorsId - номер ошибки или код завершения
+     */
+    private void getProductCategoryDaoByName(String key_word, int errorsId) {
+        Query<ProductCategory> mProducts = mDaoSession.queryBuilder(ProductCategory.class)
+                .where(ProductCategoryDao.Properties.Menu_name.like("%" + key_word + "%")).build();
+        List<ProductCategory> productCategoryList = mProducts.list();
+        EventBus.getDefault().post(new ProductCategoris(productCategoryList, errorsId));
     }
 
     private void getProductIDDao(int productId, int errorsId) {

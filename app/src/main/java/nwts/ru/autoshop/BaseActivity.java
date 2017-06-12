@@ -621,10 +621,22 @@ public class BaseActivity extends AppCompatActivity implements HomeMenu.OnLinkIt
     @Override
     public void startProductCatalog(int item) {
         TODOApplication.setProductCatalog_Id(item);
+        TODOApplication.setKeyWord(null);
 //        Intent intentService = new Intent(this, ServiceHelper.class);
 //        intentService.setAction(BaseConstant.ACTION_SERVICE_GET_PRODUCT_LIST);
 //        intentService.putExtra(BaseConstant.API_GET_KEY, item);
 //        this.startService(intentService);
+        ProductCatalog productCatalog = new ProductCatalog();
+        getFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
+                .replace(R.id.content_frame, productCatalog,
+                        BaseConstant.TAG_PRODUCT_CATALOG_FRAGMENT).commit();
+    }
+
+    /**
+     * STart product catalog by Find
+     */
+    private void startProductCatalogByFind(String keyword){
+        TODOApplication.setKeyWord(keyword);
         ProductCatalog productCatalog = new ProductCatalog();
         getFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
                 .replace(R.id.content_frame, productCatalog,
@@ -665,10 +677,11 @@ public class BaseActivity extends AppCompatActivity implements HomeMenu.OnLinkIt
     @Override
     public boolean onQueryTextSubmit(String query) {
         requestSearchProduct(query);
-
         mSearchView.setIconified(false);
-
         mSearchView.clearFocus();
+        mListView.setVisibility(View.GONE);
+        mFrameLayout.setVisibility(View.VISIBLE);
+        startProductCatalogByFind(query);
         return false;
     }
 

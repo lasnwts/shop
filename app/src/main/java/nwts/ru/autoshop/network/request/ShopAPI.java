@@ -88,6 +88,10 @@ public interface ShopAPI {
     @GET(Api.GET_PRODUCT_CATEGORY_BY_NAME)
     Call<List<ProductSearch>> getProductSearch(@Query("category_id") String nameProduct);
 
+    //find
+    @GET(Api.GET_PRODUCT_CATEGORY_BY_FIND_NAME)
+    Call<List<ProductCategory>> getProductCatalogFindByName(@Query("category_name") String nameFindProducts);
+
     //add balance
     @Headers("Cache-Control: max-age=640000")
     @FormUrlEncoded
