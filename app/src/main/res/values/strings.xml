@@ -3,7 +3,7 @@
 
     <string name="action_settings">Settings</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="don_t_show_splash">Don\'t show splash</string>
+    <string name="don_t_show_splash">Не показывать заставку</string>
     <string name="refresh_data">Обновить</string>
     <string name="hello_blank_fragment">Splash Fragment</string>
     <string name="no_data_available">No data</string>
@@ -53,7 +53,7 @@
     <string name="googleplay_url">https://play.google.com/store/apps/details?id=ru.nwts.appsyoutube</string>
 
     <string name="information_tab1">
-		Добро пожаловать в “Student Shop”. Интернет-магазин “Student Shop” первый и единственный специализированный магазин для студентов. В нашем онлайн магазине Вы можете купить товары дешевле, чем во многих магазинах, кроме того доставка заказа свыше 350 рублей осуществляется БЕСПЛАТНО. Прежде чем делать покупки, в разделе «Как заказать» ознакомьтесь с правилами заказа и оплаты товаров. Моментально, после заказа с Вами свяжется менеджер для дальнейших действий.
+		Добрый день! Это программа чисто демонстрационная. Я создал ее для того чтобы показать как я вижу клиентскую часть программного обеспечения небольшого магазина.Фотографии взяты просто из интернета.
 	</string>
     <string name="information_tab2">
 	    Для того чтобы заказать товар: 1) Перейдите в нужную категорию и выберите товар. 2) После того, как выбрали товар, нажмите на кнопку купить. 3) Как только ваш товар будет добавлен в корзину, перейдите в неё, нажмите на кнопку «галочка» и оформите заказ. Все поля оформления обязательны к заполнению. Выберите форму оплаты. 4) После оформления нажмите на кнопку «отправить» и мы свяжемся с Вами для доставки товаров в удобное для Вас время.
@@ -175,11 +175,11 @@
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password (optional)</string>
-    <string name="action_sign_in">Sign in</string>
-    <string name="action_sign_up">Create Account</string>
-    <string name="action_register"><u> Register? </u></string>
-    <string name="prompt_user_name"> User Name (FIO) </string>
-    <string name="action_sign_in_short">Sign in</string>
+    <string name="action_sign_in">Войти</string>
+    <string name="action_sign_up">Создать аккаунт</string>
+    <string name="action_register"><u> Зарегистрироваться </u></string>
+    <string name="prompt_user_name">Имя пользователя(ФИО) опционально</string>
+    <string name="action_sign_in_short">Войти</string>
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>

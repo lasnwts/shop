@@ -343,6 +343,7 @@ public class BaseActivity extends AppCompatActivity implements HomeMenu.OnLinkIt
         MenuItem searchItem = menu.findItem(R.id.action_search);
         mSearchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         mSearchView.setQueryHint("Поиск");
+        mSearchView.setMaxWidth(Integer.MAX_VALUE);
         mSearchView.setOnQueryTextListener(this);
         //
         if (searchItem != null) {

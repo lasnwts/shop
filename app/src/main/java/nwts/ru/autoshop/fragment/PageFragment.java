@@ -55,17 +55,17 @@ public class PageFragment extends Fragment {
             case 0:
                 tvImage.setImageDrawable(getResources().getDrawable(R.drawable.shop_avto_about));
                 tvImage.setVisibility(View.VISIBLE);
-                tvPage.setText("Page " + getResources().getString(R.string.information_tab1));
+                tvPage.setText("...  " + getResources().getString(R.string.information_tab1));
                 break;
             case 1:
                 tvImage.setImageDrawable(getResources().getDrawable(R.drawable.shop_avto_about2));
                 tvImage.setVisibility(View.VISIBLE);
-                tvPage.setText("Page " + getResources().getString(R.string.information_tab2));
+                tvPage.setText("...  " + getResources().getString(R.string.information_tab2));
                 break;
             case 2:
                 tvImage.setImageDrawable(getResources().getDrawable(R.drawable.asimo));
                 tvImage.setVisibility(View.VISIBLE);
-                tvPage.setText("Page " + getResources().getString(R.string.information_tab3));
+                tvPage.setText("...  " + getResources().getString(R.string.information_tab3));
                 break;
             default:
                 break;
