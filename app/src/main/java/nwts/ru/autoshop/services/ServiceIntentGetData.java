@@ -635,11 +635,33 @@ public class ServiceIntentGetData extends IntentService {
         if (productCategory == null || productCategory.size() < 1) {
             return;
         } else {
-            Query<ProductCategory> mProducts = mDaoSession.queryBuilder(ProductCategory.class)
-                    .where(ProductCategoryDao.Properties.Menu_name.like("%" + key_word + "%")).build();
-            List<ProductCategory> productCategoryList = mProducts.list();
-            mProductCategoryDao.deleteInTx(productCategoryList);
+
+            for (int i=0; i< productCategory.size(); i++){
+                Query<ProductCategory> mProducts = mDaoSession.queryBuilder(ProductCategory.class)
+                        .where(ProductCategoryDao.Properties.Product_ID.eq(productCategory.get(i).getProduct_ID())).build();
+                List<ProductCategory> productCategoryList = mProducts.list();
+                mProductCategoryDao.deleteInTx(productCategoryList);
+            }
+
             mProductCategoryDao.insertOrReplaceInTx(productCategory);
+
+            Query<ProductCategory> mProductsBeforeLowerCase = mDaoSession.queryBuilder(ProductCategory.class).build();
+            List<ProductCategory> productCategoryListBeforeLowerCase = mProductsBeforeLowerCase.list();
+            if (productCategoryListBeforeLowerCase != null && productCategoryListBeforeLowerCase.size() >0 ){
+                for (int i=0; i < productCategoryListBeforeLowerCase.size(); i++){
+                    productCategoryListBeforeLowerCase.get(i).
+                            setMenuNameLowercase(productCategoryListBeforeLowerCase.get(i).getMenu_name().toLowerCase().trim());
+                    mProductCategoryDao.update(productCategoryListBeforeLowerCase.get(i));
+                }
+            }
+
+
+//            Query<ProductCategory> mProducts = mDaoSession.queryBuilder(ProductCategory.class)
+//                    .where(ProductCategoryDao.Properties.MenuNameLowercase.like("%" + key_word.toString().toLowerCase().trim() + "%")).build();
+//            List<ProductCategory> productCategoryList = mProducts.list();
+//            mProductCategoryDao.deleteInTx(productCategoryList);
+//            mProductCategoryDao.insertOrReplaceInTx(productCategory);
+
         }
     }
 
@@ -664,7 +686,7 @@ public class ServiceIntentGetData extends IntentService {
      */
     private void getProductCategoryDaoByName(String key_word, int errorsId) {
         Query<ProductCategory> mProducts = mDaoSession.queryBuilder(ProductCategory.class)
-                .where(ProductCategoryDao.Properties.Menu_name.like("%" + key_word + "%")).build();
+                .where(ProductCategoryDao.Properties.MenuNameLowercase.like("%" + key_word.toLowerCase().trim() + "%")).build();
         List<ProductCategory> productCategoryList = mProducts.list();
         EventBus.getDefault().post(new ProductCategoris(productCategoryList, errorsId));
     }

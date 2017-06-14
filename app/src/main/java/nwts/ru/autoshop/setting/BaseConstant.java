@@ -18,11 +18,11 @@ public interface BaseConstant {
     /*
         Local variables
      */
-    public final String API_URL = "192.168.56.1:81";
+//    public final String API_URL = "192.168.56.1:81";
     /*
         Remote
      */
- //   public final String API_URL = "www.nwts.ru";
+    public final String API_URL = "www.nwts.ru";
 
 
     public final String API_KEY_ID = "api_id";

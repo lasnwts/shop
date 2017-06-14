@@ -60,6 +60,10 @@ public class HomeMenu extends Fragment implements AdapterView.OnItemClickListene
 
         Context context = container.getContext();
 
+        if (data.size()>1){
+            data.clear();
+        }
+
         data.add(new GridViewItem(getResources().getString(R.string.menu_product), getDrawableVersion(R.drawable.ic_product,context)));
         data.add(new GridViewItem(getResources().getString(R.string.menu_cart),  getDrawableVersion(R.drawable.ic_cart,context)));
         data.add(new GridViewItem(getResources().getString(R.string.menu_checkout), getDrawableVersion(R.drawable.ic_checkout,context)));

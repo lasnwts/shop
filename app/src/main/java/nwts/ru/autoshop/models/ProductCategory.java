@@ -25,6 +25,7 @@ public class ProductCategory {
     private int SubCategory_ID;
     private int Quantity;
     private int Rating;
+    private String menuNameLowercase;
 
     /** Used to resolve relations */
     @Generated(hash = 2040040024)
@@ -46,12 +47,14 @@ public class ProductCategory {
         Menu_name = menu_name;
         Price = price;
         Menu_image = menu_image;
+        menuNameLowercase = Menu_name.toLowerCase();
     }
 
     public ProductCategory(int menu_ID, String menu_name, double price, String description,
                            String menu_image, int category_ID, int product_ID, int subCategory_ID, int quantity, int rating) {
         Menu_ID = menu_ID;
         Menu_name = menu_name;
+        menuNameLowercase = this.Menu_name.toLowerCase();
         Price = price;
         Description = description;
         Menu_image = menu_image;
@@ -62,9 +65,9 @@ public class ProductCategory {
         Rating = rating;
     }
 
-    @Generated(hash = 1514271340)
+    @Generated(hash = 1001112383)
     public ProductCategory(Long id, int Menu_ID, String Menu_name, double Price, String Description, String Menu_image,
-            int Category_ID, int Product_ID, int SubCategory_ID, int Quantity, int Rating) {
+            int Category_ID, int Product_ID, int SubCategory_ID, int Quantity, int Rating, String menuNameLowercase) {
         this.id = id;
         this.Menu_ID = Menu_ID;
         this.Menu_name = Menu_name;
@@ -76,7 +79,10 @@ public class ProductCategory {
         this.SubCategory_ID = SubCategory_ID;
         this.Quantity = Quantity;
         this.Rating = Rating;
+        this.menuNameLowercase = menuNameLowercase;
     }
+    
+
 
     public Long getId() {
         return id;
@@ -166,6 +172,10 @@ public class ProductCategory {
         Rating = rating;
     }
 
+    public String getMenuNameLowercase() {
+        return menuNameLowercase;
+    }
+
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
      * Entity must attached to an entity context.
@@ -207,5 +217,9 @@ public class ProductCategory {
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getProductCategoryDao() : null;
+    }
+
+    public void setMenuNameLowercase(String menuNameLowercase) {
+        this.menuNameLowercase = menuNameLowercase;
     }
 }
