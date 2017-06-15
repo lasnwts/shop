@@ -254,9 +254,9 @@ public class BaseActivity extends AppCompatActivity implements HomeMenu.OnLinkIt
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(BaseActivity.this, "Item position: " + position + " ; id : " + id, Toast.LENGTH_SHORT).show();
-                Toast.makeText(getApplicationContext(), ((TextView) view).getText(),
-                        Toast.LENGTH_SHORT).show();
+//                Toast.makeText(BaseActivity.this, "Item position: " + position + " ; id : " + id, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(), ((TextView) view).getText(),
+//                        Toast.LENGTH_SHORT).show();
                 mSearchView.setQuery(((TextView) view).getText(), false);
                 mSearchView.clearFocus();
                 mListView.setVisibility(View.GONE);

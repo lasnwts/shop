@@ -434,19 +434,19 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                             if (response.code() == 201) {
                                 //Toast.makeText(LoginActivity.this, "Success:" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
                                 mResult = true;
-                                if (ValidateToken.getInstance().getValidateToken()){
+                                if (ValidateToken.getInstance().getValidateToken()) {
                                     TODOApplication.getInstance().setValidateToken(true);
                                 }
                             } else {
                                 if (response.body() != null) {
                                     //Toast.makeText(LoginActivity.this, "Error code:" + response.code() + " Message:" + response.body().toString(), Toast.LENGTH_SHORT).show();
-                                    mPreferenceHelper.putString(BaseConstant.errorLogin,response.body().getMessage());
+                                    mPreferenceHelper.putString(BaseConstant.errorLogin, response.body().getMessage());
                                     Toast.makeText(LoginActivity.this, "Error code:" + response.code() + " Message:" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
                                 } else if (response.errorBody() != null) {
-                                    mPreferenceHelper.putString(BaseConstant.errorLogin,response.errorBody().toString());
+                                    mPreferenceHelper.putString(BaseConstant.errorLogin, response.errorBody().toString());
                                     Toast.makeText(LoginActivity.this, "Error code:" + response.code() + " Message:" + response.errorBody().toString(), Toast.LENGTH_SHORT).show();
                                 } else if (response.message() != null) {
-                                    mPreferenceHelper.putString(BaseConstant.errorLogin,response.message().toString());
+                                    mPreferenceHelper.putString(BaseConstant.errorLogin, response.message().toString());
                                     Toast.makeText(LoginActivity.this, "Error code:" + response.code() + " Message:" + response.message().toString(), Toast.LENGTH_SHORT).show();
                                 }
                             }
@@ -458,7 +458,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     @Override
                     public void onFailure(Call<AccessCreateUser> call, Throwable throwable) {
                         Toast.makeText(LoginActivity.this, "Erroe:" + throwable.toString(), Toast.LENGTH_SHORT).show();
-                        mPreferenceHelper.putString(BaseConstant.errorLogin,throwable.toString());
+                        mPreferenceHelper.putString(BaseConstant.errorLogin, throwable.toString());
                         mWait = true;
                     }
                 });
@@ -477,20 +477,24 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                                 mResult = true;
                                 mToken = response.body().getApikey();
                                 mPreferenceHelper.putAuthToken(mToken);
-                                mPreferenceHelper.putUserId(response.body().getId());
-                                mPreferenceHelper.putEmail(response.body().getUsername());
-                                mPreferenceHelper.putUserName(response.body().getName());
-                                TODOApplication.getInstance().setValidateToken(true);
+                                if (response.body().getId() == null || TextUtils.isEmpty(response.body().getId().toString()) ) {
+                                    mResult = false;
+                                } else {
+                                    mPreferenceHelper.putUserId(response.body().getId());
+                                    mPreferenceHelper.putEmail(response.body().getUsername());
+                                    mPreferenceHelper.putUserName(response.body().getName());
+                                    TODOApplication.getInstance().setValidateToken(true);
+                                }
                                 // Toast.makeText(LoginActivity.this, "Success:" + response.body().getApikey(), Toast.LENGTH_SHORT).show();
                             } else {
                                 if (response.body() != null) {
-                                    mPreferenceHelper.putString(BaseConstant.errorLogin,response.body().getMessage());
+                                    mPreferenceHelper.putString(BaseConstant.errorLogin, response.body().getMessage());
                                     Toast.makeText(LoginActivity.this, "Error code:" + response.code() + " Message:" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
                                 } else if (response.errorBody() != null) {
-                                    mPreferenceHelper.putString(BaseConstant.errorLogin,response.errorBody().toString());
+                                    mPreferenceHelper.putString(BaseConstant.errorLogin, response.errorBody().toString());
                                     Toast.makeText(LoginActivity.this, "Error code:" + response.code() + " Message:" + response.errorBody().toString(), Toast.LENGTH_SHORT).show();
                                 } else if (response.message() != null) {
-                                    mPreferenceHelper.putString(BaseConstant.errorLogin,response.message().toString());
+                                    mPreferenceHelper.putString(BaseConstant.errorLogin, response.message().toString());
                                     Toast.makeText(LoginActivity.this, "Error code:" + response.code() + " Message:" + response.message().toString(), Toast.LENGTH_SHORT).show();
                                 }
                             }
@@ -501,7 +505,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     @Override
                     public void onFailure(Call<UserModel> call, Throwable throwable) {
                         Toast.makeText(LoginActivity.this, "Erroe:" + throwable.toString(), Toast.LENGTH_SHORT).show();
-                        mPreferenceHelper.putString(BaseConstant.errorLogin,getString(R.string.error_net)+throwable.toString());
+                        mPreferenceHelper.putString(BaseConstant.errorLogin, getString(R.string.error_net) + throwable.toString());
                         mWait = true;
                     }
                 });
@@ -531,7 +535,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }*/
             // TODO: register the new account here.
             if (mResult) {
-               // PreferenceHelper.getInstance().putAuthToken(mToken);
+                // PreferenceHelper.getInstance().putAuthToken(mToken);
             }
             return mResult;
         }
